@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.interestrate.mapper.InterestrateMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getInterestrateById" resultType="com.ruoyi.project.interestrate.domain.Interestrate">
+        select
+        sys_id as sysId,
+        sys_rate as sysRate,
+        sys_rating as sysRating,
+        sys_rate_overdue as sysRateOverdue,
+        sys_rating_overdue as sysRatingOverdue,
+        modification_time as modificationTime
+        from interestrate
+        <trim prefix="where" prefixOverrides="and | or">
+            sys_id=#{id}
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getInterestrateListByMap" resultType="com.ruoyi.project.interestrate.domain.Interestrate"
+            parameterType="java.util.Map">
+        select
+        sys_id as sysId,
+        sys_rate as sysRate,
+        sys_rating as sysRating,
+        sys_rate_overdue as sysRateOverdue,
+        sys_rating_overdue as sysRatingOverdue,
+        modification_time as modificationTime
+        from interestrate
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="sysId != null">
+                sys_id=#{sysId}
+            </if>
+            <if test="sysRate != null">
+                and sys_rate=#{sysRate}
+            </if>
+            <if test="sysRating != null">
+                and sys_rating=#{sysRating}
+            </if>
+            <if test="sysRateOverdue != null">
+                and sys_rate_overdue=#{sysRateOverdue}
+            </if>
+            <if test="sysRatingOverdue != null">
+                and sys_rating_overdue=#{sysRatingOverdue}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getInterestrateCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from interestrate
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="sysId != null">
+                and sys_id=#{sysId}
+            </if>
+            <if test="sysRate != null">
+                and sys_rate=#{sysRate}
+            </if>
+            <if test="sysRating != null">
+                and sys_rating=#{sysRating}
+            </if>
+            <if test="sysRateOverdue != null">
+                and sys_rate_overdue=#{sysRateOverdue}
+            </if>
+            <if test="sysRatingOverdue != null">
+                and sys_rating_overdue=#{sysRatingOverdue}
+            </if>
+            <if test="modificationTime != null">
+                and modification_time=#{modificationTime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertInterestrate" parameterType="com.ruoyi.project.interestrate.domain.Interestrate">
+        <selectKey keyProperty="sysId" order="BEFORE" resultType="Integer">
+            select seq_interestrate.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into interestrate(
+        sys_id,
+        sys_rate,
+        sys_rating,
+        sys_rate_overdue,
+        sys_rating_overdue,
+        modification_time)
+        values(
+        #{sysId},
+        #{sysRate},
+        #{sysRating},
+        #{sysRateOverdue},
+        #{sysRatingOverdue},
+        #{modificationTime})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateInterestrate" parameterType="com.ruoyi.project.interestrate.domain.Interestrate">
+        update interestrate
+        <trim prefix="set" suffixOverrides=",">
+            <if test="sysRate != null">
+                sys_rate=#{sysRate},
+            </if>
+            <if test="sysRating != null">
+                sys_rating=#{sysRating},
+            </if>
+            <if test="sysRateOverdue != null">
+                sys_rate_overdue=#{sysRateOverdue},
+            </if>
+            <if test="sysRatingOverdue != null">
+                sys_rating_overdue=#{sysRatingOverdue},
+            </if>
+            <if test="modificationTime != null">
+                modification_time=#{modificationTime}
+            </if>
+        </trim>
+        where sys_id=#{sysId}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteInterestrateByMap" parameterType="java.util.Map">
+        delete from interestrate
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="sysId != null">
+                and sys_id=#{sysId}
+            </if>
+            <if test="sysRate != null">
+                and sys_rate=#{sysRate}
+            </if>
+            <if test="sysRating != null">
+                and sys_rating=#{sysRating}
+            </if>
+            <if test="sysRateOverdue != null">
+                and sys_rate_overdue=#{sysRateOverdue}
+            </if>
+            <if test="sysRatingOverdue != null">
+                and sys_rating_overdue=#{sysRatingOverdue}
+            </if>
+        </trim>
+    </delete>
+</mapper>

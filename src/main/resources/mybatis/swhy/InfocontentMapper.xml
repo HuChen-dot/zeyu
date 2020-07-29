@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.infocontent.InfocontentMapper">
+
+    <!-- 根据信息表id查询；返回单个对象 -->
+    <select id="getInfocontentById" resultType="com.ruoyi.swhysc.bean.Infocontent">
+        select
+        infoid as infoid,
+        content as content,
+        contenttype as contenttype,
+        contentsize as contentsize
+        from infocontent
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and infoid=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getInfocontentListByMap" resultType="com.ruoyi.swhysc.bean.Infocontent"
+            parameterType="java.util.Map">
+        select
+        infoid as infoid,
+        content as content,
+        contenttype as contenttype,
+        contentsize as contentsize
+        from infocontent
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="infoid != null">
+                and infoid=#{infoid}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="contenttype != null">
+                and contenttype=#{contenttype}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getInfocontentCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from infocontent
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="infoid != null">
+                and infoid=#{infoid}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="contenttype != null">
+                and contenttype=#{contenttype}
+            </if>
+            <if test="contentsize != null">
+                and contentsize=#{contentsize}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertInfocontent" parameterType="com.ruoyi.swhysc.bean.Infocontent">
+        <selectKey keyProperty="infoid" order="BEFORE" resultType="Integer">
+            select seq_infocontent.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into infocontent(
+        infoid,
+        content,
+        contenttype,
+        contentsize)
+        values(
+        #{infoid},
+        #{content},
+        #{contenttype},
+        #{contentsize})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateInfocontent" parameterType="com.ruoyi.swhysc.bean.Infocontent">
+        update infocontent
+        <trim prefix="set" suffixOverrides=",">
+            <if test="content != null">
+                content=#{content},
+            </if>
+            <if test="contenttype != null">
+                contenttype=#{contenttype},
+            </if>
+            <if test="contentsize != null">
+                contentsize=#{contentsize}
+            </if>
+        </trim>
+        where infoid=#{infoid}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteInfocontentByMap" parameterType="java.util.Map">
+        delete from infocontent
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="infoid != null">
+                and infoid=#{infoid}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="contenttype != null">
+                and contenttype=#{contenttype}
+            </if>
+        </trim>
+    </delete>
+</mapper>

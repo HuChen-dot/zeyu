@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.infobase.InfobaseMapper">
+
+    <!-- 根据id查询；返回单个对象-->
+    <select id="getInfobaseById" resultType="com.ruoyi.swhysc.bean.Infobase">
+        select
+        id as id,
+        title as title,
+        introduce as introduce,
+        attachmentcount as attachmentcount,
+        keywords as keywords,
+        relateinfo as relateinfo,
+        createtime as createtime,
+        lastaccesstime as lastaccesstime,
+        originaltime as originaltime,
+        modifytime as modifytime,
+        expiretime as expiretime,
+        poster as poster,
+        author as author,
+        posterid as posterid,
+        source as source,
+        infolevel as infolevel,
+        importance as importance,
+        urgency as urgency,
+        infovalue as infovalue,
+        accesstimes as accesstimes,
+        ratetimes as ratetimes,
+        sumrate as sumrate,
+        status as status,
+        category as category,
+        flag_new as flagNew,
+        flag_top as flagTop,
+        flag_hot as flagHot,
+        sourceid as sourceid,
+        channelid as channelid
+        from infobase
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getInfobaseListByMap" resultType="com.ruoyi.swhysc.bean.Infobase"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        title as title,
+        introduce as introduce,
+        attachmentcount as attachmentcount,
+        keywords as keywords,
+        relateinfo as relateinfo,
+        createtime as createtime,
+        lastaccesstime as lastaccesstime,
+        originaltime as originaltime,
+        modifytime as modifytime,
+        expiretime as expiretime,
+        poster as poster,
+        author as author,
+        posterid as posterid,
+        source as source,
+        infolevel as infolevel,
+        importance as importance,
+        urgency as urgency,
+        infovalue as infovalue,
+        accesstimes as accesstimes,
+        ratetimes as ratetimes,
+        sumrate as sumrate,
+        status as status,
+        category as category,
+        flag_new as flagNew,
+        flag_top as flagTop,
+        flag_hot as flagHot,
+        sourceid as sourceid,
+        channelid as channelid
+        from infobase
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="introduce != null">
+                and introduce=#{introduce}
+            </if>
+            <if test="attachmentcount != null">
+                and attachmentcount=#{attachmentcount}
+            </if>
+            <if test="keywords != null">
+                and keywords=#{keywords}
+            </if>
+            <if test="relateinfo != null">
+                and relateinfo=#{relateinfo}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccesstime != null">
+                and lastaccesstime=#{lastaccesstime}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifytime != null">
+                and modifytime=#{modifytime}
+            </if>
+            <if test="expiretime != null">
+                and expiretime=#{expiretime}
+            </if>
+            <if test="poster != null">
+                and poster=#{poster}
+            </if>
+            <if test="author != null">
+                and author=#{author}
+            </if>
+            <if test="posterid != null">
+                and posterid=#{posterid}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="infolevel != null">
+                and infolevel=#{infolevel}
+            </if>
+            <if test="importance != null">
+                and importance=#{importance}
+            </if>
+            <if test="urgency != null">
+                and urgency=#{urgency}
+            </if>
+            <if test="infovalue != null">
+                and infovalue=#{infovalue}
+            </if>
+            <if test="accesstimes != null">
+                and accesstimes=#{accesstimes}
+            </if>
+            <if test="ratetimes != null">
+                and ratetimes=#{ratetimes}
+            </if>
+            <if test="sumrate != null">
+                and sumrate=#{sumrate}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="category != null">
+                and category=#{category}
+            </if>
+            <if test="flagNew != null">
+                and flag_new=#{flagNew}
+            </if>
+            <if test="flagTop != null">
+                and flag_top=#{flagTop}
+            </if>
+            <if test="flagHot != null">
+                and flag_hot=#{flagHot}
+            </if>
+            <if test="channelid != null">
+                and channelid=#{channelid}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getInfobaseCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from infobase
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="introduce != null">
+                and introduce=#{introduce}
+            </if>
+            <if test="attachmentcount != null">
+                and attachmentcount=#{attachmentcount}
+            </if>
+            <if test="keywords != null">
+                and keywords=#{keywords}
+            </if>
+            <if test="relateinfo != null">
+                and relateinfo=#{relateinfo}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccesstime != null">
+                and lastaccesstime=#{lastaccesstime}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifytime != null">
+                and modifytime=#{modifytime}
+            </if>
+            <if test="expiretime != null">
+                and expiretime=#{expiretime}
+            </if>
+            <if test="poster != null">
+                and poster=#{poster}
+            </if>
+            <if test="author != null">
+                and author=#{author}
+            </if>
+            <if test="posterid != null">
+                and posterid=#{posterid}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="infolevel != null">
+                and infolevel=#{infolevel}
+            </if>
+            <if test="importance != null">
+                and importance=#{importance}
+            </if>
+            <if test="urgency != null">
+                and urgency=#{urgency}
+            </if>
+            <if test="infovalue != null">
+                and infovalue=#{infovalue}
+            </if>
+            <if test="accesstimes != null">
+                and accesstimes=#{accesstimes}
+            </if>
+            <if test="ratetimes != null">
+                and ratetimes=#{ratetimes}
+            </if>
+            <if test="sumrate != null">
+                and sumrate=#{sumrate}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="category != null">
+                and category=#{category}
+            </if>
+            <if test="flagNew != null">
+                and flag_new=#{flagNew}
+            </if>
+            <if test="flagTop != null">
+                and flag_top=#{flagTop}
+            </if>
+            <if test="flagHot != null">
+                and flag_hot=#{flagHot}
+            </if>
+            <if test="sourceid != null">
+                and sourceid=#{sourceid}
+            </if>
+            <if test="channelid != null">
+                and channelid=#{channelid}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertInfobase" parameterType="com.ruoyi.swhysc.bean.Infobase">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_infobase.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into infobase(
+        title,
+        introduce,
+        attachmentcount,
+        keywords,
+        relateinfo,
+        createtime,
+        lastaccesstime,
+        originaltime,
+        modifytime,
+        expiretime,
+        poster,
+        author,
+        posterid,
+        source,
+        infolevel,
+        importance,
+        urgency,
+        infovalue,
+        accesstimes,
+        ratetimes,
+        sumrate,
+        status,
+        category,
+        flag_new,
+        flag_top,
+        flag_hot,
+        sourceid,
+        channelid)
+        values(
+        #{title},
+        #{introduce},
+        #{attachmentcount},
+        #{keywords},
+        #{relateinfo},
+        #{createtime},
+        #{lastaccesstime},
+        #{originaltime},
+        #{modifytime},
+        #{expiretime},
+        #{poster},
+        #{author},
+        #{posterid},
+        #{source},
+        #{infolevel},
+        #{importance},
+        #{urgency},
+        #{infovalue},
+        #{accesstimes},
+        #{ratetimes},
+        #{sumrate},
+        #{status},
+        #{category},
+        #{flagNew},
+        #{flagTop},
+        #{flagHot},
+        #{sourceid},
+        #{channelid})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateInfobase" parameterType="com.ruoyi.swhysc.bean.Infobase">
+        update infobase
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null">
+                title=#{title},
+            </if>
+            <if test="introduce != null">
+                introduce=#{introduce},
+            </if>
+            <if test="attachmentcount != null">
+                attachmentcount=#{attachmentcount},
+            </if>
+            <if test="keywords != null">
+                keywords=#{keywords},
+            </if>
+            <if test="relateinfo != null">
+                relateinfo=#{relateinfo},
+            </if>
+            <if test="createtime != null">
+                createtime=#{createtime},
+            </if>
+            <if test="lastaccesstime != null">
+                lastaccesstime=#{lastaccesstime},
+            </if>
+            <if test="originaltime != null">
+                originaltime=#{originaltime},
+            </if>
+            <if test="modifytime != null">
+                modifytime=#{modifytime},
+            </if>
+            <if test="expiretime != null">
+                expiretime=#{expiretime},
+            </if>
+            <if test="poster != null">
+                poster=#{poster},
+            </if>
+            <if test="author != null">
+                author=#{author},
+            </if>
+            <if test="posterid != null">
+                posterid=#{posterid},
+            </if>
+            <if test="source != null">
+                source=#{source},
+            </if>
+            <if test="infolevel != null">
+                infolevel=#{infolevel},
+            </if>
+            <if test="importance != null">
+                importance=#{importance},
+            </if>
+            <if test="urgency != null">
+                urgency=#{urgency},
+            </if>
+            <if test="infovalue != null">
+                infovalue=#{infovalue},
+            </if>
+            <if test="accesstimes != null">
+                accesstimes=#{accesstimes},
+            </if>
+            <if test="ratetimes != null">
+                ratetimes=#{ratetimes},
+            </if>
+            <if test="sumrate != null">
+                sumrate=#{sumrate},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="category != null">
+                category=#{category},
+            </if>
+            <if test="flagNew != null">
+                flag_new=#{flagNew},
+            </if>
+            <if test="flagTop != null">
+                flag_top=#{flagTop},
+            </if>
+            <if test="flagHot != null">
+                flag_hot=#{flagHot},
+            </if>
+            <if test="sourceid != null">
+                sourceid=#{sourceid}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteInfobaseByMap" parameterType="java.util.Map">
+        delete from infobase
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="introduce != null">
+                and introduce=#{introduce}
+            </if>
+            <if test="attachmentcount != null">
+                and attachmentcount=#{attachmentcount}
+            </if>
+            <if test="keywords != null">
+                and keywords=#{keywords}
+            </if>
+            <if test="relateinfo != null">
+                and relateinfo=#{relateinfo}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccesstime != null">
+                and lastaccesstime=#{lastaccesstime}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifytime != null">
+                and modifytime=#{modifytime}
+            </if>
+            <if test="expiretime != null">
+                and expiretime=#{expiretime}
+            </if>
+            <if test="poster != null">
+                and poster=#{poster}
+            </if>
+            <if test="author != null">
+                and author=#{author}
+            </if>
+            <if test="posterid != null">
+                and posterid=#{posterid}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="infolevel != null">
+                and infolevel=#{infolevel}
+            </if>
+            <if test="importance != null">
+                and importance=#{importance}
+            </if>
+            <if test="urgency != null">
+                and urgency=#{urgency}
+            </if>
+            <if test="infovalue != null">
+                and infovalue=#{infovalue}
+            </if>
+            <if test="accesstimes != null">
+                and accesstimes=#{accesstimes}
+            </if>
+            <if test="ratetimes != null">
+                and ratetimes=#{ratetimes}
+            </if>
+            <if test="sumrate != null">
+                and sumrate=#{sumrate}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="category != null">
+                and category=#{category}
+            </if>
+            <if test="flagNew != null">
+                and flag_new=#{flagNew}
+            </if>
+            <if test="flagTop != null">
+                and flag_top=#{flagTop}
+            </if>
+            <if test="flagHot != null">
+                and flag_hot=#{flagHot}
+            </if>
+            <if test="channelid != null">
+                and channelid=#{channelid}
+            </if>
+        </trim>
+    </delete>
+</mapper>

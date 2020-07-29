@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.channel.ChannelMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getChannelById" resultType="com.ruoyi.swhysc.bean.Channel">
+        select
+        id as id,
+        name as name,
+        type as type,
+        url as url,
+        status as status,
+        parentid as parentid,
+        description as description,
+        classorder as classorder,
+        imgurl as imgurl,
+        viewurl as viewurl,
+        userid as userid,
+        username as username,
+        modifytime as modifytime
+        from channel
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getChannelListByMap" resultType="com.ruoyi.swhysc.bean.Channel"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        name as name,
+        type as type,
+        url as url,
+        status as status,
+        parentid as parentid,
+        description as description,
+        classorder as classorder,
+        imgurl as imgurl,
+        viewurl as viewurl,
+        userid as userid,
+        username as username,
+        modifytime as modifytime
+        from channel
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="name != null">
+                and name=#{name}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="url != null">
+                and url=#{url}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="parentid != null">
+                and parentid=#{parentid}
+            </if>
+            <if test="description != null">
+                and description=#{description}
+            </if>
+            <if test="classorder != null">
+                and classorder=#{classorder}
+            </if>
+            <if test="imgurl != null">
+                and imgurl=#{imgurl}
+            </if>
+            <if test="viewurl != null">
+                and viewurl=#{viewurl}
+            </if>
+            <if test="userid != null">
+                and userid=#{userid}
+            </if>
+            <if test="username != null">
+                and username=#{username}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getChannelCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from channel
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="name != null">
+                and name=#{name}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="url != null">
+                and url=#{url}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="parentid != null">
+                and parentid=#{parentid}
+            </if>
+            <if test="description != null">
+                and description=#{description}
+            </if>
+            <if test="classorder != null">
+                and classorder=#{classorder}
+            </if>
+            <if test="imgurl != null">
+                and imgurl=#{imgurl}
+            </if>
+            <if test="viewurl != null">
+                and viewurl=#{viewurl}
+            </if>
+            <if test="userid != null">
+                and userid=#{userid}
+            </if>
+            <if test="username != null">
+                and username=#{username}
+            </if>
+            <if test="modifytime != null">
+                and modifytime=#{modifytime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertChannel" parameterType="com.ruoyi.swhysc.bean.Channel">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_channel.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into channel(
+        id,
+        name,
+        type,
+        url,
+        status,
+        parentid,
+        description,
+        classorder,
+        imgurl,
+        viewurl,
+        userid,
+        username,
+        modifytime)
+        values(
+        #{id},
+        #{name},
+        #{type},
+        #{url},
+        #{status},
+        #{parentid},
+        #{description},
+        #{classorder},
+        #{imgurl},
+        #{viewurl},
+        #{userid},
+        #{username},
+        #{modifytime})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateChannel" parameterType="com.ruoyi.swhysc.bean.Channel">
+        update channel
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">
+                name=#{name},
+            </if>
+            <if test="type != null">
+                type=#{type},
+            </if>
+            <if test="url != null">
+                url=#{url},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="parentid != null">
+                parentid=#{parentid},
+            </if>
+            <if test="description != null">
+                description=#{description},
+            </if>
+            <if test="classorder != null">
+                classorder=#{classorder},
+            </if>
+            <if test="imgurl != null">
+                imgurl=#{imgurl},
+            </if>
+            <if test="viewurl != null">
+                viewurl=#{viewurl},
+            </if>
+            <if test="userid != null">
+                userid=#{userid},
+            </if>
+            <if test="username != null">
+                username=#{username},
+            </if>
+            <if test="modifytime != null">
+                modifytime=#{modifytime}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteChannelByMap" parameterType="java.util.Map">
+        delete from channel
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="name != null">
+                and name=#{name}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="url != null">
+                and url=#{url}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="parentid != null">
+                and parentid=#{parentid}
+            </if>
+            <if test="description != null">
+                and description=#{description}
+            </if>
+            <if test="classorder != null">
+                and classorder=#{classorder}
+            </if>
+            <if test="imgurl != null">
+                and imgurl=#{imgurl}
+            </if>
+            <if test="viewurl != null">
+                and viewurl=#{viewurl}
+            </if>
+            <if test="userid != null">
+                and userid=#{userid}
+            </if>
+            <if test="username != null">
+                and username=#{username}
+            </if>
+        </trim>
+    </delete>
+</mapper>

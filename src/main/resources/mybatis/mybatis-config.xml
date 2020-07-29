@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="cacheEnabled" value="true"/>  <!-- 全局映射器启用缓存 -->
+        <setting name="useGeneratedKeys" value="false"/>  <!-- 允许 JDBC 支持自动生成主键 -->
+        <setting name="defaultExecutorType" value="REUSE"/> <!-- 配置默认的执行器 -->
+        <setting name="logImpl" value="SLF4J"/> <!-- 指定 MyBatis 所用日志的具体实现 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>  <!--驼峰式命名 -->
+        <!-- 开启resultMap从数据库到实体类的自动映射，但是出现相同字段还是需要手动指定避免歧义 -->
+        <setting name="autoMappingBehavior" value="FULL"/>
+    </settings>
+    <!-- 给pojo类的对象取个别名 -->
+    <!--    <typeAliases>-->
+    <!--        <package name="com.ruoyi.project.*"/>-->
+    <!--    </typeAliases>-->
+</configuration>

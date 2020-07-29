@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.menu.SMenuMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getMenuById" resultType="com.ruoyi.swhysc.bean.Menu">
+        select
+        id as id,
+        title as title,
+        path as path,
+        parent as parent,
+        status as status,
+        createtime as createtime,
+        lastaccessname as lastaccessname,
+        originaltime as originaltime,
+        modifyname as modifyname,
+        auditname as auditname
+        from menu
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getMenuListByMap" resultType="com.ruoyi.swhysc.bean.Menu"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        title as title,
+        path as path,
+        parent as parent,
+        status as status,
+        createtime as createtime,
+        lastaccessname as lastaccessname,
+        originaltime as originaltime,
+        modifyname as modifyname,
+        auditname as auditname
+        from menu
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="parent != null">
+                and parent=#{parent}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccessname != null">
+                and lastaccessname=#{lastaccessname}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifyname != null">
+                and modifyname=#{modifyname}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getMenuCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from menu
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="parent != null">
+                and parent=#{parent}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccessname != null">
+                and lastaccessname=#{lastaccessname}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifyname != null">
+                and modifyname=#{modifyname}
+            </if>
+            <if test="auditname != null">
+                and auditname=#{auditname}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertMenu" parameterType="com.ruoyi.swhysc.bean.Menu"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_menu.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into menu(
+        title,
+        path,
+        parent,
+        status,
+        createtime,
+        lastaccessname,
+        originaltime,
+        modifyname,
+        auditname)
+        values(
+        #{title},
+        #{path},
+        #{parent},
+        #{status},
+        #{createtime},
+        #{lastaccessname},
+        #{originaltime},
+        #{modifyname},
+        #{auditname})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateMenu" parameterType="com.ruoyi.swhysc.bean.Menu">
+        update menu
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null">
+                title=#{title},
+            </if>
+            <if test="path != null">
+                path=#{path},
+            </if>
+            <if test="parent != null">
+                parent=#{parent},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="createtime != null">
+                createtime=#{createtime},
+            </if>
+            <if test="lastaccessname != null">
+                lastaccessname=#{lastaccessname},
+            </if>
+            <if test="originaltime != null">
+                originaltime=#{originaltime},
+            </if>
+            <if test="modifyname != null">
+                modifyname=#{modifyname},
+            </if>
+            <if test="auditname != null">
+                auditname=#{auditname}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteMenuByMap" parameterType="java.util.Map">
+        delete from menu
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="parent != null">
+                and parent=#{parent}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="createtime != null">
+                and createtime=#{createtime}
+            </if>
+            <if test="lastaccessname != null">
+                and lastaccessname=#{lastaccessname}
+            </if>
+            <if test="originaltime != null">
+                and originaltime=#{originaltime}
+            </if>
+            <if test="modifyname != null">
+                and modifyname=#{modifyname}
+            </if>
+        </trim>
+    </delete>
+</mapper>
