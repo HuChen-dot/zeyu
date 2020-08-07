@@ -2,15 +2,25 @@ package com.ruoyi.common.constant;
 
 /**
  * 返回状态码
- * 
+ *
  * @author ruoyi
  */
-public interface HttpStatus
-{
+public interface HttpStatus {
     /**
      * 操作成功
      */
-    public static final int SUCCESS = 200;
+    public static final int SUCCESS = 0;
+
+    /**
+     * 系统内部错误
+     */
+    public static final int ERROR = -1;
+
+    /**
+     * 参数列表错误（缺少，格式不匹配）
+     */
+    public static final int BAD_REQUEST = -2;
+
 
     /**
      * 对象创建成功
@@ -42,10 +52,7 @@ public interface HttpStatus
      */
     public static final int NOT_MODIFIED = 304;
 
-    /**
-     * 参数列表错误（缺少，格式不匹配）
-     */
-    public static final int BAD_REQUEST = 400;
+
 
     /**
      * 未授权
@@ -77,10 +84,7 @@ public interface HttpStatus
      */
     public static final int UNSUPPORTED_TYPE = 415;
 
-    /**
-     * 系统内部错误
-     */
-    public static final int ERROR = 500;
+
 
     /**
      * 接口未实现

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.dao.AdSpaceMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getAdSpaceById" resultType="com.ruoyi.swhysc.bean.AdSpace">
+        select
+        id as id,
+        AD_NAME as adName,
+        PARENT_ID as parentId,
+        status as status,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        IMAGE_SIZES as imageSizes
+        from ad_space
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getAdSpaceListByMap" resultType="com.ruoyi.swhysc.bean.AdSpace"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        AD_NAME as adName,
+        PARENT_ID as parentId,
+        status as status,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        IMAGE_SIZES as imageSizes
+        from ad_space
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="adName != null">
+                and AD_NAME=#{adName}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID=#{parentId}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="imageSizes != null">
+                and IMAGE_SIZES=#{imageSizes}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getAdSpaceCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from ad_space
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="adName != null">
+                and AD_NAME=#{adName}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID=#{parentId}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+            <if test="imageSizes != null">
+                and IMAGE_SIZES=#{imageSizes}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertAdSpace" parameterType="com.ruoyi.swhysc.bean.AdSpace">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_ad_space.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into ad_space(
+        id,
+        AD_NAME,
+        PARENT_ID,
+        status,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        IMAGE_SIZES
+        )
+        values(
+        #{id},
+        #{adName},
+        #{parentId},
+        #{status},
+        #{creator},
+        #{createTime},
+        #{updater},
+        #{updateTime},
+        #{imageSizes})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateAdSpace" parameterType="com.ruoyi.swhysc.bean.AdSpace">
+        update ad_space
+        <trim prefix="set" suffixOverrides=",">
+            <if test="adName != null">
+                and AD_NAME=#{adName}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID=#{parentId}
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="creator != null">
+                creator=#{creator},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime},
+            </if>
+            <if test="updater != null">
+                updater=#{updater},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="imageSizes != null">
+                IMAGE_SIZES=#{imageSizes}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteAdSpaceByMap" parameterType="java.util.Map">
+        delete from ad_space
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="adName != null">
+                and AD_NAME=#{adName}
+            </if>
+            <if test="parentId != null">
+                and PARENT_ID=#{parentId}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="imageSizes != null">
+                and IMAGE_SIZES=#{imageSizes}
+            </if>
+        </trim>
+    </delete>
+</mapper>

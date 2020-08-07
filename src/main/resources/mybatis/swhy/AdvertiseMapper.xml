@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.dao.AdvertiseMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getAdvertiseById" resultType="com.ruoyi.swhysc.bean.Advertise">
+        select
+        id as id,
+        title as title,
+        parent_id as parentId,
+        content as content,
+        order_no as orderNo,
+        path as path,
+        status as status,
+        img_path as imgPath,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        ICON_PATH as iconPath
+        from advertise
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getAdvertiseListByMap" resultType="com.ruoyi.swhysc.bean.Advertise"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        title as title,
+        parent_id as parentId,
+        content as content,
+        order_no as orderNo,
+        path as path,
+        status as status,
+        img_path as imgPath,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        ICON_PATH as iconPath
+        from advertise
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="parentId != null">
+                and parent_id=#{parentId}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="orderNo != null">
+                and order_no=#{orderNo}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="imgPath != null">
+                and img_path=#{imgPath}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="iconPath != null">
+                and ICON_PATH=#{iconPath}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getAdvertiseCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from advertise
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="parentId != null">
+                and parent_id=#{parentId}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="orderNo != null">
+                and order_no=#{orderNo}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="imgPath != null">
+                and img_path=#{imgPath}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+            <if test="iconPath != null">
+                and ICON_PATH=#{iconPath}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertAdvertise" parameterType="com.ruoyi.swhysc.bean.Advertise"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_advertise.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into advertise(
+        id,
+        title,
+        parent_id,
+        content,
+        order_no,
+        path,
+        status,
+        img_path,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        ICON_PATH)
+        values(
+        #{id},
+        #{title},
+        #{parentId},
+        #{content},
+        #{orderNo},
+        #{path},
+        #{status},
+        #{imgPath},
+        #{creator},
+        #{createTime},
+        #{updater},
+        #{updateTime},
+        #{iconPath})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateAdvertise" parameterType="com.ruoyi.swhysc.bean.Advertise">
+        update advertise
+        <trim prefix="set" suffixOverrides=",">
+            <if test="title != null">
+                title=#{title},
+            </if>
+            <if test="parentId != null">
+                parent_id=#{parentId},
+            </if>
+            <if test="content != null">
+                content=#{content},
+            </if>
+            <if test="orderNo != null">
+                order_no=#{orderNo},
+            </if>
+            <if test="path != null">
+                path=#{path},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="imgPath != null">
+                img_path=#{imgPath},
+            </if>
+            <if test="creator != null">
+                creator=#{creator},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime},
+            </if>
+            <if test="updater != null">
+                updater=#{updater},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="iconPath != null">
+                ICON_PATH=#{iconPath}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteAdvertiseByMap" parameterType="java.util.Map">
+        delete from advertise
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="title != null">
+                and title=#{title}
+            </if>
+            <if test="parentId != null">
+                and parent_id=#{parentId}
+            </if>
+            <if test="content != null">
+                and content=#{content}
+            </if>
+            <if test="orderNo != null">
+                and order_no=#{orderNo}
+            </if>
+            <if test="path != null">
+                and path=#{path}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="imgPath != null">
+                and img_path=#{imgPath}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+        </trim>
+    </delete>
+</mapper>

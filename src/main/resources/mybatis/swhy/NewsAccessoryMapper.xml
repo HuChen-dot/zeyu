@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.dao.NewsAccessoryMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getNewsAccessoryById" resultType="com.ruoyi.swhysc.bean.NewsAccessory">
+        select
+                id as id,
+                news_id as newsId,
+                accessory_path as accessoryPath,
+                accessory_name as accessoryName
+        from news_accessory
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getNewsAccessoryListByMap" resultType="com.ruoyi.swhysc.bean.NewsAccessory"
+            parameterType="java.util.Map">
+        select
+                id as id,
+                news_id as newsId,
+                accessory_path as accessoryPath,
+                accessory_name as accessoryName
+        from news_accessory
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="newsId != null">
+                        and news_id=#{newsId}
+                    </if>
+                    <if test="accessoryPath != null">
+                        and accessory_path=#{accessoryPath}
+                    </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getNewsAccessoryCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from news_accessory
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="newsId != null">
+                        and news_id=#{newsId}
+                    </if>
+                    <if test="accessoryPath != null">
+                        and accessory_path=#{accessoryPath}
+                    </if>
+                    <if test="accessoryName != null">
+                        and accessory_name=#{accessoryName}
+                    </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertNewsAccessory" parameterType="com.ruoyi.swhysc.bean.NewsAccessory">
+            <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+                select seq_news_accessory.nextval as sysId from DUAL
+            </selectKey>
+
+        insert into news_accessory(
+                    id,
+                    news_id,
+                    accessory_path,
+                    accessory_name)
+        values(
+                    #{id},
+                    #{newsId},
+                    #{accessoryPath},
+                    #{accessoryName})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateNewsAccessory" parameterType="com.ruoyi.swhysc.bean.NewsAccessory">
+        update news_accessory
+        <trim prefix="set" suffixOverrides=",">
+                        <if test="newsId != null">
+                            news_id=#{newsId},
+                        </if>
+                        <if test="accessoryPath != null">
+                            accessory_path=#{accessoryPath},
+                        </if>
+                        <if test="accessoryName != null">
+                            accessory_name=#{accessoryName}
+                        </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteNewsAccessoryByMap" parameterType="java.util.Map">
+        delete from news_accessory
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="newsId != null">
+                        and news_id=#{newsId}
+                    </if>
+                    <if test="accessoryPath != null">
+                        and accessory_path=#{accessoryPath}
+                    </if>
+        </trim>
+    </delete>
+</mapper>

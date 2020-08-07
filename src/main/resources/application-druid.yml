@@ -6,8 +6,8 @@ spring:
         druid:
             # 主库数据源
             master:
-                url: jdbc:oracle:thin:@127.0.0.1:1521/orcl
-                username: root
+                url: jdbc:oracle:thin:@192.168.27.47:1521/helowin
+                username: swhysc_manage
                 password: password
             # 从库数据源
             slave:

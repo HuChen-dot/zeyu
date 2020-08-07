@@ -2,16 +2,16 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" :inline="true" label-width="68px">
 #foreach($column in $columns)
-#if($column.query)
-#set($dictType=$column.dictType)
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#if($column.htmlType == "input")
+    #if($column.query)
+        #set($dictType=$column.dictType)
+        #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+            #set($comment=$column.columnComment)
+        #end
+        #if($column.htmlType == "input")
       <el-form-item label="${comment}" prop="${column.javaField}">
         <el-input
           v-model="queryParams.${column.javaField}"
@@ -48,7 +48,7 @@
         </el-date-picker>
       </el-form-item>
 #end
-#end
+    #end
 #end
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -100,14 +100,14 @@
     <el-table v-loading="loading" :data="${businessName}List" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
 #foreach($column in $columns)
-#set($javaField=$column.javaField)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#if($column.pk)
+    #set($javaField=$column.javaField)
+    #set($parentheseIndex=$column.columnComment.indexOf("（"))
+    #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+    #else
+        #set($comment=$column.columnComment)
+    #end
+    #if($column.pk)
       <el-table-column label="${comment}" align="center" prop="${javaField}" />
 #elseif($column.list && $column.htmlType == "datetime")
       <el-table-column label="${comment}" align="center" prop="${javaField}" width="180">
@@ -153,17 +153,17 @@
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 #foreach($column in $columns)
-#set($field=$column.javaField)
-#if($column.insert && !$column.pk)
-#if(($column.usableColumn) || (!$column.superColumn))
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#set($dictType=$column.dictType)
-#if($column.htmlType == "input")
+    #set($field=$column.javaField)
+    #if($column.insert && !$column.pk)
+        #if(($column.usableColumn) || (!$column.superColumn))
+            #set($parentheseIndex=$column.columnComment.indexOf("（"))
+            #if($parentheseIndex != -1)
+                #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+            #else
+                #set($comment=$column.columnComment)
+            #end
+            #set($dictType=$column.dictType)
+            #if($column.htmlType == "input")
         <el-form-item label="${comment}" prop="${field}">
           <el-input v-model="form.${field}" placeholder="请输入${comment}" />
         </el-form-item>
@@ -174,7 +174,8 @@
               v-for="dict in ${field}Options"
               :key="dict.dictValue"
               :label="dict.dictLabel"
-              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.dictValue)"#else:value="dict.dictValue"#end
+              #if($column.javaType == "Integer" || $column.javaType ==
+                "Long"):value="parseInt(dict.dictValue)"#else:value="dict.dictValue"#end
 
             ></el-option>
           </el-select>
@@ -191,7 +192,8 @@
             <el-radio
               v-for="dict in ${field}Options"
               :key="dict.dictValue"
-              #if($column.javaType == "Integer" || $column.javaType == "Long"):label="parseInt(dict.dictValue)"#else:label="dict.dictValue"#end
+              #if($column.javaType == "Integer" || $column.javaType ==
+                "Long"):label="parseInt(dict.dictValue)"#else:label="dict.dictValue"#end
 
             >{{dict.dictLabel}}</el-radio>
           </el-radio-group>
@@ -216,8 +218,8 @@
           <el-input v-model="form.${field}" type="textarea" placeholder="请输入内容" />
         </el-form-item>
 #end
-#end
-#end
+        #end
+    #end
 #end
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -252,15 +254,15 @@ export default {
       // 是否显示弹出层
       open: false,
 #foreach ($column in $columns)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#if(${column.dictType} != '')
+    #set($parentheseIndex=$column.columnComment.indexOf("（"))
+    #if($parentheseIndex != -1)
+        #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+    #else
+        #set($comment=$column.columnComment)
+    #end
+    #if(${column.dictType} != '')
       // $comment字典
-      ${column.javaField}Options: [],
+        ${column.javaField}Options: [],
 #end
 #end
       // 查询参数
@@ -268,10 +270,10 @@ export default {
         pageNum: 1,
         pageSize: 10,
 #foreach ($column in $columns)
-#if($column.query)
+    #if($column.query)
         $column.javaField: undefined#if($velocityCount != $columns.size()),#end
 
-#end
+    #end
 #end
       },
       // 表单参数
@@ -279,19 +281,19 @@ export default {
       // 表单校验
       rules: {
 #foreach ($column in $columns)
-#if($column.required)
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
-#set($comment=$column.columnComment)
+    #if($column.required)
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+            #set($comment=$column.columnComment)
+        #end
+        #set($comment=$column.columnComment)
         $column.javaField: [
           { required: true, message: "$comment不能为空", trigger: "blur" }
         ]#if($velocityCount != $columns.size()),#end
 
-#end
+    #end
 #end
       }
     };
@@ -299,7 +301,7 @@ export default {
   created() {
     this.getList();
 #foreach ($column in $columns)
-#if(${column.dictType} != '')
+    #if(${column.dictType} != '')
     this.getDicts("${column.dictType}").then(response => {
       this.${column.javaField}Options = response.data;
     });
@@ -317,15 +319,15 @@ export default {
       });
     },
 #foreach ($column in $columns)
-#if(${column.dictType} != '')
-#set($parentheseIndex=$column.columnComment.indexOf("（"))
-#if($parentheseIndex != -1)
-#set($comment=$column.columnComment.substring(0, $parentheseIndex))
-#else
-#set($comment=$column.columnComment)
-#end
+    #if(${column.dictType} != '')
+        #set($parentheseIndex=$column.columnComment.indexOf("（"))
+        #if($parentheseIndex != -1)
+            #set($comment=$column.columnComment.substring(0, $parentheseIndex))
+        #else
+            #set($comment=$column.columnComment)
+        #end
     // $comment字典翻译
-    ${column.javaField}Format(row, column) {
+        ${column.javaField}Format(row, column) {
       return this.selectDictLabel(this.${column.javaField}Options, row.${column.javaField});
     },
 #end
@@ -339,13 +341,13 @@ export default {
     reset() {
       this.form = {
 #foreach ($column in $columns)
-#if($column.htmlType == "radio")
+    #if($column.htmlType == "radio")
         $column.javaField: "0"#if($velocityCount != $columns.size()),#end
 
-#else
+    #else
         $column.javaField: undefined#if($velocityCount != $columns.size()),#end
 
-#end
+    #end
 #end
       };
       this.resetForm("form");
