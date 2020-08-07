@@ -1,6 +1,7 @@
 package com.ruoyi.common.core.lang;
 
-import com.ruoyi.common.exception.UtilException;
+
+import com.sun.xml.internal.ws.util.UtilException;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
