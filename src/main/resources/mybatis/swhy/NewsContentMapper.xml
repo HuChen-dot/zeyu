@@ -2,18 +2,18 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.swhysc.mapper.dao.NewsContentMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.NewsContentMapper">
 
     <!-- 根据id查询；返回单个对象 -->
-    <select id="getNewsContentById" resultType="com.ruoyi.swhysc.bean.NewsContent">
+    <select id="getNewsContentById" resultType="com.rewin.swhysc.bean.NewsContent">
         select
-                id as id,
-                news_id as newsId,
-                news_content as newsContent,
-                type as type,
-                source as source,
-                notice_title as noticeTitle,
-                author as author
+        id as id,
+        news_id as newsId,
+        news_content as newsContent,
+        type as type,
+        source as source,
+        notice_title as noticeTitle,
+        author as author
         from news_content
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -22,37 +22,55 @@
         </trim>
     </select>
 
-    <!-- 根据条件查询；返回多个对象-->
-    <select id="getNewsContentListByMap" resultType="com.ruoyi.swhysc.bean.NewsContent"
-            parameterType="java.util.Map">
+    <!-- 根据新闻id查询；返回单个对象 -->
+    <select id="getNewsContentBynewsId" resultType="com.rewin.swhysc.bean.NewsContent">
         select
-                id as id,
-                news_id as newsId,
-                news_content as newsContent,
-                type as type,
-                source as source,
-                notice_title as noticeTitle,
-                author as author
+        id as id,
+        news_id as newsId,
+        news_content as newsContent,
+        type as type,
+        source as source,
+        notice_title as noticeTitle,
+        author as author
         from news_content
         <trim prefix="where" prefixOverrides="and | or">
-                    <if test="id != null">
-                        and id=#{id}
-                    </if>
-                    <if test="newsId != null">
-                        and news_id=#{newsId}
-                    </if>
-                    <if test="newsContent != null">
-                        and news_content=#{newsContent}
-                    </if>
-                    <if test="type != null">
-                        and type=#{type}
-                    </if>
-                    <if test="source != null">
-                        and source=#{source}
-                    </if>
-                    <if test="noticeTitle != null">
-                        and notice_title=#{noticeTitle}
-                    </if>
+            <if test="newsId != null">
+                and news_id=#{newsId}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getNewsContentListByMap" resultType="com.rewin.swhysc.bean.NewsContent"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        news_id as newsId,
+        news_content as newsContent,
+        type as type,
+        source as source,
+        notice_title as noticeTitle,
+        author as author
+        from news_content
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="newsId != null">
+                and news_id=#{newsId}
+            </if>
+            <if test="newsContent != null">
+                and news_content=#{newsContent}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="noticeTitle != null">
+                and notice_title=#{noticeTitle}
+            </if>
         </trim>
     </select>
 
@@ -61,104 +79,101 @@
     <select id="getNewsContentCountByMap" resultType="integer" parameterType="java.util.Map">
         select count(*) from news_content
         <trim prefix="where" prefixOverrides="and | or">
-                    <if test="id != null">
-                        and id=#{id}
-                    </if>
-                    <if test="newsId != null">
-                        and news_id=#{newsId}
-                    </if>
-                    <if test="newsContent != null">
-                        and news_content=#{newsContent}
-                    </if>
-                    <if test="type != null">
-                        and type=#{type}
-                    </if>
-                    <if test="source != null">
-                        and source=#{source}
-                    </if>
-                    <if test="noticeTitle != null">
-                        and notice_title=#{noticeTitle}
-                    </if>
-                    <if test="author != null">
-                        and author=#{author}
-                    </if>
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="newsId != null">
+                and news_id=#{newsId}
+            </if>
+            <if test="newsContent != null">
+                and news_content=#{newsContent}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="noticeTitle != null">
+                and notice_title=#{noticeTitle}
+            </if>
+            <if test="author != null">
+                and author=#{author}
+            </if>
         </trim>
     </select>
 
     <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
-    <insert id="insertNewsContent" parameterType="com.ruoyi.swhysc.bean.NewsContent">
+    <insert id="insertNewsContent" parameterType="com.rewin.swhysc.bean.NewsContent">
 
-            <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
-                select seq_news_content.nextval as sysId from DUAL
-            </selectKey>
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_news_content.nextval as sysId from DUAL
+        </selectKey>
 
         insert into news_content(
-                    id,
-                    news_id,
-                    news_content,
-                    type,
-                    source,
-                    notice_title,
-                    author)
+        id,
+        news_id,
+        news_content,
+        type,
+        source,
+        notice_title,
+        author)
         values(
-                    #{id},
-                    #{newsId},
-                    #{newsContent},
-                    #{type},
-                    #{source},
-                    #{noticeTitle},
-                    #{author})
+        #{id},
+        #{newsId},
+        #{newsContent},
+        #{type},
+        #{source},
+        #{noticeTitle},
+        #{author})
     </insert>
 
 
     <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
-    <update id="updateNewsContent" parameterType="com.ruoyi.swhysc.bean.NewsContent">
+    <update id="updateNewsContent" parameterType="com.rewin.swhysc.bean.NewsContent">
         update news_content
         <trim prefix="set" suffixOverrides=",">
-                        <if test="newsId != null">
-                            news_id=#{newsId},
-                        </if>
-                        <if test="newsContent != null">
-                            news_content=#{newsContent},
-                        </if>
-                        <if test="type != null">
-                            type=#{type},
-                        </if>
-                        <if test="source != null">
-                            source=#{source},
-                        </if>
-                        <if test="noticeTitle != null">
-                            notice_title=#{noticeTitle},
-                        </if>
-                        <if test="author != null">
-                            author=#{author}
-                        </if>
+            <if test="newsContent != null">
+                news_content=#{newsContent},
+            </if>
+            <if test="type != null">
+                type=#{type},
+            </if>
+            <if test="source != null">
+                source=#{source},
+            </if>
+            <if test="noticeTitle != null">
+                notice_title=#{noticeTitle},
+            </if>
+            <if test="author != null">
+                author=#{author}
+            </if>
         </trim>
-        where id = #{id}
+        where news_id=#{newsId}
     </update>
 
     <!--  删除： 根据map删除对象；返回影响的行数-->
     <delete id="deleteNewsContentByMap" parameterType="java.util.Map">
         delete from news_content
         <trim prefix="where" prefixOverrides="and | or">
-                    <if test="id != null">
-                        and id=#{id}
-                    </if>
-                    <if test="newsId != null">
-                        and news_id=#{newsId}
-                    </if>
-                    <if test="newsContent != null">
-                        and news_content=#{newsContent}
-                    </if>
-                    <if test="type != null">
-                        and type=#{type}
-                    </if>
-                    <if test="source != null">
-                        and source=#{source}
-                    </if>
-                    <if test="noticeTitle != null">
-                        and notice_title=#{noticeTitle}
-                    </if>
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="newsId != null">
+                and news_id=#{newsId}
+            </if>
+            <if test="newsContent != null">
+                and news_content=#{newsContent}
+            </if>
+            <if test="type != null">
+                and type=#{type}
+            </if>
+            <if test="source != null">
+                and source=#{source}
+            </if>
+            <if test="noticeTitle != null">
+                and notice_title=#{noticeTitle}
+            </if>
         </trim>
     </delete>
 </mapper>

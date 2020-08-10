@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.swhysc.mapper.dao.AdvertiseMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.AdvertiseMapper">
 
     <!-- 根据id查询；返回单个对象 -->
-    <select id="getAdvertiseById" resultType="com.ruoyi.swhysc.bean.Advertise">
+    <select id="getAdvertiseById" resultType="com.rewin.swhysc.bean.Advertise">
         select
         id as id,
         title as title,
@@ -29,7 +29,7 @@
     </select>
 
     <!-- 根据条件查询；返回多个对象-->
-    <select id="getAdvertiseListByMap" resultType="com.ruoyi.swhysc.bean.Advertise"
+    <select id="getAdvertiseListByMap" resultType="com.rewin.swhysc.bean.Advertise"
             parameterType="java.util.Map">
         select
         id as id,
@@ -134,7 +134,7 @@
     </select>
 
     <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
-    <insert id="insertAdvertise" parameterType="com.ruoyi.swhysc.bean.Advertise"
+    <insert id="insertAdvertise" parameterType="com.rewin.swhysc.bean.Advertise"
     >
 
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
@@ -173,7 +173,7 @@
 
 
     <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
-    <update id="updateAdvertise" parameterType="com.ruoyi.swhysc.bean.Advertise">
+    <update id="updateAdvertise" parameterType="com.rewin.swhysc.bean.Advertise">
         update advertise
         <trim prefix="set" suffixOverrides=",">
             <if test="title != null">

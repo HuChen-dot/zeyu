@@ -15,6 +15,6 @@
     </settings>
     <!-- 给pojo类的对象取个别名 -->
     <!--    <typeAliases>-->
-    <!--        <package name="com.ruoyi.project.*"/>-->
+    <!--        <package name="com.rewin.swhysc.project.*"/>-->
     <!--    </typeAliases>-->
 </configuration>
