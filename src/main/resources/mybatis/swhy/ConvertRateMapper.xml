@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.swhysc.mapper.dao.ConvertRateMapper">
+
+    <select id="getConverRateList" resultType="com.ruoyi.swhysc.bean.ConvertRate"
+            parameterType="java.util.Map">
+        select
+        ID as id,
+        STOCK_CODE as stockCode,
+        STOCK_NAME as stockName,
+        RATE as rate,
+        BOURSE_CODE as bourseCode,
+        CREATE_DATE as createDate,
+        UPDATE_DATE as updateDate,
+        INFO_TYPE as infoType,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state
+        from RZRQ_CONVERT_RATE
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{ID}
+            </if>
+            <if test="stockCode != null">
+                and STOCK_CODE=#{stockCode}
+            </if>
+            <if test="stockName != null">
+                and STOCK_NAME=#{stockName}
+            </if>
+            <if test="updateDate1 != null">
+                and to_char(UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{updateDate1}
+            </if>
+            <if test="updateDate2 != null">
+                and to_char(UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{updateDate2}
+            </if>
+            and STATE = '0'
+        </trim>
+    </select>
+
+
+    <select id="getConverRateInfo" resultType="com.ruoyi.swhysc.bean.ConvertRate">
+        select
+        ID as id,
+        STOCK_CODE as stockCode,
+        STOCK_NAME as stockName,
+        RATE as rate,
+        BOURSE_CODE as bourseCode,
+        CREATE_DATE as createDate,
+        UPDATE_DATE as updateDate,
+        INFO_TYPE as infoType,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state
+        from RZRQ_CONVERT_RATE
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{ID}
+            </if>
+            and STATE = '0'
+        </trim>
+    </select>
+
+
+    <insert id="insertConverRate" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select SEQ_RZRQ_CONVERT_RATE.nextval as sysId from DUAL
+        </selectKey>
+        insert into RZRQ_CONVERT_RATE(
+        ID,
+        STOCK_CODE,
+        STOCK_NAME,
+        RATE,
+        BOURSE_CODE,
+        CREATE_DATE,
+        UPDATE_DATE,
+        INFO_TYPE,
+        CREATE_USER,
+        UPDATE_USER,
+        STATE
+        )
+        values(
+        #{id},
+        #{stockCode},
+        #{stockName},
+        #{rate},
+        #{bourseCode},
+        #{createDate},
+        #{updateDate},
+        #{infoType},
+        #{createUser}),
+        #{updateUser},
+        #{state})
+    </insert>
+
+    <update id="updateConvertRate" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+        update RZRQ_CONVERT_RATE
+        <trim prefix="set" suffixOverrides=",">
+            <if test="stockCode != null">
+                and STOCK_CODE=#{stockCode}
+            </if>
+            <if test="stockName != null">
+                and STOCK_NAME=#{stockName}
+            </if>
+            <if test="rate != null">
+                RATE=#{rate},
+            </if>
+            <if test="bourseCode != null">
+                BOURSE_CODE=#{bourseCode},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE=#{updateDate},
+            </if>
+            <if test="infoType != null">
+                INFO_TYPE=#{infoType},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER=#{updateUser},
+            </if>
+            <if test="state != null">
+                STATE=#{state},
+            </if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+    <update id="deleteConverRateAll" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+        update RZRQ_CONVERT_RATE SET STATE='1'
+    </update>
+
+</mapper>
