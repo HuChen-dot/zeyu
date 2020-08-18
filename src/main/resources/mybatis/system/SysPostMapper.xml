@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.system.mapper.SysPostMapper">
+<mapper namespace="com.rewin.swhysc.project.system.mapper.SysPostMapper">
 
-    <resultMap type="com.ruoyi.project.system.domain.SysPost" id="SysPostResult">
+    <resultMap type="com.rewin.swhysc.project.system.domain.SysPost" id="SysPostResult">
         <id property="postId" column="post_id"/>
         <result property="postCode" column="post_code"/>
         <result property="postName" column="post_name"/>
@@ -22,7 +22,7 @@
         from sys_post
     </sql>
 
-    <select id="selectPostList" parameterType="com.ruoyi.project.system.domain.SysPost" resultMap="SysPostResult">
+    <select id="selectPostList" parameterType="com.rewin.swhysc.project.system.domain.SysPost" resultMap="SysPostResult">
         <include refid="selectPostVo"/>
         <where>
             <if test="postCode != null and postCode != ''">
@@ -72,7 +72,7 @@
         where post_code=#{postCode}
     </select>
 
-    <update id="updatePost" parameterType="com.ruoyi.project.system.domain.SysPost">
+    <update id="updatePost" parameterType="com.rewin.swhysc.project.system.domain.SysPost">
         update sys_post
         <set>
             <if test="postCode != null and postCode != ''">post_code = #{postCode},</if>
@@ -86,7 +86,7 @@
         where post_id = #{postId}
     </update>
 
-    <insert id="insertPost" parameterType="com.ruoyi.project.system.domain.SysPost" useGeneratedKeys="true"
+    <insert id="insertPost" parameterType="com.rewin.swhysc.project.system.domain.SysPost" useGeneratedKeys="true"
             keyProperty="postId">
         <selectKey keyProperty="postId" order="BEFORE" resultType="Long">
             select seq_sys_post.nextval as postId from DUAL

@@ -2,10 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.swhysc.mapper.dao.AdSpaceMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.AdSpaceMapper">
 
     <!-- 根据id查询；返回单个对象 -->
-    <select id="getAdSpaceById" resultType="com.ruoyi.swhysc.bean.AdSpace">
+    <select id="getAdSpaceById" resultType="com.rewin.swhysc.bean.AdSpace">
         select
         id as id,
         AD_NAME as adName,
@@ -25,7 +25,7 @@
     </select>
 
     <!-- 根据条件查询；返回多个对象-->
-    <select id="getAdSpaceListByMap" resultType="com.ruoyi.swhysc.bean.AdSpace"
+    <select id="getAdSpaceListByMap" resultType="com.rewin.swhysc.bean.AdSpace"
             parameterType="java.util.Map">
         select
         id as id,
@@ -102,7 +102,7 @@
     </select>
 
     <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
-    <insert id="insertAdSpace" parameterType="com.ruoyi.swhysc.bean.AdSpace">
+    <insert id="insertAdSpace" parameterType="com.rewin.swhysc.bean.AdSpace">
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
             select seq_ad_space.nextval as sysId from DUAL
         </selectKey>
@@ -132,7 +132,7 @@
 
 
     <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
-    <update id="updateAdSpace" parameterType="com.ruoyi.swhysc.bean.AdSpace">
+    <update id="updateAdSpace" parameterType="com.rewin.swhysc.bean.AdSpace">
         update ad_space
         <trim prefix="set" suffixOverrides=",">
             <if test="adName != null">

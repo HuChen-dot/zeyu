@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.swhysc.mapper.dao.SysDeptMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.SysDeptMapper">
 
-    <resultMap type="com.ruoyi.swhysc.bean.SysDept" id="SysDeptResult">
+    <resultMap type="com.rewin.swhysc.bean.SysDept" id="SysDeptResult">
         <id property="deptId" column="dept_id"/>
         <result property="parentId" column="parent_id"/>
         <result property="ancestors" column="ancestors"/>
@@ -28,7 +28,7 @@
         from sys_dept d
     </sql>
 
-    <select id="selectDeptList" parameterType="com.ruoyi.swhysc.bean.SysDept" resultMap="SysDeptResult">
+    <select id="selectDeptList" parameterType="com.rewin.swhysc.bean.SysDept" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
         where d.del_flag = '0'
         <if test="parentId != null and parentId != 0">
@@ -45,7 +45,7 @@
         order by d.parent_id, d.order_num
     </select>
 
-    <select id="selectDeptListByRoleId" parameterType="java.lang.Long" resultType="Integer">
+    <select id="selectDeptListByRoleId" parameterType="java.lang.Long" resultType="java.lang.Integer">
         select d.dept_id, d.parent_id
         from sys_dept d
         left join sys_role_dept rd on d.dept_id = rd.dept_id
@@ -82,7 +82,7 @@
         where dept_name=#{deptName} and parent_id = #{parentId}
     </select>
 
-    <insert id="insertDept" parameterType="com.ruoyi.swhysc.bean.SysDept">
+    <insert id="insertDept" parameterType="com.rewin.swhysc.bean.SysDept">
         <selectKey keyProperty="deptId" order="BEFORE" resultType="Long">
             select seq_sys_dept.nextval as deptId from DUAL
         </selectKey>
@@ -113,7 +113,7 @@
         )
     </insert>
 
-    <update id="updateDept" parameterType="com.ruoyi.swhysc.bean.SysDept">
+    <update id="updateDept" parameterType="com.rewin.swhysc.bean.SysDept">
         update sys_dept
         <set>
             <if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
@@ -143,7 +143,7 @@
         </foreach>
     </update>
 
-    <update id="updateDeptStatus" parameterType="com.ruoyi.swhysc.bean.SysDept">
+    <update id="updateDeptStatus" parameterType="com.rewin.swhysc.bean.SysDept">
         update sys_dept
         <set>
             <if test="status != null and status != ''">status = #{status},</if>

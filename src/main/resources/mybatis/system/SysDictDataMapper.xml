@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.project.system.mapper.SysDictDataMapper">
+<mapper namespace="com.rewin.swhysc.project.system.mapper.SysDictDataMapper">
 
-    <resultMap type="SysDictData" id="SysDictDataResult">
+    <resultMap type="com.rewin.swhysc.project.system.domain.SysDictData" id="SysDictDataResult">
         <id property="dictCode" column="dict_code"/>
         <result property="dictSort" column="dict_sort"/>
         <result property="dictLabel" column="dict_label"/>
@@ -26,7 +26,8 @@
         from sys_dict_data
     </sql>
 
-    <select id="selectDictDataList" parameterType="SysDictData" resultMap="SysDictDataResult">
+    <select id="selectDictDataList" parameterType="com.rewin.swhysc.project.system.domain.SysDictData"
+            resultMap="SysDictDataResult">
         <include refid="selectDictDataVo"/>
         <where>
             <if test="dictType != null and dictType != ''">
@@ -42,37 +43,38 @@
         order by dict_sort asc
     </select>
 
-    <select id="selectDictDataByType" parameterType="SysDictData" resultMap="SysDictDataResult">
+    <select id="selectDictDataByType" parameterType="com.rewin.swhysc.project.system.domain.SysDictData"
+            resultMap="SysDictDataResult">
         <include refid="selectDictDataVo"/>
         where status = '0' and dict_type = #{dictType} order by dict_sort asc
     </select>
 
-    <select id="selectDictLabel" resultType="String">
+    <select id="selectDictLabel" resultType="java.lang.String">
         select dict_label from sys_dict_data
         where dict_type = #{dictType} and dict_value = #{dictValue}
     </select>
 
-    <select id="selectDictDataById" parameterType="Long" resultMap="SysDictDataResult">
+    <select id="selectDictDataById" parameterType="java.lang.Long" resultMap="SysDictDataResult">
         <include refid="selectDictDataVo"/>
         where dict_code = #{dictCode}
     </select>
 
-    <select id="countDictDataByType" resultType="Integer">
+    <select id="countDictDataByType" resultType="java.lang.Integer">
         select count(1) from sys_dict_data where dict_type=#{dictType}
     </select>
 
-    <delete id="deleteDictDataById" parameterType="Long">
+    <delete id="deleteDictDataById" parameterType="java.lang.Long">
         delete from sys_dict_data where dict_code = #{dictCode}
     </delete>
 
-    <delete id="deleteDictDataByIds" parameterType="Long">
+    <delete id="deleteDictDataByIds" parameterType="java.lang.Long">
         delete from sys_dict_data where dict_code in
         <foreach collection="array" item="dictCode" open="(" separator="," close=")">
             #{dictCode}
         </foreach>
     </delete>
 
-    <update id="updateDictData" parameterType="SysDictData">
+    <update id="updateDictData" parameterType="com.rewin.swhysc.project.system.domain.SysDictData">
         update sys_dict_data
         <set>
             <if test="dictSort != null">dict_sort = #{dictSort},</if>
@@ -90,11 +92,11 @@
         where dict_code = #{dictCode}
     </update>
 
-    <update id="updateDictDataType" parameterType="String">
+    <update id="updateDictDataType" parameterType="java.lang.String">
         update sys_dict_data set dict_type = #{newDictType} where dict_type = #{oldDictType}
     </update>
 
-    <insert id="insertDictData" parameterType="SysDictData">
+    <insert id="insertDictData" parameterType="com.rewin.swhysc.project.system.domain.SysDictData">
         <selectKey keyProperty="dictCode" resultType="long" order="BEFORE">
             SELECT seq_sys_dict_data.NEXTVAL as dictCode FROM DUAL
         </selectKey>
