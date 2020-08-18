@@ -1,16 +1,15 @@
-package com.ruoyi.swhysc.service.impl;
+package com.rewin.swhysc.service.impl;
 
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.swhysc.bean.ConvertRate;
-import com.ruoyi.swhysc.mapper.dao.ConvertRateMapper;
-import com.ruoyi.swhysc.service.ConvertRateService;
-import com.ruoyi.swhysc.util.StringUtils;
+import com.rewin.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
+import com.rewin.swhysc.service.ConvertRateService;
+import com.rewin.swhysc.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

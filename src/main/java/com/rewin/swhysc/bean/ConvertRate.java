@@ -1,4 +1,4 @@
-package com.ruoyi.swhysc.bean.vo;
+package com.rewin.swhysc.bean;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class ConvertRateVo implements Serializable {
+public class ConvertRate implements Serializable {
     private int id;
     private int infoType;
     private String stockCode;

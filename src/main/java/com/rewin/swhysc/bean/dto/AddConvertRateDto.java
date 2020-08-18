@@ -1,4 +1,4 @@
-package com.ruoyi.swhysc.bean.dto;
+package com.rewin.swhysc.bean.dto;
 
 import lombok.Data;
 

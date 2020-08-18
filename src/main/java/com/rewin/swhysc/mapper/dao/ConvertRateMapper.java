@@ -1,6 +1,6 @@
-package com.ruoyi.swhysc.mapper.dao;
+package com.rewin.swhysc.mapper.dao;
 
-import com.ruoyi.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.bean.ConvertRate;
 
 import java.util.List;
 import java.util.Map;

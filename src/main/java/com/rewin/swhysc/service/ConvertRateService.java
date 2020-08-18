@@ -1,10 +1,8 @@
-package com.ruoyi.swhysc.service;
+package com.rewin.swhysc.service;
 
 
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.swhysc.bean.ConvertRate;
-
-import java.sql.Date;
+import com.rewin.swhysc.bean.ConvertRate;
 
 /**
  * 广告位表数据业务层

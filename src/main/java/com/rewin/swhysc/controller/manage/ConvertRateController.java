@@ -1,20 +1,15 @@
-package com.ruoyi.swhysc.controller.manage;
+package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageInfo;
-import com.ruoyi.common.exception.file.InvalidExtensionException;
-import com.ruoyi.swhysc.bean.Advertise;
-import com.ruoyi.swhysc.bean.ConvertRate;
-import com.ruoyi.swhysc.bean.dto.AddAdvertiseDto;
-import com.ruoyi.swhysc.bean.dto.AddConvertRateDto;
-import com.ruoyi.swhysc.bean.vo.AdvertiseVo;
-import com.ruoyi.swhysc.bean.vo.ConvertRateVo;
-import com.ruoyi.swhysc.mapper.dao.ConvertRateMapper;
-import com.ruoyi.swhysc.security.LoginUser;
-import com.ruoyi.swhysc.service.ConvertRateService;
-import com.ruoyi.swhysc.util.AjaxResult;
-import com.ruoyi.swhysc.util.ServletUtils;
-import com.ruoyi.swhysc.util.file.ExcelReader;
-import com.ruoyi.swhysc.util.file.FileUploadUtils;
+
+import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.ServletUtils;
+import com.rewin.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.bean.dto.AddConvertRateDto;
+import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
+import com.rewin.swhysc.service.ConvertRateService;
+import com.rewin.swhysc.util.file.ExcelReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -22,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +33,7 @@ public class ConvertRateController extends BaseController {
     ConvertRateMapper convertRateMapper;
 
     @Resource
-    com.ruoyi.swhysc.security.service.TokenService TokenService;
+    com.rewin.swhysc.security.service.TokenService TokenService;
 
 
     /**

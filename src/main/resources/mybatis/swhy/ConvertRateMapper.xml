@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.swhysc.mapper.dao.ConvertRateMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.ConvertRateMapper">
 
-    <select id="getConverRateList" resultType="com.ruoyi.swhysc.bean.ConvertRate"
+    <select id="getConverRateList" resultType="com.rewin.swhysc.bean.ConvertRate"
             parameterType="java.util.Map">
         select
         ID as id,
@@ -40,7 +40,7 @@
     </select>
 
 
-    <select id="getConverRateInfo" resultType="com.ruoyi.swhysc.bean.ConvertRate">
+    <select id="getConverRateInfo" resultType="com.rewin.swhysc.bean.ConvertRate">
         select
         ID as id,
         STOCK_CODE as stockCode,
@@ -63,7 +63,7 @@
     </select>
 
 
-    <insert id="insertConverRate" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+    <insert id="insertConverRate" parameterType="com.rewin.swhysc.bean.ConvertRate">
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
             select SEQ_RZRQ_CONVERT_RATE.nextval as sysId from DUAL
         </selectKey>
@@ -94,7 +94,7 @@
         #{state})
     </insert>
 
-    <update id="updateConvertRate" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+    <update id="updateConvertRate" parameterType="com.rewin.swhysc.bean.ConvertRate">
         update RZRQ_CONVERT_RATE
         <trim prefix="set" suffixOverrides=",">
             <if test="stockCode != null">
@@ -125,7 +125,7 @@
         where ID = #{id}
     </update>
 
-    <update id="deleteConverRateAll" parameterType="com.ruoyi.swhysc.bean.ConvertRate">
+    <update id="deleteConverRateAll" parameterType="com.rewin.swhysc.bean.ConvertRate">
         update RZRQ_CONVERT_RATE SET STATE='1'
     </update>
 
