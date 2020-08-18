@@ -6,15 +6,22 @@ import com.rewin.swhysc.bean.vo.UpdataNewsVo;
 import com.rewin.swhysc.bean.vo.newsVo;
 import com.rewin.swhysc.service.NewsNoticeService;
 import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 新闻公告控制层
+ */
 @RestController
 @RequestMapping("/swhyscmanage/news")
 public class NewsNoticeController {
@@ -23,23 +30,45 @@ public class NewsNoticeController {
     NewsNoticeService NewsNoticeService;
 
     /**
-     * 查询：根据传入的条件，查询新闻信息
+     * 查询：根据传入的条件，分页查询新闻信息列表
      */
     @GetMapping("list")
-    public AjaxResult getnewsBylist(@RequestBody newsDto newsDto) {
+    public AjaxResult getnewsBylist(newsDto newsDto) {
+        System.err.println("news阐述：" + newsDto);
         Map<String, Object> map = new HashMap<>(4);
+        if (newsDto.getNoticeTypeId() != null && newsDto.getNoticeTypeId() != 0) {
+            map.put("noticeTypeId", newsDto.getNoticeTypeId());
+        }
+        if (newsDto.getStatus() != null && !newsDto.getStatus().equals("0")) {
+            map.put("status", newsDto.getStatus());
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         map.put("noticeTitle", newsDto.getNoticeTitle());
-        map.put("noticeTypeId", newsDto.getNoticeTypeId());
-        map.put("status", newsDto.getStatus());
-        map.put("updateTime", newsDto.getCreateTime());
-        List<newsVo> newsList = null;
+        Date beginTime = null;
+        Date endTime = null;
+        if (newsDto.getBeginTime() != null && newsDto.getEndTime() != null &&
+                newsDto.getBeginTime() != "" && newsDto.getEndTime() != "") {
+            try {
+                beginTime = dateFormat.parse(newsDto.getBeginTime());
+                endTime = dateFormat.parse(newsDto.getEndTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return AjaxResult.error("日期转换异常");
+            }
+            map.put("beginTime", beginTime);
+            map.put("endTime", endTime);
+
+        }
+        map.put("pageNum", newsDto.getPageNum());
+        map.put("pageSize", newsDto.getPageSize());
+        PageInfo<newsVo> info = null;
         try {
-            newsList = NewsNoticeService.getNewsListByMap(map);
+            info = NewsNoticeService.getNewsListByMap(map);
         } catch (Exception e) {
             log.error("查询出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("查询成功", newsList);
+        return AjaxResult.success("查询成功", info);
     }
 
     /**
@@ -65,6 +94,12 @@ public class NewsNoticeController {
      */
     @PostMapping
     public AjaxResult addNews(@RequestBody AddNewsDto AddNewsDto) {
+        System.err.println("添加对象：" + AddNewsDto);
+        AddNewsDto.setType("HTML");
+        AddNewsDto.setNewsContent("测试");
+        AddNewsDto.setAccessoryName("www.");
+        AddNewsDto.setAccessoryPath("www.");
+
         Integer integer = null;
         try {
             integer = NewsNoticeService.AddNewsNotice(AddNewsDto);
@@ -80,6 +115,13 @@ public class NewsNoticeController {
      */
     @PutMapping
     public AjaxResult updataNews(@RequestBody AddNewsDto AddNewsDto) {
+        System.err.println("修改对象：" + AddNewsDto);
+        if (AddNewsDto.getStatus().equals("16")) {
+            return AjaxResult.error("该条新闻已被删除，不能修改");
+        }
+        if (AddNewsDto.getStatus().equals("2")) {
+            return AjaxResult.error("该条新闻已发布，不能修改");
+        }
         Integer integer = null;
         try {
             integer = NewsNoticeService.ModifyNewsNotice(AddNewsDto);

@@ -1,5 +1,6 @@
 package com.rewin.swhysc.controller.manage;
 
+import com.rewin.swhysc.bean.vo.FileName;
 import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.file.FileUploadUtils;
@@ -16,7 +17,7 @@ import java.util.List;
  * 文件上传控制层
  */
 @RestController
-@RequestMapping("/swhyscmanage/upload")
+@RequestMapping("swhyscmanage/file")
 public class FilesUploadController {
     private static final Logger log = LoggerFactory.getLogger(FilesUploadController.class);
 
@@ -25,19 +26,18 @@ public class FilesUploadController {
      */
     @PostMapping
     public AjaxResult uplodeImg(MultipartFile[] file) {
-        List<String> pass = null;
+        System.err.println("文件上传开始***********************");
+        FileName fileName = null;
         try {
-            try {
-                pass = FileUploadUtils.upload(file);
-            } catch (InvalidExtensionException e) {
-                e.printStackTrace();
-                log.error("文件上传失败", e);
-            }
+            fileName = FileUploadUtils.upload(file);
+        } catch (InvalidExtensionException e) {
+            e.printStackTrace();
+            log.error("文件上传失败", e);
         } catch (IOException e) {
             log.error("文件传输失败", e);
             return AjaxResult.error("上传失败");
         }
-        return AjaxResult.success("上传成功", pass);
+        return AjaxResult.success("上传成功", fileName);
     }
 
     /**

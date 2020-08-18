@@ -7,15 +7,14 @@ import com.rewin.swhysc.bean.NewsContent;
 import com.rewin.swhysc.bean.NewsNotice;
 import com.rewin.swhysc.bean.SysDictType;
 import com.rewin.swhysc.bean.dto.AddNewsDto;
-import com.rewin.swhysc.bean.vo.ScNewsDetailsVo;
-import com.rewin.swhysc.bean.vo.ScNewsVo;
-import com.rewin.swhysc.bean.vo.UpdataNewsVo;
-import com.rewin.swhysc.bean.vo.newsVo;
+import com.rewin.swhysc.bean.vo.*;
+import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.mapper.dao.NewsAccessoryMapper;
 import com.rewin.swhysc.mapper.dao.NewsNoticeMapper;
 import com.rewin.swhysc.mapper.dao.SysDictTypeMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.NewsNoticeService;
+import com.rewin.swhysc.util.PropertiesUtil;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,6 +52,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
      * 根据id查询；返回单个对象
      */
     public ScNewsDetailsVo getNewsdetailsById(Integer id) throws Exception {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         //查询新闻表
         NewsNotice newsNoticeById = newsNoticeMapper.getNewsNoticeById(id);
         //查询新闻内容表
@@ -65,9 +66,15 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         //初始化传输对象
         ScNewsDetailsVo ScNewsDetailsVo = new ScNewsDetailsVo();
         ScNewsDetailsVo.setNewsId(id);
-        ScNewsDetailsVo.setUpdateTime(newsNoticeById.getUpdateTime());
+        ScNewsDetailsVo.setUpdateTime(dateFormat.format(newsNoticeById.getUpdateTime()));
         ScNewsDetailsVo.setAccessoryName(newsAccessory.getAccessoryName());
-        ScNewsDetailsVo.setAccessoryPath(newsAccessory.getAccessoryPath());
+        String accessoryPath = newsAccessory.getAccessoryPath();
+        //附件上传地址
+        String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
+        if (accessoryPath != null && accessoryPath != "") {
+            accessoryPath = accessory + "/" + accessoryPath;
+        }
+        ScNewsDetailsVo.setAccessoryPath(accessoryPath);
         ScNewsDetailsVo.setAuthor(NewsContent.getAuthor());
         ScNewsDetailsVo.setNewsContent(NewsContent.getNewsContent());
         ScNewsDetailsVo.setNoticeTitle(NewsContent.getNoticeTitle());
@@ -94,26 +101,36 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("newsId", id);
         NewsAccessory newsAccessory = NewsAccessoryMapper.getNewsAccessoryListByMap(map).get(0);
+        //附件上传地址
+        String accessory = RuoYiConfig.getAccessory();
 
         //复制封装参数
-        UpdataNewsVo.setAccessoryName(newsAccessory.getAccessoryName());
-        UpdataNewsVo.setAccessoryPath(newsAccessory.getAccessoryPath());
+        String[] ccessoryName = newsAccessory.getAccessoryName().split(",");
+        UpdataNewsVo.setAccessoryName(ccessoryName);
+        String[] ccessoryPath = newsAccessory.getAccessoryPath().split(",");
+
+        UpdataNewsVo.setAccessoryPath(ccessoryPath);
         UpdataNewsVo.setAuthor(newsContent.getAuthor());
         UpdataNewsVo.setId(newsNotice.getId());
+        UpdataNewsVo.setStatus(newsNotice.getStatus());
         UpdataNewsVo.setNewsContent(newsContent.getNewsContent());
         UpdataNewsVo.setNoticeTitle(newsNotice.getNoticeTitle());
         UpdataNewsVo.setType(newsContent.getType());
         UpdataNewsVo.setSource(newsContent.getSource());
         UpdataNewsVo.setNoticeTypeId(newsNotice.getNoticeTypeId());
-
+        if (newsNotice.getNoticeTypeId() == 11) {
+            UpdataNewsVo.setNoticeTypeName("公司公告");
+        }
+        if (newsNotice.getNoticeTypeId() == 12) {
+            UpdataNewsVo.setNoticeTypeName("公司新闻");
+        }
         return UpdataNewsVo;
     }
 
     /**
      * 根据条件查询；返回多个对象
      */
-    public List<NewsNotice> getNewsNoticeListByMap(Map
-                                                           <String, Object> param) throws Exception {
+    public List<NewsNotice> getNewsNoticeListByMap(Map<String, Object> param) throws Exception {
         return newsNoticeMapper.getNewsNoticeListByMap(param);
     }
 
@@ -122,30 +139,52 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
      * 根据条件查询新闻公告列表
      */
     @Override
-    public List<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception {
+    public PageInfo<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception {
         List<newsVo> listnews = new ArrayList<>();
-        List<NewsNotice> newsNotices = newsNoticeMapper.queryNewsList(param);
-        SysDictType sysDictTypeById = null;
-        if ((Integer) param.get("noticeTypeId") != 0) {
-            sysDictTypeById = SysDictTypeMapper.getSysDictTypeById((Integer) param.get("noticeTypeId"));
-        }
-        for (NewsNotice newsNotice : newsNotices) {
+
+
+        //设置分页的起始页数和页面容量
+        Page<Object> objects = PageHelper.startPage(
+                param.get("pageNum") == null ? 1 : (Integer) param.get("pageNum"),
+                param.get("pageSize") == null ? 10 : (Integer) param.get("pageSize"));
+        System.err.println("页码：" + param.get("pageNum"));
+        System.err.println("大小：" + param.get("pageSize"));
+        List<NewsNotice> newsNoticeslist = newsNoticeMapper.queryNewsList(param);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        for (NewsNotice newsNotice : newsNoticeslist) {
+            SysDictType sysDictTypeById = SysDictTypeMapper.getSysDictTypeById(newsNotice.getNoticeTypeId());
             newsVo newsVo = new newsVo();
-            if ((Integer) param.get("noticeTypeId") == 0) {
-                SysDictType sysDictTypeById1 = SysDictTypeMapper.getSysDictTypeById(newsNotice.getNoticeTypeId());
-                //设置信息类型名称
-                newsVo.setNoticeTypeName(sysDictTypeById1.getDictName());
-            }
+            //设置信息类型名称
+            newsVo.setNoticeTypeName(sysDictTypeById.getDictName());
             //拷贝字段
             BeanUtils.copyProperties(newsNotice, newsVo);
-            if ((Integer) param.get("noticeTypeId") != 0) {
-                //设置信息类型名称
-                newsVo.setNoticeTypeName(sysDictTypeById.getDictName());
+            if (newsVo.getStatus().equals("1")) {
+                newsVo.setStatus("未提交");
+            } else if (newsVo.getStatus().equals("2")) {
+                newsVo.setStatus("已发布");
+            } else if (newsVo.getStatus().equals("4")) {
+                newsVo.setStatus("审核中");
+            } else if (newsVo.getStatus().equals("8")) {
+                newsVo.setStatus("已下架");
+            } else if (newsVo.getStatus().equals("16")) {
+                newsVo.setStatus("已删除");
+            } else if (newsVo.getStatus().equals("32")) {
+                newsVo.setStatus("驳回");
             }
+            newsVo.setUpdateTime(dateFormat.format(newsNotice.getUpdateTime()));
             listnews.add(newsVo);
         }
-
-        return listnews;
+        //把查询出来分页好的数据放进插件的分页对象中
+        PageInfo<newsVo> info = new PageInfo<newsVo>();
+        info.setPages(objects.getPages());
+        info.setPageNum(objects.getPageNum());
+        info.setPageSize(objects.getPageSize());
+        info.setTotal(objects.getTotal());
+        System.err.println(info.getPageNum());
+        System.err.println(info.getPageSize());
+        info.setData(listnews);
+        return info;
     }
 
 
@@ -164,14 +203,19 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         newsNotice.setNoticeTypeId(AddNewsDto.getNoticeTypeId());
         //判断这次新增是否是存草稿
         if (AddNewsDto.getIsAdd() == 1) {
-            newsNotice.setStatus("4");
-        } else {
             newsNotice.setStatus("1");
+        } else {
+            newsNotice.setStatus("4");
         }
         newsNotice.setCreateTime(new Date());
         newsNotice.setCreator(loginUser.getUsername());
         newsNotice.setUpdateTime(new Date());
         newsNotice.setUpdater(loginUser.getUsername());
+        newsNotice.setOpinion("");
+        newsNotice.setAuditor("");
+
+        newsNotice.setIsStick("是");
+
         newsNoticeMapper.insertNewsNotice(newsNotice);
         //添加新闻内容表
         NewsContent newsContent = new NewsContent();
@@ -181,6 +225,9 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         newsContent.setNoticeTitle(AddNewsDto.getNoticeTitle());
         newsContent.setSource(AddNewsDto.getSource());
         newsContent.setType(AddNewsDto.getType());
+
+        newsContent.setNewsContent("呱呱叫乃是是否打印速度");
+        newsContent.setType("HTML");
         NewsContentMapper.insertNewsContent(newsContent);
         //添加新闻附件表
         NewsAccessory newsAccessory = new NewsAccessory();
@@ -195,6 +242,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
      * 根据id修改：根据传入的参数修改新闻表，新闻内容表，和新闻附件表；返回影响的行数
      */
     public Integer ModifyNewsNotice(AddNewsDto AddNewsDto) throws Exception {
+        Integer integer = null;
         //获取登录当前用户的信息
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         //修改新闻表
@@ -203,7 +251,12 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         newsNotice.setIsStick(AddNewsDto.getIsStick());
         newsNotice.setNoticeTitle(AddNewsDto.getNoticeTitle());
         newsNotice.setNoticeTypeId(AddNewsDto.getNoticeTypeId());
-        newsNotice.setStatus("4");
+        //判断这次新增是否是存草稿
+        if (AddNewsDto.getIsAdd() == 1) {
+            newsNotice.setStatus("1");
+        } else {
+            newsNotice.setStatus("4");
+        }
         newsNotice.setUpdateTime(new Date());
         newsNotice.setUpdater(loginUser.getUsername());
         newsNoticeMapper.updateNewsNotice(newsNotice);
@@ -215,14 +268,16 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         newsContent.setNoticeTitle(AddNewsDto.getNoticeTitle());
         newsContent.setSource(AddNewsDto.getSource());
         newsContent.setType(AddNewsDto.getType());
-        NewsContentMapper.updateNewsContent(newsContent);
+        integer = NewsContentMapper.updateNewsContent(newsContent);
         //修改新闻附件表
-        NewsAccessory newsAccessory = new NewsAccessory();
-        newsAccessory.setNewsId(newsNotice.getId());
-        newsAccessory.setAccessoryName(AddNewsDto.getAccessoryName());
-        newsAccessory.setAccessoryPath(AddNewsDto.getAccessoryPath());
-        Integer integer = NewsAccessoryMapper.updateNewsAccessory(newsAccessory);
-
+        if (AddNewsDto.getAccessoryName() != null && AddNewsDto.getAccessoryPath() != null
+                && AddNewsDto.getAccessoryName() != "" && AddNewsDto.getAccessoryPath() != "") {
+            NewsAccessory newsAccessory = new NewsAccessory();
+            newsAccessory.setNewsId(newsNotice.getId());
+            newsAccessory.setAccessoryName(AddNewsDto.getAccessoryName());
+            newsAccessory.setAccessoryPath(AddNewsDto.getAccessoryPath());
+            integer = NewsAccessoryMapper.updateNewsAccessory(newsAccessory);
+        }
         return integer;
     }
 
@@ -245,9 +300,13 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         Page<Object> objects = PageHelper.startPage(pageNo, pageSize);
         //正常查询数据库，mybatis拦截器已经把原始sql拦截下来做好了分页
         List<NewsNotice> newsNoticeList = newsNoticeMapper.getNewsNoticeListByMap(param);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         for (NewsNotice newsNotice : newsNoticeList) {
             ScNewsVo ScNewsVo = new ScNewsVo();
+
             BeanUtils.copyProperties(newsNotice, ScNewsVo);
+            ScNewsVo.setUpdateTime(dateFormat.format(newsNotice.getUpdateTime()));
+            ;
             list.add(ScNewsVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中

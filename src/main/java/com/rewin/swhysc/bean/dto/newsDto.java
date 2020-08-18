@@ -21,9 +21,34 @@ public class newsDto {
     private Integer noticeTypeId;
     //公告状态（1未提交，2已发布，4审核中，8已下架，16已删除，32驳回）
     private String status;
-    //创建时间
+
+    //开始时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createTime;
+    private String beginTime;
+    //结束时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String endTime;
+    //当前页码
+    private Integer pageNum;
+    //    页面容量
+    private Integer pageSize;
+
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
     public String getNoticeTitle() {
         return noticeTitle;
@@ -49,12 +74,32 @@ public class newsDto {
         this.status = status;
     }
 
-    public Date getCreateTime() {
-        return createTime;
+    public String getBeginTime() {
+        return beginTime;
     }
 
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public void setBeginTime(String beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return "newsDto{" +
+                "noticeTitle='" + noticeTitle + '\'' +
+                ", noticeTypeId=" + noticeTypeId +
+                ", status='" + status + '\'' +
+                ", beginTime='" + beginTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", pageNum=" + pageNum +
+                ", pageSize=" + pageSize +
+                '}';
     }
 }

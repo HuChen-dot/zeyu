@@ -20,6 +20,9 @@ public class AddNewsDto {
     private String noticeTitle;
     //来源
     private String source;
+
+    //状态
+    private String status;
     //作者
     private String author;
     //新闻内容
@@ -34,7 +37,7 @@ public class AddNewsDto {
     //附件名称
     private String accessoryName;
 
-    //用来判断这次添加是存草稿，还是直接新增
+    //用来判断这次添加是存草稿，还是直接新增或修改
     private Integer isAdd;
 
 

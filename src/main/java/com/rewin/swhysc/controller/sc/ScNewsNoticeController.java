@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -27,14 +28,21 @@ public class ScNewsNoticeController {
 
     /**
      * 查询：根据传入的新闻类型id，分页查询新闻公告列表
+     * 页面页码
+     * 页面容量
+     * 默认第一页和10条
      */
     @GetMapping("list")
-    public AjaxResult getnewsBylist(Integer id, Integer pageNo) {
+    public AjaxResult getnewsBylist(Integer id, @RequestParam(value = "pageNo", required = false) Integer pageNo,
+@RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        pageNo = pageNo == null ? 1 : pageNo;
+        pageSize = pageSize == null ? 10 : pageSize;
         Map<String, Object> map = new HashMap<>();
         map.put("noticeTypeId", id);
         PageInfo<ScNewsVo> scNews = null;
+
         try {
-            scNews = NewsNoticeService.queryNewsNoticePageByMap(map, pageNo, 10);
+            scNews = NewsNoticeService.queryNewsNoticePageByMap(map, pageNo, pageSize);
         } catch (Exception e) {
             log.error("查询出错", e);
             return AjaxResult.error("sql错误");

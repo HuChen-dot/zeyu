@@ -26,5 +26,5 @@ public class ScNewsDetailsVo {
     //附件名称
     private String accessoryName;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 }

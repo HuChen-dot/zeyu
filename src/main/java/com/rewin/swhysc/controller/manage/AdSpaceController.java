@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 广告位控制层
+ */
 @RestController
 @RequestMapping("/swhyscmanage/advertise")
 public class AdSpaceController extends BaseController {
@@ -43,6 +46,8 @@ public class AdSpaceController extends BaseController {
      */
     @GetMapping("space/{id}")
     public AjaxResult getAdSpace(@PathVariable Integer id) {
+        id = id == null ? 0 : id;
+        System.err.println(id);
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("parentId", id);
         List<viewOrAdVo> list = new ArrayList<>();
@@ -65,13 +70,42 @@ public class AdSpaceController extends BaseController {
 
 
     /**
+     * 根据广告位id查询该广告位的图片大小
+     */
+    @GetMapping("imgsize/{id}")
+    public AjaxResult getImgSize(@PathVariable Integer id) {
+        id = id == null ? 0 : id;
+        System.err.println(id);
+        Map<String, Object> map = new ConcurrentHashMap<>(1);
+        map.put("id", id);
+        viewOrAdVo viewOrAdVo = null;
+        try {
+            List<AdSpace> adSpaceListByMap = AdSpaceService.getAdSpaceListByMap(map);
+            //开始转换复制数据
+            if (adSpaceListByMap != null) {
+                for (AdSpace adSpace : adSpaceListByMap) {
+                    viewOrAdVo = new viewOrAdVo();
+                    BeanUtils.copyProperties(adSpace, viewOrAdVo);
+                }
+            }
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.success("sql错误");
+        }
+        return AjaxResult.success("查询成功", viewOrAdVo);
+    }
+
+    /**
      * 根据广告位id，分页查询广告信息列表
      */
     @GetMapping("list")
-    public AjaxResult getAdSpaceByPaid(Integer id, Integer pageNo) {
+    public AjaxResult getAdSpaceByPaid(Integer id, Integer pageNum, Integer pageSize) {
+        if (id == null) {
+            return AjaxResult.error("广告位名称不能为空");
+        }
         PageInfo<AdvertiseVo> adSpaceByPaid = null;
         try {
-            adSpaceByPaid = AdSpaceService.getAdSpaceByPaid(id, pageNo, 10);
+            adSpaceByPaid = AdSpaceService.getAdSpaceByPaid(id, pageNum, pageSize);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -102,13 +136,12 @@ public class AdSpaceController extends BaseController {
      */
     @PostMapping()
     public AjaxResult addAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
-
+//        System.err.println("****************************");
+//        System.err.println("添加对象：" + AdverDto);
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
-//        adse.setCreator(loginUser.getUsername());
-        adse.setCreator("陈虎");
-        adse.setUpdater("陈虎");
+        adse.setCreator(loginUser.getUsername());
         adse.setCreateTime(new Date());
         adse.setUpdateTime(new Date());
         try {
@@ -124,13 +157,15 @@ public class AdSpaceController extends BaseController {
     /**
      * 修改广告
      */
-    @PutMapping()
+    @PutMapping
     public AjaxResult updeAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
+//        System.err.println("****************************");
+//        System.err.println("修改对象：" + AdverDto);
+
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
-//        adse.setUpdater(loginUser.getUsername());
-        adse.setUpdater("陈虎");
+        adse.setUpdater(loginUser.getUsername());
         adse.setUpdateTime(new Date());
         try {
             AdvertiseMapper.updateAdvertise(adse);

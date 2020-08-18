@@ -35,7 +35,7 @@ public interface NewsNoticeService {
     /**
      * 根据条件查询新闻公告列表
      */
-    List<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception;
+    PageInfo<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception;
 
     /**
      * 添加：根据传入的参数添加新闻表，新闻内容表，和新闻附件表；返回影响的行数

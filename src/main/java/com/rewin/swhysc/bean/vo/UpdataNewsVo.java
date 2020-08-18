@@ -13,6 +13,8 @@ public class UpdataNewsVo {
     private String noticeTitle;
     //信息类型id
     private Integer noticeTypeId;
+    //信息类型名称ame
+    private String noticeTypeName;
     //作者
     private String author;
     //新闻内容
@@ -21,8 +23,12 @@ public class UpdataNewsVo {
     private String type;
     //来源
     private String source;
+    //状态
+    private String status;
     //附件链接地址
-    private String accessoryPath;
+    private String[] accessoryPath;
     //附件名称
-    private String accessoryName;
+    private String[] accessoryName;
+
+
 }

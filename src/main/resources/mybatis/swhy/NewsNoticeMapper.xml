@@ -74,7 +74,9 @@
                 and updater=#{updater}
             </if>
         </trim>
+        order by is_stick desc,create_time desc
     </select>
+
 
     <!-- 后端：根据传入的条件查询新闻列表-->
     <select id="queryNewsList" resultType="com.rewin.swhysc.bean.NewsNotice"
@@ -103,8 +105,9 @@
             <if test="status != null">
                 and status=#{status}
             </if>
-            <if test="updateTime != null">
-                and update_time=#{updateTime}
+            <if test="beginTime != null">
+                and update_time &gt;=#{beginTime}
+                and update_time &lt;= #{endTime}
             </if>
         </trim>
     </select>

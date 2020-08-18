@@ -1,5 +1,6 @@
 package com.rewin.swhysc.util.file;
 
+import com.rewin.swhysc.bean.vo.FileName;
 import com.rewin.swhysc.common.exception.file.FileNameLengthLimitExceededException;
 import com.rewin.swhysc.common.exception.file.FileSizeLimitExceededException;
 import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
@@ -7,6 +8,7 @@ import com.rewin.swhysc.common.utils.DateUtils;
 import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.util.IdUtils;
 import com.rewin.swhysc.util.Md5Utils;
+import com.rewin.swhysc.util.PropertiesUtil;
 import com.rewin.swhysc.util.StringUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,22 +37,33 @@ public class FileUploadUtils {
     /**
      * 图片上传的地址
      */
-    private static String pictureAddress = RuoYiConfig.getProfile();
+    private static String pictureAddress = RuoYiConfig.profile;
+    /**
+     * 总路径
+     */
+    private static String pictureuploadPath = RuoYiConfig.uploadPath;
 
     /**
      * 附件上传的地址
      */
-    private static String AnnexAddress = RuoYiConfig.getAccessory();
+    private static String AnnexAddress = RuoYiConfig.accessory;
 
     public static String getAnnexAddress() {
-        return AnnexAddress;
+        String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
+        String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
+
+        return uploadPath + accessory;
+//        return AnnexAddress;
     }
 
     private static int counter = 0;
 
 
     public static String getDefaultBaseDir() {
-        return pictureAddress;
+        String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
+        String profile = PropertiesUtil.get("uploadController.properties", "profile");
+        return uploadPath + profile;
+//        return pictureAddress;
     }
 
     /**
@@ -124,37 +137,49 @@ public class FileUploadUtils {
      * @throws IOException                          比如读写文件出错时
      * @throws InvalidExtensionException            文件校验异常
      */
-    public static final List<String> upload(MultipartFile[] filess)
+    public static final FileName upload(MultipartFile[] filess)
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException {
-        List<String> listName = new ArrayList<>();
+        FileName fileName = new FileName();
         for (MultipartFile file : filess) {
 
             int fileNamelength = file.getOriginalFilename().length();
             if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
                 throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
             }
+            /* 获取原始文件名 */
+            String name = file.getOriginalFilename();
+            fileName.setFileSize(file.getSize());
             //文件后缀名
             String extension = getExtension(file);
-            StringBuilder address = new StringBuilder("");
+            //初始化随机文件名变量
+            String randomName = "";
+            StringBuilder address = null;
             if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("png")) {
+                System.err.println("图片上传地址" + getDefaultBaseDir());
                 address = new StringBuilder(getDefaultBaseDir());
+                //生成随机文件名(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
+                randomName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
             } else {
+                System.err.println("附件上传地址" + getAnnexAddress());
                 address = new StringBuilder(getAnnexAddress());
+                //生成随机文件名并附件加上时间目录(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
+                randomName = extractFilename(file);
             }
             assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            File desc = getAbsoluteFile(address.toString(), randomName);
 
-            //生成文件名(生成规则：时间戳+32位随机数+MD5混淆后取6位）
-            String fileName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
-
-            File desc = getAbsoluteFile(address.toString(), fileName);
             file.transferTo(desc);
-            getPathFileName(address.toString(), fileName);
-            listName.add(fileName);
+
+
+            getPathFileName(address.toString(), randomName);
+
+            fileName.setFileName(name);
+            fileName.setRandomName(randomName);
 
         }
-        return listName;
+        return fileName;
     }
 
 
@@ -182,9 +207,8 @@ public class FileUploadUtils {
      * 编码文件名
      */
     public static final String extractFilename(MultipartFile file) {
-        String fileName = file.getOriginalFilename();
         String extension = getExtension(file);
-        fileName = DateUtils.datePath() + "/" + encodingFilename(fileName) + "." + extension;
+        String fileName = DateUtils.datePath() + "/" + Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
         return fileName;
     }
 
