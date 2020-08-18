@@ -89,7 +89,7 @@
         #{createDate},
         #{updateDate},
         #{infoType},
-        #{createUser}),
+        #{createUser},
         #{updateUser},
         #{state})
     </insert>
@@ -98,10 +98,10 @@
         update RZRQ_CONVERT_RATE
         <trim prefix="set" suffixOverrides=",">
             <if test="stockCode != null">
-                and STOCK_CODE=#{stockCode}
+                 STOCK_CODE=#{stockCode},
             </if>
             <if test="stockName != null">
-                and STOCK_NAME=#{stockName}
+                 STOCK_NAME=#{stockName},
             </if>
             <if test="rate != null">
                 RATE=#{rate},

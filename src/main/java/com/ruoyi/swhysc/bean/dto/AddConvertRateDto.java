@@ -13,7 +13,7 @@ import java.util.Date;
 @Data
 public class AddConvertRateDto {
     private int id;
-    @NotEmpty(message = "信息类型不能为空")
+    //@NotEmpty(message = "信息类型不能为空")
     private int infoType;
     @NotEmpty(message = "证券代码不能为空")
     private String stockCode;
@@ -21,7 +21,7 @@ public class AddConvertRateDto {
     private String stockName;
     @NotEmpty(message = "折算率不能为空")
     private String rate;
-    @NotEmpty(message = "交易所不能为空")
+    // @NotEmpty(message = "交易所不能为空")
     private String bourseCode;
     private String state;
 }
