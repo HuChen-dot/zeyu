@@ -30,6 +30,7 @@ public class AddAdvertiseDto {
     private Integer status;
     //图片路径
     private String imgPath;
+
     //图标路径
     private String iconPath;
     //显示顺序

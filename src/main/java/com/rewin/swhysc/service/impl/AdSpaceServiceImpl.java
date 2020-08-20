@@ -7,14 +7,19 @@ import com.rewin.swhysc.bean.Advertise;
 import com.rewin.swhysc.bean.vo.AdvertiseDetailVo;
 import com.rewin.swhysc.bean.vo.AdvertiseVo;
 import com.rewin.swhysc.bean.vo.ScAdvertiseVo;
+import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.mapper.dao.AdSpaceMapper;
 import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.service.AdSpaceService;
+import com.rewin.swhysc.util.DateUtils;
+import com.rewin.swhysc.util.PropertiesUtil;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -60,12 +65,13 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         //获取广告位信息
         AdSpace adSpace = adSpaceMapper.getAdSpaceById(id);
         //获取页面信息
-        AdSpace page = adSpaceMapper.getAdSpaceById(id);
+        AdSpace page = adSpaceMapper.getAdSpaceById(adSpace.getParentId());
         for (Advertise advertise : advertiseListByMap) {
             AdvertiseVo AdvertiseVo = new AdvertiseVo();
             BeanUtils.copyProperties(advertise, AdvertiseVo);
             AdvertiseVo.setAdSpaceName(adSpace.getAdName());
             AdvertiseVo.setViewName(page.getAdName());
+            AdvertiseVo.setUpdateTime(DateUtils.dateTime(advertise.getUpdateTime()));
             AdvertiseVoList.add(AdvertiseVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中
@@ -88,9 +94,18 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         map.put("parentId", id);
         map.put("status", 0);
         List<Advertise> advertiseList = AdvertiseMapper.getAdvertiseListByMap(map);
+        //图片上传地址
+        String profile = PropertiesUtil.get("uploadController.properties", "profile");
+
         for (Advertise advertise : advertiseList) {
             ScAdvertiseVo ScAdvertiseVo = new ScAdvertiseVo();
             BeanUtils.copyProperties(advertise, ScAdvertiseVo);
+            String imgPath = ScAdvertiseVo.getImgPath();
+            String iconPath = ScAdvertiseVo.getIconPath();
+            ScAdvertiseVo.setImgPath(profile + "/" + imgPath);
+            if (iconPath != null && iconPath != "") {
+                ScAdvertiseVo.setIconPath(profile + "/" + iconPath);
+            }
             list.add(ScAdvertiseVo);
         }
 
@@ -107,6 +122,17 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         //查询广告信息
         Advertise advertise = AdvertiseMapper.getAdvertiseById(id);
         BeanUtils.copyProperties(advertise, AdvertiseDetailVo);
+        //图片上传地址
+        String profile = RuoYiConfig.getProfile();
+        String imgPath = AdvertiseDetailVo.getImgPath();
+        AdvertiseDetailVo.setImgPathName(imgPath);
+        String iconPath = AdvertiseDetailVo.getIconPath();
+        AdvertiseDetailVo.setImgPath(profile + "/" + imgPath);
+        if (iconPath != null && iconPath != "") {
+            AdvertiseDetailVo.setIconPath(profile + "/" + iconPath);
+            AdvertiseDetailVo.setIconPathName(iconPath);
+        }
+
         //查询广告位名称和页面名称
         AdSpace adSpace = adSpaceMapper.getAdSpaceById(advertise.getParentId());
         //获取到广告位名称
@@ -140,9 +166,7 @@ public class AdSpaceServiceImpl implements AdSpaceService {
      * 删除： 根据map删除对象；返回影响的行数
      */
     public Integer DeleteAdSpaceById(Long id) throws Exception {
-        Map
-                <String, Object> map = new HashMap
-                <String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("invid", id);
         return adSpaceMapper.deleteAdSpaceByMap(map);
     }

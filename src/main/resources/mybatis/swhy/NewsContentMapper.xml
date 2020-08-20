@@ -34,8 +34,8 @@
         author as author
         from news_content
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="newsId != null">
-                and news_id=#{newsId}
+            <if test="id != null">
+                and news_id=#{id}
             </if>
         </trim>
     </select>

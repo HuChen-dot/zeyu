@@ -1,6 +1,8 @@
 package com.rewin.swhysc.config;
 
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +12,9 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @ConfigurationProperties(prefix = "swhy")
+@Order(0)
 public class RuoYiConfig {
+
     /**
      * 项目名称
      */
@@ -26,19 +30,20 @@ public class RuoYiConfig {
      */
     private String copyrightYear;
 
-//    /**
-//     * 实例演示开关
-//     */
-//    private String demoEnabled;
 
     /**
      * 图片上传路径
      */
-    private static String profile;
+    public static String profile;
+
+    /**
+     * 总路径
+     */
+    public static String uploadPath;
     /**
      * 附件上传路径
      */
-    private static String accessory;
+    public static String accessory;
 
     /**
      * 获取地址开关
@@ -75,17 +80,24 @@ public class RuoYiConfig {
 
     public void setAccessory(String accessory) {
 
-        this.accessory = accessory;
-    }
-
-    public static String getProfile() {
-
-        return profile;
+        RuoYiConfig.accessory = accessory;
     }
 
     public void setProfile(String profile) {
-
         RuoYiConfig.profile = profile;
+    }
+
+    public static String getProfile() {
+        return profile;
+    }
+
+
+    public void setUploadPath(String uploadPath) {
+        RuoYiConfig.uploadPath = uploadPath;
+    }
+
+    public static String getUploadPath() {
+        return uploadPath;
     }
 
 
@@ -101,20 +113,17 @@ public class RuoYiConfig {
      * 获取头像上传路径
      */
     public static String getAvatarPath() {
-        return getProfile() + "/avatar";
+//        getProfile() + "/avatar"
+        return null;
     }
 
     /**
      * 获取下载路径
      */
     public static String getDownloadPath() {
-        return getProfile() + "/download/";
+//        getProfile() + "/download/"
+        return null;
     }
 
-    /**
-     * 获取上传路径
-     */
-    public static String getUploadPath() {
-        return getProfile() + "/upload";
-    }
+
 }

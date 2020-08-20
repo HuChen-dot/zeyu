@@ -24,6 +24,7 @@
         </trim>
     </select>
 
+
     <!-- 根据条件查询；返回多个对象-->
     <select id="getAdSpaceListByMap" resultType="com.rewin.swhysc.bean.AdSpace"
             parameterType="java.util.Map">
@@ -114,7 +115,9 @@
         status,
         creator,
         create_time,
-        updater,
+        <if test="updater != null">
+            updater,
+        </if>
         update_time,
         IMAGE_SIZES
         )
@@ -125,7 +128,9 @@
         #{status},
         #{creator},
         #{createTime},
-        #{updater},
+        <if test="updater != null">
+            #{updater},
+        </if>
         #{updateTime},
         #{imageSizes})
     </insert>

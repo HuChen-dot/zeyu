@@ -2,6 +2,7 @@ package com.rewin.swhysc.service;
 
 import com.rewin.swhysc.bean.NewsNotice;
 import com.rewin.swhysc.bean.dto.AddNewsDto;
+import com.rewin.swhysc.bean.dto.VerifierDto;
 import com.rewin.swhysc.bean.vo.ScNewsDetailsVo;
 import com.rewin.swhysc.bean.vo.ScNewsVo;
 import com.rewin.swhysc.bean.vo.UpdataNewsVo;
@@ -31,11 +32,16 @@ public interface NewsNoticeService {
      */
     List<NewsNotice> getNewsNoticeListByMap(Map<String, Object> param) throws Exception;
 
+    /**
+     * 修改：审核人员审核后修改
+     */
+    Integer updateNewsNotice(NewsNotice NewsNotice) throws Exception;
+
 
     /**
      * 根据条件查询新闻公告列表
      */
-    List<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception;
+    PageInfo<newsVo> getNewsListByMap(Map<String, Object> param) throws Exception;
 
     /**
      * 添加：根据传入的参数添加新闻表，新闻内容表，和新闻附件表；返回影响的行数

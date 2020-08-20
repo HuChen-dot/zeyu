@@ -28,8 +28,12 @@ public class AdvertiseDetailVo implements Serializable {
     private Integer status;
     //图片路径
     private String imgPath;
+    //图片名称
+    private String imgPathName;
     //图标路径
     private String iconPath;
+    //图标名称
+    private String iconPathName;
     //页面名称
     private String viewName;
     //页面id

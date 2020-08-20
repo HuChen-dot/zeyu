@@ -9,9 +9,17 @@ swhy:
   # 实例演示开关
   demoEnabled: true
   # 图片上传地址 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
-  profile: D:/f/pmj
+  #profile: D:/opt/img
   #附件上传地址
-  accessory: D:/f/docc
+  #accessory: D:/opt/doc
+
+    # 图片上传地址 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
+  #地址前缀
+  #uploadPath: /opt/mager/upload/
+  #图片地址
+  #profile: images
+    #附件上传地址
+  #accessory: accessory
   # 获取ip地址开关
   addressEnabled: false
 
@@ -35,6 +43,8 @@ logging:
   level:
     com.rewin: debug
     org.springframework: warn
+  #本地需注释，linux需打开
+  config: logback.xml
 
 # Spring配置
 spring:

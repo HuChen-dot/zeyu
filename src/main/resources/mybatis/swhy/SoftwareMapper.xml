@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.SoftwareMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getSoftwareById" resultType="com.rewin.swhysc.bean.Software">
+        select
+        id as id,
+        software_type as softwareType,
+        software_name as softwareName,
+        software_img as softwareImg,
+        status as status,
+        creator as creator,
+        describe as describe,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        file_url as fileUrl
+        from software
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getSoftwareListByMap" resultType="com.rewin.swhysc.bean.Software"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        software_type as softwareType,
+        software_name as softwareName,
+        software_img as softwareImg,
+        describe as describe,
+        status as status,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime,
+        file_url as fileUrl
+        from software
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareType != null">
+                and software_type=#{softwareType}
+            </if>
+            <if test="softwareName != null">
+                and software_name like concat(concat('%', #{softwareName}),'%')
+            </if>
+            <if test="softwareImg != null">
+                and software_img=#{softwareImg}
+            </if>
+            <if test="describe != null">
+                and describe=#{describe}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getSoftwareCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from software
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareType != null">
+                and software_type=#{softwareType}
+            </if>
+            <if test="softwareName != null">
+                and software_name=#{softwareName}
+            </if>
+            <if test="softwareImg != null">
+                and software_img=#{softwareImg}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertSoftware" parameterType="com.rewin.swhysc.bean.Software"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_software.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into software(
+        id,
+        software_type,
+        software_name,
+        software_img,
+        describe,
+        status,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        file_url)
+        values(
+        #{id},
+        #{softwareType},
+        #{softwareName},
+        #{softwareImg},
+        #{describe},
+        #{status},
+        #{creator},
+        #{createTime},
+        #{updater},
+        #{updateTime},
+        #{fileUrl})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateSoftware" parameterType="com.rewin.swhysc.bean.Software">
+        update software
+        <trim prefix="set" suffixOverrides=",">
+            <if test="softwareType != null">
+                software_type=#{softwareType},
+            </if>
+            <if test="softwareName != null">
+                software_name=#{softwareName},
+            </if>
+            <if test="softwareImg != null">
+                software_img=#{softwareImg},
+            </if>
+            <if test="describe != null">
+                describe=#{describe},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="creator != null">
+                creator=#{creator},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime},
+            </if>
+            <if test="updater != null">
+                updater=#{updater},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+            <if test="fileUrl != null">
+                file_url=#{fileUrl}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteSoftwareByMap" parameterType="java.util.Map">
+        delete from software
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareType != null">
+                and software_type=#{softwareType}
+            </if>
+            <if test="softwareName != null">
+                and software_name=#{softwareName}
+            </if>
+            <if test="softwareImg != null">
+                and software_img=#{softwareImg}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+        </trim>
+    </delete>
+</mapper>

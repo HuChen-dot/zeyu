@@ -15,6 +15,7 @@ public interface AdSpaceMapper {
      */
     AdSpace getAdSpaceById(@Param(value = "id") Integer id) throws Exception;
 
+
     /**
      * 根据条件查询；返回多个对象
      */

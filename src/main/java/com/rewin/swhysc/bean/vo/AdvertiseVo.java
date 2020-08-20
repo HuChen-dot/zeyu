@@ -25,7 +25,7 @@ public class AdvertiseVo {
     //显示顺序
     private Integer orderNo;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 
 
 }
