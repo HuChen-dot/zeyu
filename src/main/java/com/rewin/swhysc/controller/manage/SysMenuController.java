@@ -137,7 +137,6 @@ public class SysMenuController extends BaseController {
      */
     @GetMapping(value = "/getMenusByid/{parentId}")
     public AjaxResult getMenusByid(@PathVariable("parentId") Long parentId) {
-        System.err.println("15");
         //根据Token,从缓存中获取用户信息,
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //判断
@@ -149,7 +148,6 @@ public class SysMenuController extends BaseController {
         String s = null;
         if (StringUtils.isEmpty(menus)) {
             s = com.rewin.swhysc.util.UrlUtils.loadURL("http://localhost:8083/system/notice/list", "id=" + parentId + "&pageNo=1&pageSize=3");
-            System.out.println(s);
             return AjaxResult.success("查询成功", s);
         }
         return AjaxResult.success("查询成功", menus);
@@ -160,7 +158,6 @@ public class SysMenuController extends BaseController {
      */
     @PostMapping("addMenu")
     public AjaxResult add(@RequestBody SysMenuDto menuVo) {
-        System.err.println("16");
         if (!menuService.checkMenuNameBymanuName(menuVo.getMenuName())) {
             return AjaxResult.error(StateCode.NOT_MODIFIED.getCode(), "新增菜单'" + menuVo.getMenuName() + "'失败，菜单名称已存在");
         }
@@ -176,7 +173,6 @@ public class SysMenuController extends BaseController {
      */
     @PutMapping("upedit")
     public AjaxResult edit(@RequestBody SysMenuDto menuVo) {
-        System.err.println("17");
         //根据Token,从缓存中获取用户信息,
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //判断
@@ -199,7 +195,6 @@ public class SysMenuController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:menu:remove')")
     @DeleteMapping("removeMenu/{menuId}")
     public AjaxResult removeMenu(@PathVariable("menuId") Long menuId) {
-        System.err.println("18");
         //根据Token,从缓存中获取用户信息,
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //判断

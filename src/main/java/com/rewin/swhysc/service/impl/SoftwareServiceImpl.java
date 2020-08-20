@@ -10,9 +10,9 @@ import com.rewin.swhysc.bean.vo.SoftwareByidVo;
 import com.rewin.swhysc.bean.vo.SoftwareVo;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
-import com.rewin.swhysc.mapper.dao.SysDictTypeMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.SoftwareService;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -55,13 +54,13 @@ public class SoftwareServiceImpl implements SoftwareService {
         BeanUtils.copyProperties(software, SoftwareByidVo);
         //遍历取值
         for (Iosaonroid iosaonroid : iosaonroidList) {
-            if (iosaonroid.getSoftwareTypeId() == 1 || iosaonroid.getSoftwareTypeId() == 4) {
+            if (iosaonroid.getPlatformType() == 1 || iosaonroid.getPlatformType() == 4) {
                 SoftwareByidVo.setSoftwareSize(iosaonroid.getSoftwareSize());
                 SoftwareByidVo.setUpdateExplain(iosaonroid.getUpdateExplain());
                 SoftwareByidVo.setUpdateTime(iosaonroid.getUpdateTime());
                 SoftwareByidVo.setVersion(iosaonroid.getVersion());
             }
-            if (iosaonroid.getSoftwareTypeId() == 2) {
+            if (iosaonroid.getPlatformType() == 2) {
                 SoftwareByidVo.setCellSoftwareSize(iosaonroid.getSoftwareSize());
                 SoftwareByidVo.setCellUpdateExplain(iosaonroid.getUpdateExplain());
                 SoftwareByidVo.setCellUpdateTime(iosaonroid.getUpdateTime());
@@ -93,7 +92,6 @@ public class SoftwareServiceImpl implements SoftwareService {
     @Transactional
     public Integer AddSoftware(SoftwareDto softwareDto) throws Exception {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         //添加主表
         Software software = new Software();
@@ -108,10 +106,11 @@ public class SoftwareServiceImpl implements SoftwareService {
         if (softwareDto.getVersion() != null) {
             Iosaonroid iosaonroid = new Iosaonroid();
             iosaonroid.setSoftwareId(software.getId());
-            iosaonroid.setSoftwareTypeId(1);
+            iosaonroid.setPlatformType(1);
             iosaonroid.setSoftwareSize(softwareDto.getSoftwareSize());
             iosaonroid.setUpdateExplain(softwareDto.getUpdateExplain());
-            iosaonroid.setUpdateTime(dateFormat.parse(softwareDto.getUpdateTime()));
+
+            iosaonroid.setUpdateTime(DateUtils.parseDate(softwareDto.getUpdateTime()));
             iosaonroid.setVersion(softwareDto.getVersion());
             iosaonroidMapper.insertIosaonroid(iosaonroid);
         }
@@ -119,10 +118,10 @@ public class SoftwareServiceImpl implements SoftwareService {
         if (softwareDto.getCellVersion() != null) {
             Iosaonroid iosaonroid = new Iosaonroid();
             iosaonroid.setSoftwareId(software.getId());
-            iosaonroid.setSoftwareTypeId(2);
+            iosaonroid.setPlatformType(2);
             iosaonroid.setSoftwareSize(softwareDto.getCellSoftwareSize());
             iosaonroid.setUpdateExplain(softwareDto.getCellUpdateExplain());
-            iosaonroid.setUpdateTime(dateFormat.parse(softwareDto.getCellUpdateTime()));
+            iosaonroid.setUpdateTime(DateUtils.parseDate(softwareDto.getCellUpdateTime()));
             iosaonroid.setVersion(softwareDto.getCellVersion());
             inout = iosaonroidMapper.insertIosaonroid(iosaonroid);
         }
@@ -140,23 +139,22 @@ public class SoftwareServiceImpl implements SoftwareService {
         software.setUpdater(loginUser.getUsername());
         software.setUpdateTime(new Date());
         softwareMapper.updateSoftware(software);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         Iosaonroid iosaonroid = new Iosaonroid();
         iosaonroid.setSoftwareId(software.getId());
-        iosaonroid.setSoftwareTypeId(1);
+        iosaonroid.setPlatformType(1);
         iosaonroid.setSoftwareSize(softwareDto.getSoftwareSize());
         iosaonroid.setUpdateExplain(softwareDto.getUpdateExplain());
-        iosaonroid.setUpdateTime(dateFormat.parse(softwareDto.getUpdateTime()));
+        iosaonroid.setUpdateTime(DateUtils.parseDate(softwareDto.getUpdateTime()));
         iosaonroid.setVersion(softwareDto.getVersion());
         iosaonroidMapper.updateIosaonroid(iosaonroid);
 
         Iosaonroid iosaonroid1 = new Iosaonroid();
         iosaonroid1.setSoftwareId(software.getId());
-        iosaonroid1.setSoftwareTypeId(2);
+        iosaonroid1.setPlatformType(2);
         iosaonroid1.setSoftwareSize(softwareDto.getCellSoftwareSize());
         iosaonroid1.setUpdateExplain(softwareDto.getCellUpdateExplain());
-        iosaonroid1.setUpdateTime(dateFormat.parse(softwareDto.getCellUpdateTime()));
+        iosaonroid1.setUpdateTime(DateUtils.parseDate(softwareDto.getCellUpdateTime()));
         iosaonroid1.setVersion(softwareDto.getCellVersion());
         Integer count = iosaonroidMapper.updateIosaonroid(iosaonroid1);
         return count;
@@ -182,14 +180,13 @@ public class SoftwareServiceImpl implements SoftwareService {
         //查询数据库
         List<Software> softwareList = softwareMapper.getSoftwareListByMap(param);
         List<SoftwareVo> listVo = new ArrayList<SoftwareVo>();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (Software software : softwareList) {
             SysDictType sysDictType = SysDictTypeMapper.getSysDictTypeById(software.getSoftwareType());
             SoftwareVo SoftwareVo = new SoftwareVo();
             SoftwareVo.setSoftwareTypeName(sysDictType.getDictName());
             BeanUtils.copyProperties(software, SoftwareVo);
-            SoftwareVo.setUpdateTime(dateFormat.format(software.getUpdateTime()));
-            SoftwareVo.setCreateTime(dateFormat.format(software.getCreateTime()));
+            SoftwareVo.setUpdateTime(DateUtils.dateTime(software.getUpdateTime()));
+            SoftwareVo.setCreateTime(DateUtils.dateTime(software.getCreateTime()));
             listVo.add(SoftwareVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中

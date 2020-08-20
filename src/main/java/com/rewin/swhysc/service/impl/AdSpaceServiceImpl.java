@@ -11,6 +11,7 @@ import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.mapper.dao.AdSpaceMapper;
 import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.service.AdSpaceService;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.PropertiesUtil;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
@@ -65,13 +66,12 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         AdSpace adSpace = adSpaceMapper.getAdSpaceById(id);
         //获取页面信息
         AdSpace page = adSpaceMapper.getAdSpaceById(adSpace.getParentId());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         for (Advertise advertise : advertiseListByMap) {
             AdvertiseVo AdvertiseVo = new AdvertiseVo();
             BeanUtils.copyProperties(advertise, AdvertiseVo);
             AdvertiseVo.setAdSpaceName(adSpace.getAdName());
             AdvertiseVo.setViewName(page.getAdName());
-            AdvertiseVo.setUpdateTime(dateFormat.format(advertise.getUpdateTime()));
+            AdvertiseVo.setUpdateTime(DateUtils.dateTime(advertise.getUpdateTime()));
             AdvertiseVoList.add(AdvertiseVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中

@@ -9,7 +9,7 @@
         select
         id as id,
         software_id as softwareId,
-        software_type as softwareTypeId,
+        platform_type as platformType,
         update_explain as updateExplain,
 
         software_size as softwareSize,
@@ -30,7 +30,7 @@
         select
         id as id,
         software_id as softwareId,
-        software_type as softwareTypeId,
+        platform_type as platformType,
         update_explain as updateExplain,
         software_size as softwareSize,
         version as version,
@@ -44,8 +44,8 @@
             <if test="softwareId != null">
                 and software_id=#{softwareId}
             </if>
-            <if test="softwareTypeId != null">
-                and software_type=#{softwareTypeId}
+            <if test="platformType != null">
+                and platform_type=#{platformType}
             </if>
             <if test="updateExplain != null">
                 and update_explain=#{updateExplain}
@@ -74,8 +74,8 @@
             <if test="softwareId != null">
                 and software_id=#{softwareId}
             </if>
-            <if test="softwareTypeId != null">
-                and software_type=#{softwareTypeId}
+            <if test="platformType != null">
+                and platform_type=#{platformType}
             </if>
             <if test="updateExplain != null">
                 and update_explain=#{updateExplain}
@@ -104,7 +104,7 @@
         insert into iosaonroid(
         id,
         software_id,
-        software_type,
+        platform_type,
         update_explain,
 
         software_size,
@@ -114,7 +114,7 @@
         values(
         #{id},
         #{softwareId},
-        #{softwareTypeId},
+        #{platformType},
         #{updateExplain},
 
         #{softwareSize},
@@ -157,8 +157,8 @@
             <if test="softwareId != null">
                 and software_id=#{softwareId}
             </if>
-            <if test="softwareTypeId != null">
-                and software_type=#{softwareTypeId}
+            <if test="platformType != null">
+                and platform_type=#{platformType}
             </if>
             <if test="updateExplain != null">
                 and update_explain=#{updateExplain}

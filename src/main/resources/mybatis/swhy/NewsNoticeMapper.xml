@@ -13,11 +13,13 @@
         status as status,
         opinion as opinion,
         auditor as auditor,
+        flow as flow,
         is_stick as isStick,
         creator as creator,
         create_time as createTime,
         updater as updater,
-        update_time as updateTime
+        update_time as updateTime,
+        verifier as verifier
         from news_notice
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -37,10 +39,12 @@
         opinion as opinion,
         auditor as auditor,
         is_stick as isStick,
+        flow as flow,
         creator as creator,
         create_time as createTime,
         updater as updater,
-        update_time as updateTime
+        update_time as updateTime,
+        verifier as verifier
         from news_notice
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -54,6 +58,9 @@
             </if>
             <if test="status != null">
                 and status=#{status}
+            </if>
+            <if test="flow != null">
+                and flow=#{flow}
             </if>
             <if test="opinion != null">
                 and opinion=#{opinion}
@@ -89,10 +96,12 @@
         opinion as opinion,
         auditor as auditor,
         is_stick as isStick,
+        flow as flow,
         creator as creator,
         create_time as createTime,
         updater as updater,
-        update_time as updateTime
+        update_time as updateTime,
+        verifier as verifier
         from news_notice
         <trim prefix="where" prefixOverrides="and | or">
 
@@ -102,8 +111,14 @@
             <if test="noticeTypeId != null">
                 and notice_type_id=#{noticeTypeId}
             </if>
-            <if test="status != null">
+            <if test="status != null and status=='0'">
+                and status!=16
+            </if>
+            <if test="status != null and status!='0'">
                 and status=#{status}
+            </if>
+            <if test="flow != null">
+                and flow=#{flow}
             </if>
             <if test="beginTime != null">
                 and update_time &gt;=#{beginTime}
@@ -165,25 +180,29 @@
         notice_title,
         notice_type_id,
         status,
+        flow,
         opinion,
         auditor,
         is_stick,
         creator,
         create_time,
         updater,
-        update_time)
+        update_time,
+        verifier)
         values(
         #{id},
         #{noticeTitle},
         #{noticeTypeId},
         #{status},
+        #{flow},
         #{opinion},
         #{auditor},
         #{isStick},
         #{creator},
         #{createTime},
         #{updater},
-        #{updateTime})
+        #{updateTime},
+        #{verifier})
     </insert>
 
 
@@ -200,11 +219,17 @@
             <if test="status != null">
                 status=#{status},
             </if>
+            <if test="flow != null">
+                flow=#{flow},
+            </if>
             <if test="opinion != null">
                 opinion=#{opinion},
             </if>
             <if test="auditor != null">
                 auditor=#{auditor},
+            </if>
+            <if test="verifier != null">
+                verifier=#{verifier},
             </if>
             <if test="isStick != null">
                 is_stick=#{isStick},

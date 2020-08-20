@@ -3,6 +3,7 @@ package com.rewin.swhysc.bean.vo;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 官网：后台返回前端，新闻详细信息
@@ -19,12 +20,14 @@ public class ScNewsDetailsVo {
     private String source;
     //新闻标题
     private String noticeTitle;
+    //是否置顶
+    private Integer isStick;
     //作者
     private String author;
     //附件链接地址
-    private String accessoryPath;
+    private List<String> accessoryPath;
     //附件名称
-    private String accessoryName;
+    private String[] accessoryName;
     //更新时间
     private String updateTime;
 }

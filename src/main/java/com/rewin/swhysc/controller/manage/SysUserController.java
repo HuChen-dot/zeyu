@@ -49,7 +49,6 @@ public class SysUserController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:user:list')")
     @GetMapping("/list")
     public TableDataInfo list(SysUser user) {
-        System.err.println("对象：" + user);
         startPage();
         List<SysUser> list = userService.selectUserList(user);
 
@@ -62,6 +61,7 @@ public class SysUserController extends BaseController {
     public AjaxResult export(SysUser user) {
         List<SysUser> list = userService.selectUserList(user);
         ExcelUtil<SysUser> util = new ExcelUtil<SysUser>(SysUser.class);
+
         return util.exportExcel(list, "用户数据");
     }
 

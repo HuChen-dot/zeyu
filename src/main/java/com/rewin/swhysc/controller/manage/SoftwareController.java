@@ -77,14 +77,11 @@ public class SoftwareController {
      */
     @PostMapping()
     public AjaxResult addSoftware(@RequestBody SoftwareDto SoftwareDto) {
-        System.err.println("****************************");
-        System.err.println("添加对象：" + SoftwareDto);
         try {
 
-            SoftwareDto.setSoftwareImg("wwwb");
-            SoftwareDto.setFileUrl("wewerew");
             SoftwareDto.setUpdateTime("2020-18-12");
             SoftwareDto.setCellUpdateTime("2020-18-12");
+
 
             SoftwareService.AddSoftware(SoftwareDto);
         } catch (Exception e) {
@@ -100,13 +97,8 @@ public class SoftwareController {
      */
     @PutMapping
     public AjaxResult updeSoftware(@RequestBody SoftwareDto SoftwareDto) {
-        System.err.println("****************************");
-        System.err.println("修改对象：" + SoftwareDto);
-
+        System.err.println("修改：" + SoftwareDto);
         try {
-            SoftwareDto.setSoftwareImg("wwwb");
-            SoftwareDto.setFileUrl("wewerew");
-
             SoftwareService.ModifySoftware(SoftwareDto);
         } catch (Exception e) {
             log.error("查询数据库出错", e);

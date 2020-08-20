@@ -1,6 +1,9 @@
 package com.rewin.swhysc.util.file;
 
+import com.rewin.swhysc.util.PropertiesUtil;
+
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 
@@ -67,6 +70,28 @@ public class FileUtils {
             flag = true;
         }
         return flag;
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param filename
+     * @param res
+     * @throws IOException
+     */
+    public static void download(String filename, HttpServletResponse res) throws IOException {
+        // 发送给客户端的数据
+        OutputStream outputStream = res.getOutputStream();
+        byte[] buff = new byte[1024];
+        BufferedInputStream bis = null;
+        // 读取filename
+        bis = new BufferedInputStream(new FileInputStream(new File(PropertiesUtil.get("uploadController.properties", "uploadPath") + filename)));
+        int i = bis.read(buff);
+        while (i != -1) {
+            outputStream.write(buff, 0, buff.length);
+            outputStream.flush();
+            i = bis.read(buff);
+        }
     }
 
     /**

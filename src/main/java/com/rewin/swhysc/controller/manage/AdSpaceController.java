@@ -47,7 +47,6 @@ public class AdSpaceController extends BaseController {
     @GetMapping("space/{id}")
     public AjaxResult getAdSpace(@PathVariable Integer id) {
         id = id == null ? 0 : id;
-        System.err.println(id);
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("parentId", id);
         List<viewOrAdVo> list = new ArrayList<>();
@@ -75,7 +74,6 @@ public class AdSpaceController extends BaseController {
     @GetMapping("imgsize/{id}")
     public AjaxResult getImgSize(@PathVariable Integer id) {
         id = id == null ? 0 : id;
-        System.err.println(id);
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("id", id);
         viewOrAdVo viewOrAdVo = null;
@@ -136,8 +134,6 @@ public class AdSpaceController extends BaseController {
      */
     @PostMapping()
     public AjaxResult addAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        System.err.println("****************************");
-//        System.err.println("添加对象：" + AdverDto);
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
@@ -159,9 +155,6 @@ public class AdSpaceController extends BaseController {
      */
     @PutMapping
     public AjaxResult updeAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        System.err.println("****************************");
-//        System.err.println("修改对象：" + AdverDto);
-
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);

@@ -34,7 +34,7 @@ public class ScNewsNoticeController {
      */
     @GetMapping("list")
     public AjaxResult getnewsBylist(Integer id, @RequestParam(value = "pageNo", required = false) Integer pageNo,
-@RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         pageNo = pageNo == null ? 1 : pageNo;
         pageSize = pageSize == null ? 10 : pageSize;
         Map<String, Object> map = new HashMap<>();
@@ -58,6 +58,7 @@ public class ScNewsNoticeController {
         ScNewsDetailsVo newsdetails = null;
         try {
             newsdetails = NewsNoticeService.getNewsdetailsById(id);
+
         } catch (Exception e) {
             log.error("查询出错", e);
             return AjaxResult.error("sql错误");

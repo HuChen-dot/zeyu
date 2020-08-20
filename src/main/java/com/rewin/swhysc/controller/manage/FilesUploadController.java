@@ -26,7 +26,6 @@ public class FilesUploadController {
      */
     @PostMapping
     public AjaxResult uplodeImg(MultipartFile[] file) {
-        System.err.println("文件上传开始***********************");
         FileName fileName = null;
         try {
             fileName = FileUploadUtils.upload(file);

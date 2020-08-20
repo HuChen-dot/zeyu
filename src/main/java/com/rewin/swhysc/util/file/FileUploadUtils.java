@@ -4,19 +4,13 @@ import com.rewin.swhysc.bean.vo.FileName;
 import com.rewin.swhysc.common.exception.file.FileNameLengthLimitExceededException;
 import com.rewin.swhysc.common.exception.file.FileSizeLimitExceededException;
 import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
-import com.rewin.swhysc.common.utils.DateUtils;
 import com.rewin.swhysc.config.RuoYiConfig;
-import com.rewin.swhysc.util.IdUtils;
-import com.rewin.swhysc.util.Md5Utils;
-import com.rewin.swhysc.util.PropertiesUtil;
-import com.rewin.swhysc.util.StringUtils;
+import com.rewin.swhysc.util.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 文件上传工具类
@@ -34,36 +28,33 @@ public class FileUploadUtils {
      */
     public static final int DEFAULT_FILE_NAME_LENGTH = 100;
 
-    /**
-     * 图片上传的地址
-     */
-    private static String pictureAddress = RuoYiConfig.profile;
+
     /**
      * 总路径
      */
-    private static String pictureuploadPath = RuoYiConfig.uploadPath;
+    private static String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
+
+    /**
+     * 图片上传的地址
+     */
+    private static String profile = PropertiesUtil.get("uploadController.properties", "profile");
 
     /**
      * 附件上传的地址
      */
-    private static String AnnexAddress = RuoYiConfig.accessory;
+    private static String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
 
     public static String getAnnexAddress() {
-        String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
-        String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
 
         return uploadPath + accessory;
-//        return AnnexAddress;
+
     }
 
     private static int counter = 0;
 
 
     public static String getDefaultBaseDir() {
-        String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
-        String profile = PropertiesUtil.get("uploadController.properties", "profile");
         return uploadPath + profile;
-//        return pictureAddress;
     }
 
     /**
@@ -157,12 +148,10 @@ public class FileUploadUtils {
             StringBuilder address = null;
             if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("png")) {
-                System.err.println("图片上传地址" + getDefaultBaseDir());
                 address = new StringBuilder(getDefaultBaseDir());
                 //生成随机文件名(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
             } else {
-                System.err.println("附件上传地址" + getAnnexAddress());
                 address = new StringBuilder(getAnnexAddress());
                 //生成随机文件名并附件加上时间目录(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = extractFilename(file);

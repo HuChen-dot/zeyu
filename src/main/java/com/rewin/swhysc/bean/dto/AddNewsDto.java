@@ -31,7 +31,7 @@ public class AddNewsDto {
     //正文类型
     private String type;
     //是否置顶
-    private String isStick;
+    private Integer isStick;
     //附件链接地址
     private String accessoryPath;
     //附件名称
