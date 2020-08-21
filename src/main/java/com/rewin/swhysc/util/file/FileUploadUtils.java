@@ -14,8 +14,6 @@ import java.io.IOException;
 
 /**
  * 文件上传工具类
- *
- * @author rewin
  */
 public class FileUploadUtils {
     /**
@@ -44,17 +42,25 @@ public class FileUploadUtils {
      */
     private static String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
 
-    public static String getAnnexAddress() {
+    /**
+     * 安装文件上传的地址
+     */
+    private static String software = PropertiesUtil.get("uploadController.properties", "software");
 
+    //附件上传地址
+    public static String getaccessory() {
         return uploadPath + accessory;
-
     }
 
-    private static int counter = 0;
 
-
-    public static String getDefaultBaseDir() {
+    //图片上传地址
+    public static String getprofile() {
         return uploadPath + profile;
+    }
+
+    //安装文件上传地址
+    public static String getsoftware() {
+        return uploadPath + software;
     }
 
     /**
@@ -66,7 +72,7 @@ public class FileUploadUtils {
      */
     public static final String upload(MultipartFile file) throws IOException {
         try {
-            return upload(getDefaultBaseDir(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(getprofile(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
@@ -107,15 +113,11 @@ public class FileUploadUtils {
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
-
         assertAllowed(file, allowedExtension);
-
         String fileName = extractFilename(file);
-
         File desc = getAbsoluteFile(baseDir, fileName);
         file.transferTo(desc);
-        String pathFileName = getPathFileName(baseDir, fileName);
-        return pathFileName;
+        return fileName;
     }
 
     /**
@@ -146,13 +148,21 @@ public class FileUploadUtils {
             //初始化随机文件名变量
             String randomName = "";
             StringBuilder address = null;
+            //判断是否是图片
             if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("png")) {
-                address = new StringBuilder(getDefaultBaseDir());
+                address = new StringBuilder(getprofile());
                 //生成随机文件名(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
+                //判断是否是安装文件
+            } else if (extension.equals("exe")) {
+                address = new StringBuilder(getsoftware());
+                //生成随机文件名(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
+                randomName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
+
+                //否则就是附件
             } else {
-                address = new StringBuilder(getAnnexAddress());
+                address = new StringBuilder(getaccessory());
                 //生成随机文件名并附件加上时间目录(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = extractFilename(file);
             }
@@ -160,10 +170,6 @@ public class FileUploadUtils {
             File desc = getAbsoluteFile(address.toString(), randomName);
 
             file.transferTo(desc);
-
-
-            getPathFileName(address.toString(), randomName);
-
             fileName.setFileName(name);
             fileName.setRandomName(randomName);
 
@@ -182,9 +188,9 @@ public class FileUploadUtils {
         StringBuilder address = new StringBuilder("");
         if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                 || extension.equals("jpeg") || extension.equals("png")) {
-            address = new StringBuilder(getDefaultBaseDir());
+            address = new StringBuilder(getprofile());
         } else {
-            address = new StringBuilder(getAnnexAddress());
+            address = new StringBuilder(getaccessory());
         }
         path = address + File.separator + imgName;
         File file = new File(path);
@@ -213,21 +219,15 @@ public class FileUploadUtils {
         return desc;
     }
 
-    private static final String getPathFileName(String uploadDir, String fileName) throws IOException {
-        int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
-        String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
-        String pathFileName = currentDir + "/" + fileName;
-        return pathFileName;
-    }
 
-    /**
-     * 编码文件名
-     */
-    private static final String encodingFilename(String fileName) {
-        fileName = fileName.replace("_", " ");
-        fileName = Md5Utils.hash(fileName + System.nanoTime() + counter++);
-        return fileName;
-    }
+//    /**
+//     * 编码文件名
+//     */
+//    private static final String encodingFilename(String fileName) {
+//        fileName = fileName.replace("_", " ");
+//        fileName = Md5Utils.hash(fileName + System.nanoTime() + counter++);
+//        return fileName;
+//    }
 
     /**
      * 文件大小校验
