@@ -144,7 +144,7 @@
 
         </trim>
         where software_id=#{softwareId}
-        and software_type=#{softwareTypeId}
+        and platform_type=#{platformType}
     </update>
 
     <!--  删除： 根据map删除对象；返回影响的行数-->

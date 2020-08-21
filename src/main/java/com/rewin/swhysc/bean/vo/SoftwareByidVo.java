@@ -21,6 +21,10 @@ public class SoftwareByidVo {
     private String fileUrl;
     //软件描述
     private String describe;
+    //ios跳转地址
+    private String skipUrl;
+    //手机二维码地址
+    private String qrCode;
 
     //更新说明
     private String updateExplain;
@@ -29,7 +33,7 @@ public class SoftwareByidVo {
     //版本号
     private String version;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 
     //手机冗余更新说明
     private String cellUpdateExplain;
@@ -38,6 +42,6 @@ public class SoftwareByidVo {
     //手机冗余版本号
     private String cellVersion;
     //手机冗余更新时间
-    private Date cellUpdateTime;
+    private String cellUpdateTime;
 }
 

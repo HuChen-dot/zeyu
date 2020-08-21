@@ -11,7 +11,11 @@
         software_type as softwareType,
         software_name as softwareName,
         software_img as softwareImg,
+        is_show as isShow,
+        sort as sort,
+        skip_url as skipUrl,
         status as status,
+        qr_code as qrCode,
         creator as creator,
         describe as describe,
         create_time as createTime,
@@ -34,8 +38,12 @@
         software_type as softwareType,
         software_name as softwareName,
         software_img as softwareImg,
+        is_show as isShow,
         describe as describe,
+        sort as sort,
+        skip_url as skipUrl,
         status as status,
+        qr_code as qrCode,
         creator as creator,
         create_time as createTime,
         updater as updater,
@@ -52,8 +60,14 @@
             <if test="softwareName != null">
                 and software_name like concat(concat('%', #{softwareName}),'%')
             </if>
+            <if test="isShow != null">
+                and is_show=#{isShow}
+            </if>
             <if test="softwareImg != null">
                 and software_img=#{softwareImg}
+            </if>
+            <if test="sort!=null">
+                and sort=#{sort}
             </if>
             <if test="describe != null">
                 and describe=#{describe}
@@ -121,8 +135,12 @@
         software_type,
         software_name,
         software_img,
+        is_show,
         describe,
+        sort,
+        skip_url,
         status,
+        qr_code,
         creator,
         create_time,
         updater,
@@ -133,8 +151,12 @@
         #{softwareType},
         #{softwareName},
         #{softwareImg},
+        #{isShow},
         #{describe},
+        #{sort},
+        #{skipUrl},
         #{status},
+        #{qrCode},
         #{creator},
         #{createTime},
         #{updater},
@@ -156,11 +178,24 @@
             <if test="softwareImg != null">
                 software_img=#{softwareImg},
             </if>
+            <if test="isShow != null">
+                is_show=#{isShow},
+            </if>
+
             <if test="describe != null">
                 describe=#{describe},
             </if>
+            <if test="sort != null">
+                sort=#{sort},
+            </if>
+            <if test="skipUrl != null">
+                skip_url=#{skipUrl},
+            </if>
             <if test="status != null">
                 status=#{status},
+            </if>
+            <if test="qrCode != null">
+                qr_code=#{qrCode},
             </if>
             <if test="creator != null">
                 creator=#{creator},
@@ -196,6 +231,9 @@
             </if>
             <if test="softwareImg != null">
                 and software_img=#{softwareImg}
+            </if>
+            <if test="isShow != null">
+                and is_show=#{isShow}
             </if>
             <if test="status != null">
                 and status=#{status}

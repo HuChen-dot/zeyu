@@ -12,27 +12,31 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+/**
+ * 文件下载控制类
+ */
 @RestController
 @RequestMapping("/sys/file")
-public class FileLoads {
+public class FileLoadsController {
 
     /**
      * 文件下载
      */
     @GetMapping("load")
-    public void file(String fileName) throws UnsupportedEncodingException {
+    public void file(String filepath, String fileName) throws UnsupportedEncodingException {
         ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse responses = requestAttributes.getResponse();
         // 设置信息给客户端不解析
-        String type = new MimetypesFileTypeMap().getContentType(fileName);
+        String type = new MimetypesFileTypeMap().getContentType(filepath);
         // 设置contenttype，即告诉客户端所发送的数据属于什么类型
         responses.setHeader("Content-type", type);
+
         // 设置编码
-        String hehe = new String(fileName.getBytes("utf-8"), "iso-8859-1");
+        String name = new String(fileName.getBytes("utf-8"), "iso-8859-1");
         // 设置扩展头，当Content-Type 的类型为要下载的类型时 , 这个信息头会告诉浏览器这个文件的名字和类型。
-        responses.setHeader("Content-Disposition", "attachment;filename=" + hehe);
+        responses.setHeader("Content-Disposition", "attachment;filename=" + name);
         try {
-            FileUtils.download(fileName, responses);
+            FileUtils.download(filepath, responses);
         } catch (IOException e) {
             e.printStackTrace();
         }

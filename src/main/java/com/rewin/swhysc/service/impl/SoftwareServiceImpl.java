@@ -57,13 +57,13 @@ public class SoftwareServiceImpl implements SoftwareService {
             if (iosaonroid.getPlatformType() == 1 || iosaonroid.getPlatformType() == 4) {
                 SoftwareByidVo.setSoftwareSize(iosaonroid.getSoftwareSize());
                 SoftwareByidVo.setUpdateExplain(iosaonroid.getUpdateExplain());
-                SoftwareByidVo.setUpdateTime(iosaonroid.getUpdateTime());
+                SoftwareByidVo.setUpdateTime(DateUtils.dateTime(iosaonroid.getUpdateTime()));
                 SoftwareByidVo.setVersion(iosaonroid.getVersion());
             }
             if (iosaonroid.getPlatformType() == 2) {
                 SoftwareByidVo.setCellSoftwareSize(iosaonroid.getSoftwareSize());
                 SoftwareByidVo.setCellUpdateExplain(iosaonroid.getUpdateExplain());
-                SoftwareByidVo.setCellUpdateTime(iosaonroid.getUpdateTime());
+                SoftwareByidVo.setCellUpdateTime(DateUtils.dateTime(iosaonroid.getUpdateTime()));
                 SoftwareByidVo.setCellVersion(iosaonroid.getVersion());
             }
         }
@@ -96,35 +96,47 @@ public class SoftwareServiceImpl implements SoftwareService {
         //添加主表
         Software software = new Software();
         BeanUtils.copyProperties(softwareDto, software);
+        software.setSkipUrl(softwareDto.getSkipUrl() == null ? " " : softwareDto.getSkipUrl());
         software.setCreator(loginUser.getUsername());
         software.setUpdater(loginUser.getUsername());
         software.setCreateTime(new Date());
         software.setUpdateTime(new Date());
+        software.setSort(1);
+        software.setIsShow(0);
         softwareMapper.insertSoftware(software);
 
+
         //添加从表
-        if (softwareDto.getVersion() != null) {
+        Integer inout = null;
+        if (softwareDto.getSoftwareType() == 111) {
             Iosaonroid iosaonroid = new Iosaonroid();
             iosaonroid.setSoftwareId(software.getId());
             iosaonroid.setPlatformType(1);
             iosaonroid.setSoftwareSize(softwareDto.getSoftwareSize());
             iosaonroid.setUpdateExplain(softwareDto.getUpdateExplain());
 
-            iosaonroid.setUpdateTime(DateUtils.parseDate(softwareDto.getUpdateTime()));
+            iosaonroid.setUpdateTime(softwareDto.getUpdateTime());
             iosaonroid.setVersion(softwareDto.getVersion());
             iosaonroidMapper.insertIosaonroid(iosaonroid);
-        }
-        Integer inout = null;
-        if (softwareDto.getCellVersion() != null) {
+        } else {
             Iosaonroid iosaonroid = new Iosaonroid();
+            iosaonroid.setSoftwareId(software.getId());
+            iosaonroid.setPlatformType(1);
+            iosaonroid.setSoftwareSize(softwareDto.getSoftwareSize());
+            iosaonroid.setUpdateExplain(softwareDto.getUpdateExplain());
+
+            iosaonroid.setUpdateTime(softwareDto.getUpdateTime());
+            iosaonroid.setVersion(softwareDto.getVersion());
+            iosaonroidMapper.insertIosaonroid(iosaonroid);
             iosaonroid.setSoftwareId(software.getId());
             iosaonroid.setPlatformType(2);
             iosaonroid.setSoftwareSize(softwareDto.getCellSoftwareSize());
             iosaonroid.setUpdateExplain(softwareDto.getCellUpdateExplain());
-            iosaonroid.setUpdateTime(DateUtils.parseDate(softwareDto.getCellUpdateTime()));
+            iosaonroid.setUpdateTime(softwareDto.getCellUpdateTime());
             iosaonroid.setVersion(softwareDto.getCellVersion());
             inout = iosaonroidMapper.insertIosaonroid(iosaonroid);
         }
+
         return inout;
     }
 

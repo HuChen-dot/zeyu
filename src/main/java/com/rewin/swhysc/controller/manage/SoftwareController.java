@@ -50,7 +50,7 @@ public class SoftwareController {
             softwareVoPageInfo = SoftwareService.querySoftwarePageByMap(map, pageNum, pageSize);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.success("sql错误");
+            return AjaxResult.success("查询失败，请重试");
         }
         return AjaxResult.success("查询成功", softwareVoPageInfo);
     }
@@ -66,7 +66,7 @@ public class SoftwareController {
             SoftwareByidVo = SoftwareService.getSoftwareById(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("查询失败，请重试");
         }
         return AjaxResult.success("查询成功", SoftwareByidVo);
     }
@@ -78,15 +78,14 @@ public class SoftwareController {
     @PostMapping()
     public AjaxResult addSoftware(@RequestBody SoftwareDto SoftwareDto) {
         try {
-
-            SoftwareDto.setUpdateTime("2020-18-12");
-            SoftwareDto.setCellUpdateTime("2020-18-12");
-
-
+            System.err.println("添加：" + SoftwareDto);
+            SoftwareDto.setDescribe(SoftwareDto.getDescribe() == null ? " " : SoftwareDto.getDescribe());
+            SoftwareDto.setUpdateExplain(SoftwareDto.getUpdateExplain() == null ? " " : SoftwareDto.getUpdateExplain());
+            SoftwareDto.setVersion(SoftwareDto.getVersion() == null ? "1.0" : SoftwareDto.getVersion());
             SoftwareService.AddSoftware(SoftwareDto);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("添加失败，请确认参数重试");
         }
         return AjaxResult.success("添加成功");
     }
@@ -97,12 +96,11 @@ public class SoftwareController {
      */
     @PutMapping
     public AjaxResult updeSoftware(@RequestBody SoftwareDto SoftwareDto) {
-        System.err.println("修改：" + SoftwareDto);
         try {
             SoftwareService.ModifySoftware(SoftwareDto);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("修改失败，请确认参数重试");
         }
         return AjaxResult.success("修改成功");
     }
@@ -117,7 +115,7 @@ public class SoftwareController {
             SoftwareService.DeleteSoftwareById(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("删除失败，请联系管理员");
         }
         return AjaxResult.success("删除成功");
     }

@@ -106,7 +106,7 @@ public class AdSpaceController extends BaseController {
             adSpaceByPaid = AdSpaceService.getAdSpaceByPaid(id, pageNum, pageSize);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("查询错误，请重试");
         }
         return AjaxResult.success("查询成功", adSpaceByPaid);
     }
@@ -123,7 +123,7 @@ public class AdSpaceController extends BaseController {
             advertise = AdSpaceService.getAdvertiseByid(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("查询错误，请重试");
         }
         return AjaxResult.success("查询成功", advertise);
     }
@@ -137,6 +137,9 @@ public class AdSpaceController extends BaseController {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
+        adse.setOrderNo(AdverDto.getOrderNo() == null ? 1 : AdverDto.getOrderNo());
+        adse.setTitle(AdverDto.getTitle().length() <= 0 ? " " : AdverDto.getTitle());
+        adse.setPath(AdverDto.getPath() == null ? " " : AdverDto.getPath());
         adse.setCreator(loginUser.getUsername());
         adse.setCreateTime(new Date());
         adse.setUpdateTime(new Date());
@@ -144,7 +147,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.insertAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("添加错误，请重试");
         }
         return AjaxResult.success("添加成功");
     }
@@ -164,7 +167,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.updateAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("修改错误，请重试");
         }
         return AjaxResult.success("修改成功");
     }
@@ -182,7 +185,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.updateAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("删除错误，请重试");
         }
         return AjaxResult.success("删除成功");
     }

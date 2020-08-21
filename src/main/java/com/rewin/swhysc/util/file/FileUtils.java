@@ -87,6 +87,7 @@ public class FileUtils {
         // 读取filename
         bis = new BufferedInputStream(new FileInputStream(new File(PropertiesUtil.get("uploadController.properties", "uploadPath") + filename)));
         int i = bis.read(buff);
+
         while (i != -1) {
             outputStream.write(buff, 0, buff.length);
             outputStream.flush();

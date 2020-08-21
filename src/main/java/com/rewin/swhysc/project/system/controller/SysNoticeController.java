@@ -68,7 +68,6 @@ public class SysNoticeController extends BaseController {
     @PostMapping
     public AjaxResult add(@Validated @RequestBody SysNotice notice,
                           @RequestParam(value = "a_file", required = false) MultipartFile partfile) throws IOException {
-        System.out.println("公告");
         //文件上传路径
         String path = "D:" + File.separator + "f" + File.separator + "pmj";
         String pass = FileUploadUtils.upload(path, partfile);
@@ -113,7 +112,6 @@ public class SysNoticeController extends BaseController {
             return AjaxResult.error(StateCode.FORBIDDEN.getCode(), "用户信息失效，请重新登录");
         }
         PageInfo<SysNotice> sysNoticePageInfo = noticeService.selectNoticeListpage(id, pageNo, pageSize);
-        System.out.println(sysNoticePageInfo.toString());
         return AjaxResult.success("查询成功", sysNoticePageInfo);
     }
 
