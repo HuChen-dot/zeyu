@@ -5,8 +5,13 @@ import com.rewin.swhysc.common.exception.file.FileNameLengthLimitExceededExcepti
 import com.rewin.swhysc.common.exception.file.FileSizeLimitExceededException;
 import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
 import com.rewin.swhysc.config.RuoYiConfig;
-import com.rewin.swhysc.util.*;
+import com.rewin.swhysc.util.DateUtils;
+import com.rewin.swhysc.util.IdUtils;
+import com.rewin.swhysc.util.Md5Utils;
+import com.rewin.swhysc.util.StringUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -17,6 +22,7 @@ import java.io.IOException;
  *
  * @author rewin
  */
+@Component
 public class FileUploadUtils {
     /**
      * 默认大小 50M
@@ -32,17 +38,44 @@ public class FileUploadUtils {
     /**
      * 总路径
      */
-    private static String uploadPath = PropertiesUtil.get("uploadController.properties", "uploadPath");
+    private static String uploadPath ;
+
+    public static String getUploadPath() {
+        return uploadPath;
+    }
+
+    @Value("${file.uploadPath:/opt/mager/upload/}")
+    public void setUploadPath(String uploadPath) {
+        FileUploadUtils.uploadPath = uploadPath;
+    }
+
 
     /**
      * 图片上传的地址
      */
-    private static String profile = PropertiesUtil.get("uploadController.properties", "profile");
+    private static String profile;
+
+    public static String getProfile() {
+        return profile;
+    }
+
+    @Value("${file.profile:images}")
+    public void setProfile(String profile) {
+        FileUploadUtils.profile = profile;
+    }
 
     /**
      * 附件上传的地址
      */
-    private static String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
+    private static String accessory;
+
+    public static String getAccessory() {
+        return accessory;
+    }
+    @Value("${file.accessory:accessory}")
+    public void setAccessory(String accessory) {
+        FileUploadUtils.accessory = accessory;
+    }
 
     public static String getAnnexAddress() {
 
