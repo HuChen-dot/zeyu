@@ -121,8 +121,8 @@ public class RuoYiConfig {
      * 获取下载路径
      */
     public static String getDownloadPath() {
-//        getProfile() + "/download/"
-        return null;
+
+        return "D:/download/";
     }
 
 

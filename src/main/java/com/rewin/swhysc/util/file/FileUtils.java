@@ -1,7 +1,5 @@
 package com.rewin.swhysc.util.file;
 
-import com.rewin.swhysc.util.PropertiesUtil;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -85,7 +83,7 @@ public class FileUtils {
         byte[] buff = new byte[1024];
         BufferedInputStream bis = null;
         // 读取filename
-        bis = new BufferedInputStream(new FileInputStream(new File(PropertiesUtil.get("uploadController.properties", "uploadPath") + filename)));
+        bis = new BufferedInputStream(new FileInputStream(new File(FileUploadUtils.getUploadPath() + filename)));
         int i = bis.read(buff);
 
         while (i != -1) {

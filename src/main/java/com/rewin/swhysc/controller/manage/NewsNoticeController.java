@@ -11,6 +11,7 @@ import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.security.service.TokenService;
 import com.rewin.swhysc.service.NewsNoticeService;
 import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.file.FileUtils;
 import com.rewin.swhysc.util.page.PageInfo;
@@ -69,19 +70,15 @@ public class NewsNoticeController {
             map.put("flow", newsDto.getFlow());
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         map.put("noticeTitle", newsDto.getNoticeTitle());
         Date beginTime = null;
         Date endTime = null;
         if (newsDto.getBeginTime() != null && newsDto.getEndTime() != null &&
                 newsDto.getBeginTime() != "" && newsDto.getEndTime() != "") {
-            try {
-                beginTime = dateFormat.parse(newsDto.getBeginTime());
-                endTime = dateFormat.parse(newsDto.getEndTime());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return AjaxResult.error("日期转换异常");
-            }
+
+                beginTime = DateUtils.parseDate(newsDto.getBeginTime());
+                endTime =DateUtils.parseDate(newsDto.getEndTime());
+
             map.put("beginTime", beginTime);
             map.put("endTime", endTime);
         }

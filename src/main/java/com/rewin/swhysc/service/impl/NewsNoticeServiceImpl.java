@@ -7,7 +7,6 @@ import com.rewin.swhysc.bean.NewsContent;
 import com.rewin.swhysc.bean.NewsNotice;
 import com.rewin.swhysc.bean.SysDictType;
 import com.rewin.swhysc.bean.dto.AddNewsDto;
-import com.rewin.swhysc.bean.dto.VerifierDto;
 import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.mapper.dao.NewsAccessoryMapper;
@@ -16,8 +15,8 @@ import com.rewin.swhysc.mapper.dao.SysDictTypeMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.NewsNoticeService;
 import com.rewin.swhysc.util.DateUtils;
-import com.rewin.swhysc.util.PropertiesUtil;
 import com.rewin.swhysc.util.ServletUtils;
+import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -73,7 +72,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         ScNewsDetailsVo.setAccessoryName(AccessoryName);
         String accessoryPath = newsAccessory.getAccessoryPath();
         //附件上传地址
-        String accessory = PropertiesUtil.get("uploadController.properties", "accessory");
+        String accessory = FileUploadUtils.getAccessory();
         List<String> listpath = new ArrayList<>();
         if (accessoryPath != null && accessoryPath != "") {
             String[] Path = accessoryPath.split(",");
@@ -118,7 +117,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         String[] ccessoryPath = newsAccessory.getAccessoryPath().split(",");
         String[] AccessoryPath = new String[ccessoryPath.length];
         for (int i = 0; i < ccessoryPath.length; i++) {
-            AccessoryPath[i] = PropertiesUtil.get("uploadController.properties", "accessory") + "/" + ccessoryPath[i];
+            AccessoryPath[i] = FileUploadUtils.getAccessory() + "/" + ccessoryPath[i];
         }
         UpdataNewsVo.setAccessoryPath(AccessoryPath);
         UpdataNewsVo.setAuthor(newsContent.getAuthor());

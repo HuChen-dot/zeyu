@@ -8,6 +8,7 @@ import com.rewin.swhysc.bean.SysDictType;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
 import com.rewin.swhysc.bean.vo.SoftwareByidVo;
 import com.rewin.swhysc.bean.vo.SoftwareVo;
+import com.rewin.swhysc.bean.vo.TabSoftwareVo;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
 import com.rewin.swhysc.security.LoginUser;
@@ -71,10 +72,24 @@ public class SoftwareServiceImpl implements SoftwareService {
     }
 
     /**
+     * 根据软件d查询软件详细信息
+     * 用来TAB管理修改软件前的初始化工作
+     */
+    public TabSoftwareVo getSoftwaretabById(Integer id) throws Exception {
+        //查询软件主表
+        Software software = softwareMapper.getSoftwareById(id);
+        TabSoftwareVo TabSoftwareVo = new TabSoftwareVo();
+        TabSoftwareVo.setId(software.getId());
+        TabSoftwareVo.setSoftwareName(software.getSoftwareName());
+        TabSoftwareVo.setIsShow(software.getIsShow());
+        return TabSoftwareVo;
+    }
+
+
+    /**
      * 根据条件查询；返回多个对象
      */
-    public List<Software> getSoftwareListByMap(Map
-                                                       <String, Object> param) throws Exception {
+    public List<Software> getSoftwareListByMap(Map<String, Object> param) throws Exception {
         return softwareMapper.getSoftwareListByMap(param);
     }
 
@@ -84,6 +99,49 @@ public class SoftwareServiceImpl implements SoftwareService {
     public Integer getSoftwareCountByMap(Map
                                                  <String, Object> param) throws Exception {
         return softwareMapper.getSoftwareCountByMap(param);
+    }
+
+
+    /**
+     * 根据TAB类型id分页获取软件列表
+     */
+    public PageInfo<TabSoftwareVo> getSoftwareListByTabId(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception {
+        //设置分页的起始页数和页面容量
+        Page<Object> objects = PageHelper.startPage(pageNo, pageSize);
+        List<Software> softwareList = softwareMapper.getSoftwareListByMap(param);
+        //转换参数
+        List<TabSoftwareVo> listVo = new ArrayList<TabSoftwareVo>();
+        for (Software software : softwareList) {
+            TabSoftwareVo TabSoftwareVo = new TabSoftwareVo();
+            TabSoftwareVo.setId(software.getId());
+            //封装转换TAB类型名称
+            if (software.getIsShow() == 1) {
+                TabSoftwareVo.setIsShowName("电脑版");
+            } else if (software.getIsShow() == 2) {
+                TabSoftwareVo.setIsShowName("其他-电脑端");
+            } else if (software.getIsShow() == 4) {
+                TabSoftwareVo.setIsShowName("其他-手机端");
+            }
+            //封装转换软件类型名称
+            if (software.getSoftwareType() == 111) {
+                TabSoftwareVo.setSoftwareTypeName("电脑端");
+            } else if (software.getSoftwareType() == 112) {
+                TabSoftwareVo.setSoftwareTypeName("手机端");
+            }
+            TabSoftwareVo.setSoftwareName(software.getSoftwareName());
+            TabSoftwareVo.setSort(software.getSort());
+            TabSoftwareVo.setUpdateTime(DateUtils.dateTime(software.getUpdateTime()));
+            listVo.add(TabSoftwareVo);
+        }
+
+        //把查询出来分页好的数据放进插件的分页对象中
+        PageInfo<TabSoftwareVo> info = new PageInfo<TabSoftwareVo>();
+        info.setPageSize(objects.getPageSize());
+        info.setPageNum(objects.getPageNum());
+        info.setPages(objects.getPages());
+        info.setTotal(objects.getTotal());
+        info.setData(listVo);
+        return info;
     }
 
     /**
@@ -175,10 +233,8 @@ public class SoftwareServiceImpl implements SoftwareService {
     /**
      * 删除：逻辑删除软件信息
      */
-    public Integer DeleteSoftwareById(Integer id) throws Exception {
-        Software software = new Software();
-        software.setId(id);
-        software.setStatus(3);
+    public Integer updateSoftwareById(Software software) throws Exception {
+
 
         return softwareMapper.updateSoftware(software);
     }

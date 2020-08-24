@@ -15,6 +15,10 @@ public class SoftwareByidVo {
     private Integer softwareType;
     //软件名称
     private String softwareName;
+    //软件是否显示及所属显示分类(0 不显示，1显示，2其他)
+    private Integer isShow;
+    //排序字段
+    private Integer sort;
     //软件图标路径
     private String softwareImg;
     //安装文件路径或二维码

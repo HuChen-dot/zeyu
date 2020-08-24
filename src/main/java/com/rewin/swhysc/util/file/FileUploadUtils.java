@@ -5,10 +5,7 @@ import com.rewin.swhysc.common.exception.file.FileNameLengthLimitExceededExcepti
 import com.rewin.swhysc.common.exception.file.FileSizeLimitExceededException;
 import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
 import com.rewin.swhysc.config.RuoYiConfig;
-import com.rewin.swhysc.util.DateUtils;
-import com.rewin.swhysc.util.IdUtils;
-import com.rewin.swhysc.util.Md5Utils;
-import com.rewin.swhysc.util.StringUtils;
+import com.rewin.swhysc.util.*;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -36,7 +33,19 @@ public class FileUploadUtils {
     /**
      * 总路径
      */
-    private static String uploadPath ;
+    private static String uploadPath;
+    /**
+     * 安装文件上传的地址
+     */
+    private static String software;
+    /**
+     * 图片上传的地址
+     */
+    private static String profile;
+    /**
+     * 附件上传的地址
+     */
+    private static String accessory;
 
     public static String getUploadPath() {
         return uploadPath;
@@ -48,13 +57,19 @@ public class FileUploadUtils {
     }
 
 
-    /**
-     * 图片上传的地址
-     */
-    private static String profile;
+    //安装文件上传地址
+    public static String getsoftware() {
+        return uploadPath + software;
+    }
+
+    @Value("${file.software:software}")
+    public static void setSoftware(String software) {
+        FileUploadUtils.software = software;
+    }
+
 
     public static String getProfile() {
-        return profile;
+        return uploadPath + profile;
     }
 
     @Value("${file.profile:images}")
@@ -62,38 +77,14 @@ public class FileUploadUtils {
         FileUploadUtils.profile = profile;
     }
 
-    /**
-     * 附件上传的地址
-     */
-    private static String accessory;
 
     public static String getAccessory() {
-        return accessory;
-    }
-    @Value("${file.accessory:accessory}")
-    public void setAccessory(String accessory) {
-        FileUploadUtils.accessory = accessory;
-    }
-
-    /**
-     * 安装文件上传的地址
-     */
-    private static String software = PropertiesUtil.get("uploadController.properties", "software");
-
-    //附件上传地址
-    public static String getaccessory() {
         return uploadPath + accessory;
     }
 
-
-    //图片上传地址
-    public static String getprofile() {
-        return uploadPath + profile;
-    }
-
-    //安装文件上传地址
-    public static String getsoftware() {
-        return uploadPath + software;
+    @Value("${file.accessory:accessory}")
+    public void setAccessory(String accessory) {
+        FileUploadUtils.accessory = accessory;
     }
 
     /**
@@ -105,7 +96,7 @@ public class FileUploadUtils {
      */
     public static final String upload(MultipartFile file) throws IOException {
         try {
-            return upload(getprofile(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(getProfile(), file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         } catch (Exception e) {
             throw new IOException(e.getMessage(), e);
         }
@@ -184,7 +175,7 @@ public class FileUploadUtils {
             //判断是否是图片
             if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                     || extension.equals("jpeg") || extension.equals("png")) {
-                address = new StringBuilder(getprofile());
+                address = new StringBuilder(getProfile());
                 //生成随机文件名(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = Md5Utils.getMd5(System.currentTimeMillis() + IdUtils.simpleUUID(), 6) + "." + extension;
                 //判断是否是安装文件
@@ -195,7 +186,7 @@ public class FileUploadUtils {
 
                 //否则就是附件
             } else {
-                address = new StringBuilder(getaccessory());
+                address = new StringBuilder(getAccessory());
                 //生成随机文件名并附件加上时间目录(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = extractFilename(file);
             }
@@ -221,9 +212,9 @@ public class FileUploadUtils {
         StringBuilder address = new StringBuilder("");
         if (extension.equals("bmp") || extension.equals("gif") || extension.equals("jpg")
                 || extension.equals("jpeg") || extension.equals("png")) {
-            address = new StringBuilder(getprofile());
+            address = new StringBuilder(getProfile());
         } else {
-            address = new StringBuilder(getaccessory());
+            address = new StringBuilder(getAccessory());
         }
         path = address + File.separator + imgName;
         File file = new File(path);

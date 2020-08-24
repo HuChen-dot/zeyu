@@ -12,14 +12,12 @@ import com.rewin.swhysc.mapper.dao.AdSpaceMapper;
 import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.service.AdSpaceService;
 import com.rewin.swhysc.util.DateUtils;
-import com.rewin.swhysc.util.PropertiesUtil;
+import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -95,7 +93,7 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         map.put("status", 0);
         List<Advertise> advertiseList = AdvertiseMapper.getAdvertiseListByMap(map);
         //图片上传地址
-        String profile = PropertiesUtil.get("uploadController.properties", "profile");
+        String profile = FileUploadUtils.getProfile();
 
         for (Advertise advertise : advertiseList) {
             ScAdvertiseVo ScAdvertiseVo = new ScAdvertiseVo();

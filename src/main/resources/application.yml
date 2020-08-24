@@ -44,7 +44,7 @@ logging:
     com.rewin: debug
     org.springframework: warn
   #本地需注释，linux需打开
-  config: logback.xml
+  #config: logback.xml
 
 # Spring配置
 spring:
