@@ -10,6 +10,7 @@ import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.AdSpaceService;
 import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
@@ -134,6 +135,7 @@ public class AdSpaceController extends BaseController {
      */
     @PostMapping()
     public AjaxResult addAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
+        System.err.println("添加：" + AdverDto);
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
@@ -141,8 +143,8 @@ public class AdSpaceController extends BaseController {
         adse.setTitle(AdverDto.getTitle().length() <= 0 ? " " : AdverDto.getTitle());
         adse.setPath(AdverDto.getPath() == null ? " " : AdverDto.getPath());
         adse.setCreator(loginUser.getUsername());
-        adse.setCreateTime(new Date());
-        adse.setUpdateTime(new Date());
+        adse.setCreateTime(DateUtils.dateTimes(new Date()));
+        adse.setUpdateTime(DateUtils.dateTimes(new Date()));
         try {
             AdvertiseMapper.insertAdvertise(adse);
         } catch (Exception e) {
@@ -162,7 +164,7 @@ public class AdSpaceController extends BaseController {
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
         adse.setUpdater(loginUser.getUsername());
-        adse.setUpdateTime(new Date());
+        adse.setUpdateTime(DateUtils.dateTimes(new Date()));
         try {
             AdvertiseMapper.updateAdvertise(adse);
         } catch (Exception e) {

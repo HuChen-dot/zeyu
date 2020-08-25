@@ -76,8 +76,8 @@ public class NewsNoticeController {
         if (newsDto.getBeginTime() != null && newsDto.getEndTime() != null &&
                 newsDto.getBeginTime() != "" && newsDto.getEndTime() != "") {
 
-                beginTime = DateUtils.parseDate(newsDto.getBeginTime());
-                endTime =DateUtils.parseDate(newsDto.getEndTime());
+            beginTime = DateUtils.parseDate(newsDto.getBeginTime());
+            endTime = DateUtils.parseDate(newsDto.getEndTime());
 
             map.put("beginTime", beginTime);
             map.put("endTime", endTime);
@@ -117,6 +117,7 @@ public class NewsNoticeController {
      */
     @PostMapping
     public AjaxResult addNews(@RequestBody AddNewsDto AddNewsDto) {
+        System.err.println("添加：" + AddNewsDto);
         Integer integer = null;
         try {
             integer = NewsNoticeService.AddNewsNotice(AddNewsDto);
@@ -154,8 +155,6 @@ public class NewsNoticeController {
     }
 
 
-
-
     /**
      * 修改
      */
@@ -178,7 +177,7 @@ public class NewsNoticeController {
     }
 
     /**
-     * 删除
+     * 删除（已删除）
      */
     @DeleteMapping("/{id}")
     public AjaxResult delNews(@PathVariable Integer id) {
@@ -192,4 +191,33 @@ public class NewsNoticeController {
         return AjaxResult.success("删除成功", integer);
     }
 
+    /**
+     * 提交（已提交）
+     */
+    @PutMapping("/sbt/{id}")
+    public AjaxResult sbtNewsSold(@PathVariable Integer id) {
+        Integer integer = null;
+        try {
+            integer = NewsNoticeService.sbtNewsNotice(id);
+        } catch (Exception e) {
+            log.error("提交失败", e);
+            return AjaxResult.error("系统错误，请重试");
+        }
+        return AjaxResult.success("提交成功", integer);
+    }
+
+    /**
+     * 删除（已下架）
+     */
+    @DeleteMapping("/sold/{id}")
+    public AjaxResult delNewsSold(@PathVariable Integer id) {
+        Integer integer = null;
+        try {
+            integer = NewsNoticeService.DeleteNewsNotice(id);
+        } catch (Exception e) {
+            log.error("下架失败", e);
+            return AjaxResult.error("系统错误，请重试");
+        }
+        return AjaxResult.success("下架成功", integer);
+    }
 }

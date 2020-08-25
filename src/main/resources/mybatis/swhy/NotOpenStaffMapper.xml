@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.NotOpenStaffMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getNotOpenStaffById" resultType="com.rewin.swhysc.bean.NotOpenStaff">
+        select
+        id as id,
+        dept_id as deptId,
+        staff_name as staffName,
+        staff_no as staffNo,
+        STATUS as status,
+        certificate_no as certificateNo,
+        staff_type as staffType,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime
+        from not_open_staff
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getNotOpenStaffListByMap" resultType="com.rewin.swhysc.bean.NotOpenStaff"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        dept_id as deptId,
+        staff_name as staffName,
+        staff_no as staffNo,
+        certificate_no as certificateNo,
+        STATUS as status,
+        staff_type as staffType,
+        creator as creator,
+        create_time as createTime,
+        updater as updater,
+        update_time as updateTime
+        from not_open_staff
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="deptId != null">
+                and dept_id=#{deptId}
+            </if>
+            <if test="staffName != null">
+                and staff_name like concat(concat('%', #{staffName}),'%')
+            </if>
+            <if test="staffNo != null">
+                and staff_no=#{staffNo}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="certificateNo != null">
+                and certificate_no=#{certificateNo}
+            </if>
+            <if test="staffType != null">
+                and staff_type=#{staffType}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getNotOpenStaffCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from not_open_staff
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="deptId != null">
+                and dept_id=#{deptId}
+            </if>
+            <if test="staffName != null">
+                and staff_name=#{staffName}
+            </if>
+            <if test="staffNo != null">
+                and staff_no=#{staffNo}
+            </if>
+            <if test="certificateNo != null">
+                and certificate_no=#{certificateNo}
+            </if>
+            <if test="staffType != null">
+                and staff_type=#{staffType}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertNotOpenStaff" parameterType="com.rewin.swhysc.bean.NotOpenStaff"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_not_open_staff.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into not_open_staff(
+        id,
+        dept_id,
+        staff_name,
+        staff_no,
+        certificate_no,
+        staff_type,
+        creator,
+        create_time,
+        updater,
+        update_time,
+        status)
+        values(
+        #{id},
+        #{deptId},
+        #{staffName},
+        #{staffNo},
+        #{certificateNo},
+        #{staffType},
+        #{creator},
+        #{createTime},
+        #{updater},
+        #{updateTime},
+        #{status})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateNotOpenStaff" parameterType="com.rewin.swhysc.bean.NotOpenStaff">
+        update not_open_staff
+        <trim prefix="set" suffixOverrides=",">
+            <if test="deptId != null">
+                dept_id=#{deptId},
+            </if>
+            <if test="staffName != null">
+                staff_name=#{staffName},
+            </if>
+            <if test="staffNo != null">
+                staff_no=#{staffNo},
+            </if>
+            <if test="certificateNo != null">
+                certificate_no=#{certificateNo},
+            </if>
+            <if test="staffType != null">
+                staff_type=#{staffType},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="creator != null">
+                creator=#{creator},
+            </if>
+            <if test="createTime != null">
+                create_time=#{createTime},
+            </if>
+            <if test="updater != null">
+                updater=#{updater},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime}
+            </if>
+        </trim>
+        <if test="isAll != null"></if>
+        where id = #{id}
+    </update>
+
+    <!--  根据id 逻辑删除-->
+    <update id="deNotOpenStaff" parameterType="java.util.Map">
+        update not_open_staff
+        <trim prefix="set" suffixOverrides=",">
+                status=4,
+        </trim>
+
+        <if test="isAll ==1">
+        where id in
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        </if>
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteNotOpenStaffByMap" parameterType="java.util.Map">
+        delete from not_open_staff
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="deptId != null">
+                and dept_id=#{deptId}
+            </if>
+            <if test="staffName != null">
+                and staff_name=#{staffName}
+            </if>
+            <if test="staffNo != null">
+                and staff_no=#{staffNo}
+            </if>
+            <if test="certificateNo != null">
+                and certificate_no=#{certificateNo}
+            </if>
+            <if test="staffType != null">
+                and staff_type=#{staffType}
+            </if>
+            <if test="creator != null">
+                and creator=#{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time=#{createTime}
+            </if>
+            <if test="updater != null">
+                and updater=#{updater}
+            </if>
+        </trim>
+    </delete>
+</mapper>

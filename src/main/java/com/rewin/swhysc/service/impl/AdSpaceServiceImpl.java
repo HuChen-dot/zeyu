@@ -69,7 +69,8 @@ public class AdSpaceServiceImpl implements AdSpaceService {
             BeanUtils.copyProperties(advertise, AdvertiseVo);
             AdvertiseVo.setAdSpaceName(adSpace.getAdName());
             AdvertiseVo.setViewName(page.getAdName());
-            AdvertiseVo.setUpdateTime(DateUtils.dateTime(advertise.getUpdateTime()));
+            System.err.println("时间：" + advertise.getUpdateTime());
+            AdvertiseVo.setUpdateTime(advertise.getUpdateTime());
             AdvertiseVoList.add(AdvertiseVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中
@@ -93,14 +94,22 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         map.put("status", 0);
         List<Advertise> advertiseList = AdvertiseMapper.getAdvertiseListByMap(map);
         //图片上传地址
-        String profile = FileUploadUtils.getProfile();
+        String profile = FileUploadUtils.getProfiles();
 
         for (Advertise advertise : advertiseList) {
             ScAdvertiseVo ScAdvertiseVo = new ScAdvertiseVo();
             BeanUtils.copyProperties(advertise, ScAdvertiseVo);
-            String imgPath = ScAdvertiseVo.getImgPath();
+
+            //封装转换图片路径
+            String[] split = advertise.getImgPath().split(",");
+            String[] imgPath = new String[split.length];
+            for (int i = 0; i < split.length; i++) {
+                imgPath[i] = profile + "/" + split[i];
+            }
+            //封装图标路径
+            ScAdvertiseVo.setImgPath(imgPath);
+
             String iconPath = ScAdvertiseVo.getIconPath();
-            ScAdvertiseVo.setImgPath(profile + "/" + imgPath);
             if (iconPath != null && iconPath != "") {
                 ScAdvertiseVo.setIconPath(profile + "/" + iconPath);
             }
@@ -121,11 +130,18 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         Advertise advertise = AdvertiseMapper.getAdvertiseById(id);
         BeanUtils.copyProperties(advertise, AdvertiseDetailVo);
         //图片上传地址
-        String profile = RuoYiConfig.getProfile();
-        String imgPath = AdvertiseDetailVo.getImgPath();
-        AdvertiseDetailVo.setImgPathName(imgPath);
+        String profile = FileUploadUtils.getProfiles();
+
+        //封装转换图片路径
+        String[] path = advertise.getImgPath().split(",");
+        String[] imgPath = new String[path.length];
+        for (int i = 0; i < path.length; i++) {
+            imgPath[i] = profile + "/" + path[i];
+        }
+
+        AdvertiseDetailVo.setImgPathName(path);
         String iconPath = AdvertiseDetailVo.getIconPath();
-        AdvertiseDetailVo.setImgPath(profile + "/" + imgPath);
+        AdvertiseDetailVo.setImgPath(imgPath);
         if (iconPath != null && iconPath != "") {
             AdvertiseDetailVo.setIconPath(profile + "/" + iconPath);
             AdvertiseDetailVo.setIconPathName(iconPath);
@@ -135,8 +151,7 @@ public class AdSpaceServiceImpl implements AdSpaceService {
         AdSpace adSpace = adSpaceMapper.getAdSpaceById(advertise.getParentId());
         //获取到广告位名称
         AdvertiseDetailVo.setAdSpaceName(adSpace.getAdName());
-        //获得当前广告位下，图片尺寸大小
-        AdvertiseDetailVo.setImageSizes(adSpace.getImageSizes());
+
         AdSpace adSpace1 = adSpaceMapper.getAdSpaceById(adSpace.getParentId());
         //获取到页面名称
         AdvertiseDetailVo.setViewName(adSpace1.getAdName());

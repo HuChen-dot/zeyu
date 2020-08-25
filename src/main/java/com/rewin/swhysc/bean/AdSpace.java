@@ -30,5 +30,7 @@ public class AdSpace implements Serializable {
     private Date updateTime;
     //广告位图片尺寸大小
     private String imageSizes;
+    //广告位图标尺寸大小
+    private String icoeSize;
 
 }

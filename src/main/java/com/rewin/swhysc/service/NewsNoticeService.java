@@ -59,6 +59,17 @@ public interface NewsNoticeService {
     Integer DeleteNewsNoticeById(Integer id) throws Exception;
 
     /**
+     * 删除：把新闻的状态修改为已下架
+     */
+    Integer DeleteNewsNotice(Integer id) throws Exception;
+
+
+    /**
+     * 提交：把新闻的状态修改为审核中
+     */
+    Integer sbtNewsNotice(Integer id) throws Exception;
+
+    /**
      * 根据条件分页查询；返回分页查询后的多个对象
      */
     PageInfo<ScNewsVo> queryNewsNoticePageByMap(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception;
