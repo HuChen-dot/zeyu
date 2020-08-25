@@ -1,10 +1,12 @@
 package com.rewin.swhysc.service;
 
 import com.rewin.swhysc.bean.Software;
+import com.rewin.swhysc.bean.SoftwareInfoForSc;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
 import com.rewin.swhysc.bean.vo.SoftwareByidVo;
 import com.rewin.swhysc.bean.vo.SoftwareVo;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -51,4 +53,13 @@ public interface SoftwareService {
      * 根据条件分页查询；返回分页查询后的多个对象
      */
     PageInfo<SoftwareVo> querySoftwarePageByMap(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception;
+
+    /**
+     * @Description:前台查询软件信息列表
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/8/25 9:21
+     */
+    List<SoftwareInfoForSc> getSoftwareInfoForSc(@Param(value = "type") Integer type) throws Exception;
 }

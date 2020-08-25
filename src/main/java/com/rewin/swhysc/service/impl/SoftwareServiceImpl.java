@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.rewin.swhysc.bean.Iosaonroid;
 import com.rewin.swhysc.bean.Software;
+import com.rewin.swhysc.bean.SoftwareInfoForSc;
 import com.rewin.swhysc.bean.SysDictType;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
 import com.rewin.swhysc.bean.vo.SoftwareByidVo;
@@ -200,6 +201,12 @@ public class SoftwareServiceImpl implements SoftwareService {
         info.setTotal(objects.getTotal());
         info.setData(listVo);
         return info;
+    }
+
+    @Override
+    public List<SoftwareInfoForSc> getSoftwareInfoForSc(Integer type) throws Exception {
+        softwareMapper.getSoftwareInfoForSc(type);
+        return null;
     }
 
 }
