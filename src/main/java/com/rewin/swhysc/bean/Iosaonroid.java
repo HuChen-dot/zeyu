@@ -13,7 +13,7 @@ public class Iosaonroid implements Serializable {
     //软件id
     private Integer softwareId;
     //当前软件类型（ios 1; Aonroid 2；4 PC)
-    private Integer softwareTypeId;
+    private Integer platformType;
     //更新说明
     private String updateExplain;
 

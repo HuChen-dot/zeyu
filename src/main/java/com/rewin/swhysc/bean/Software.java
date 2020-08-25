@@ -21,6 +21,14 @@ public class Software implements Serializable {
     private String fileUrl;
     //软件描述
     private String describe;
+    //排序字段
+    private Integer sort;
+    //ios跳转地址
+    private String skipUrl;
+    //手机二维码地址
+    private String qrCode;
+    //软件是否显示及所属显示分类(0 不显示，1显示，2其他)
+    private Integer isShow;
     //创建者
     private String creator;
     //创建时间

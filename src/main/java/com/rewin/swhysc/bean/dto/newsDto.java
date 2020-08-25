@@ -12,7 +12,7 @@ import java.util.Date;
  * 前台传递到后台
  * 根据条件查询新闻列表
  */
-
+@Data
 public class newsDto {
     //新闻标题
     private String noticeTitle;
@@ -28,78 +28,12 @@ public class newsDto {
     //结束时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String endTime;
+    //是否处理（1已处理，2未处理）
+    private Integer flow;
     //当前页码
     private Integer pageNum;
     //    页面容量
     private Integer pageSize;
 
 
-    public Integer getPageNum() {
-        return pageNum;
-    }
-
-    public void setPageNum(Integer pageNum) {
-        this.pageNum = pageNum;
-    }
-
-    public Integer getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(Integer pageSize) {
-        this.pageSize = pageSize;
-    }
-
-    public String getNoticeTitle() {
-        return noticeTitle;
-    }
-
-    public void setNoticeTitle(String noticeTitle) {
-        this.noticeTitle = noticeTitle;
-    }
-
-    public Integer getNoticeTypeId() {
-        return noticeTypeId;
-    }
-
-    public void setNoticeTypeId(Integer noticeTypeId) {
-        this.noticeTypeId = noticeTypeId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getBeginTime() {
-        return beginTime;
-    }
-
-    public void setBeginTime(String beginTime) {
-        this.beginTime = beginTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
-    @Override
-    public String toString() {
-        return "newsDto{" +
-                "noticeTitle='" + noticeTitle + '\'' +
-                ", noticeTypeId=" + noticeTypeId +
-                ", status='" + status + '\'' +
-                ", beginTime='" + beginTime + '\'' +
-                ", endTime='" + endTime + '\'' +
-                ", pageNum=" + pageNum +
-                ", pageSize=" + pageSize +
-                '}';
-    }
 }

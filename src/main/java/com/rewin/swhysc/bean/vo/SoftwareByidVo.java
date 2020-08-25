@@ -15,12 +15,20 @@ public class SoftwareByidVo {
     private Integer softwareType;
     //软件名称
     private String softwareName;
+    //软件是否显示及所属显示分类(0 不显示，1显示，2其他)
+    private Integer isShow;
+    //排序字段
+    private Integer sort;
     //软件图标路径
     private String softwareImg;
     //安装文件路径或二维码
     private String fileUrl;
     //软件描述
     private String describe;
+    //ios跳转地址
+    private String skipUrl;
+    //手机二维码地址
+    private String qrCode;
 
     //更新说明
     private String updateExplain;
@@ -29,7 +37,7 @@ public class SoftwareByidVo {
     //版本号
     private String version;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 
     //手机冗余更新说明
     private String cellUpdateExplain;
@@ -38,6 +46,6 @@ public class SoftwareByidVo {
     //手机冗余版本号
     private String cellVersion;
     //手机冗余更新时间
-    private Date cellUpdateTime;
+    private String cellUpdateTime;
 }
 

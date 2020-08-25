@@ -2,6 +2,7 @@ package com.rewin.swhysc.service;
 
 import com.rewin.swhysc.bean.NewsNotice;
 import com.rewin.swhysc.bean.dto.AddNewsDto;
+import com.rewin.swhysc.bean.dto.VerifierDto;
 import com.rewin.swhysc.bean.vo.ScNewsDetailsVo;
 import com.rewin.swhysc.bean.vo.ScNewsVo;
 import com.rewin.swhysc.bean.vo.UpdataNewsVo;
@@ -30,6 +31,11 @@ public interface NewsNoticeService {
      * 根据条件查询；返回多个对象
      */
     List<NewsNotice> getNewsNoticeListByMap(Map<String, Object> param) throws Exception;
+
+    /**
+     * 修改：审核人员审核后修改
+     */
+    Integer updateNewsNotice(NewsNotice NewsNotice) throws Exception;
 
 
     /**

@@ -27,12 +27,16 @@ public class SoftwareDto {
     private Integer status;
     //软件描述
     private String describe;
+    //ios跳转地址
+    private String skipUrl;
+    //手机二维码地址
+    private String qrCode;
     //软件大小
     private String softwareSize;
     //版本号
     private String version;
     //更新时间
-    private String updateTime;
+    private Date updateTime;
 
     //手机冗余更新说明
     private String cellUpdateExplain;
@@ -41,5 +45,5 @@ public class SoftwareDto {
     //手机冗余版本号
     private String cellVersion;
     //手机冗余更新时间
-    private String cellUpdateTime;
+    private Date cellUpdateTime;
 }

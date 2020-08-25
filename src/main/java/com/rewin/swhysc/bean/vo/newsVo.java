@@ -22,8 +22,12 @@ public class newsVo {
     private String status;
     //审核意见
     private String opinion;
+    //是否处理（1已处理，2未处理）
+    private String flow;
+    //创建人
+    private String creator;
     //审核人
-    private String auditor;
+    private String verifier;
     //是否置顶
     private String isStick;
     //更新时间

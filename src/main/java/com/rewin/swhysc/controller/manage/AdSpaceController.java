@@ -47,7 +47,6 @@ public class AdSpaceController extends BaseController {
     @GetMapping("space/{id}")
     public AjaxResult getAdSpace(@PathVariable Integer id) {
         id = id == null ? 0 : id;
-        System.err.println(id);
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("parentId", id);
         List<viewOrAdVo> list = new ArrayList<>();
@@ -75,7 +74,6 @@ public class AdSpaceController extends BaseController {
     @GetMapping("imgsize/{id}")
     public AjaxResult getImgSize(@PathVariable Integer id) {
         id = id == null ? 0 : id;
-        System.err.println(id);
         Map<String, Object> map = new ConcurrentHashMap<>(1);
         map.put("id", id);
         viewOrAdVo viewOrAdVo = null;
@@ -108,7 +106,7 @@ public class AdSpaceController extends BaseController {
             adSpaceByPaid = AdSpaceService.getAdSpaceByPaid(id, pageNum, pageSize);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("查询错误，请重试");
         }
         return AjaxResult.success("查询成功", adSpaceByPaid);
     }
@@ -125,7 +123,7 @@ public class AdSpaceController extends BaseController {
             advertise = AdSpaceService.getAdvertiseByid(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("查询错误，请重试");
         }
         return AjaxResult.success("查询成功", advertise);
     }
@@ -136,11 +134,12 @@ public class AdSpaceController extends BaseController {
      */
     @PostMapping()
     public AjaxResult addAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        System.err.println("****************************");
-//        System.err.println("添加对象：" + AdverDto);
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
+        adse.setOrderNo(AdverDto.getOrderNo() == null ? 1 : AdverDto.getOrderNo());
+        adse.setTitle(AdverDto.getTitle().length() <= 0 ? " " : AdverDto.getTitle());
+        adse.setPath(AdverDto.getPath() == null ? " " : AdverDto.getPath());
         adse.setCreator(loginUser.getUsername());
         adse.setCreateTime(new Date());
         adse.setUpdateTime(new Date());
@@ -148,7 +147,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.insertAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("添加错误，请重试");
         }
         return AjaxResult.success("添加成功");
     }
@@ -159,9 +158,6 @@ public class AdSpaceController extends BaseController {
      */
     @PutMapping
     public AjaxResult updeAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-//        System.err.println("****************************");
-//        System.err.println("修改对象：" + AdverDto);
-
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);
@@ -171,7 +167,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.updateAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("修改错误，请重试");
         }
         return AjaxResult.success("修改成功");
     }
@@ -189,7 +185,7 @@ public class AdSpaceController extends BaseController {
             AdvertiseMapper.updateAdvertise(adse);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
+            return AjaxResult.error("删除错误，请重试");
         }
         return AjaxResult.success("删除成功");
     }

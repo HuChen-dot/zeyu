@@ -1,4 +1,4 @@
-package com.rewin.swhysc.common.utils;
+package com.rewin.swhysc.util;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -58,9 +58,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         return parseDateToStr(format, new Date());
     }
 
-    public static final String dateTime(final Date date) {
-        return parseDateToStr(YYYY_MM_DD, date);
-    }
+
 
     public static final String parseDateToStr(final String format, final Date date) {
         return new SimpleDateFormat(format).format(date);
@@ -102,6 +100,12 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
         } catch (ParseException e) {
             return null;
         }
+    }
+    /**
+     * 日期转换成字符串格式
+     */
+    public static final String dateTime(final Date date) {
+        return parseDateToStr(YYYY_MM_DD, date);
     }
 
     /**
