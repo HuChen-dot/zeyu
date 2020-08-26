@@ -12,7 +12,7 @@ import java.util.Date;
  * 前台传递到后台
  * 根据条件查询新闻列表
  */
-
+@Data
 public class newsDto {
     //新闻标题
     private String noticeTitle;
@@ -21,40 +21,19 @@ public class newsDto {
     private Integer noticeTypeId;
     //公告状态（1未提交，2已发布，4审核中，8已下架，16已删除，32驳回）
     private String status;
-    //创建时间
+
+    //开始时间
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date createTime;
+    private String beginTime;
+    //结束时间
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String endTime;
+    //是否处理（1已处理，2未处理）
+    private Integer flow;
+    //当前页码
+    private Integer pageNum;
+    //    页面容量
+    private Integer pageSize;
 
-    public String getNoticeTitle() {
-        return noticeTitle;
-    }
 
-    public void setNoticeTitle(String noticeTitle) {
-        this.noticeTitle = noticeTitle;
-    }
-
-    public Integer getNoticeTypeId() {
-        return noticeTypeId;
-    }
-
-    public void setNoticeTypeId(Integer noticeTypeId) {
-        this.noticeTypeId = noticeTypeId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    @JsonDeserialize(using = CustomJsonDateDeserializer.class)
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

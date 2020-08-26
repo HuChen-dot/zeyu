@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.DownloadSwMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getDownloadSwById" resultType="com.rewin.swhysc.bean.DownloadSw">
+        select
+        id as id,
+        software_id as softwareId,
+        software_type as softwareType,
+        software_name as softwareName,
+        download_count as downloadCount,
+        download_time as downloadTime,
+        ip as ip
+        from download_sw
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and software_id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getDownloadSwListByMap" resultType="com.rewin.swhysc.bean.DownloadSw"
+            parameterType="java.util.Map">
+        select
+        distinct
+        software_id,
+        software_type,
+        software_name
+        from download_sw
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="softwareName != null">
+                and software_name like concat(concat('%',#{softwareName}),'%')
+            </if>
+            <if test="beginTime != null">
+                and download_time &gt;=#{beginTime}
+                and download_time &lt;= #{endTime}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getDownloadSwCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from download_sw
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="softwareId != null">
+                and software_id=#{softwareId}
+            </if>
+            <if test="beginTime != null">
+                and download_time &gt;=#{beginTime}
+                and download_time &lt;= #{endTime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertDownloadSw" parameterType="com.rewin.swhysc.bean.DownloadSw">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_download_sw.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into download_sw(
+        id,
+        software_id,
+        software_type,
+        software_name,
+        download_count,
+        download_time,
+        ip)
+        values(
+        #{id},
+        #{softwareId},
+        #{softwareType},
+        #{softwareName},
+        #{downloadCount},
+        #{downloadTime},
+        #{ip})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateDownloadSw" parameterType="com.rewin.swhysc.bean.DownloadSw">
+        update download_sw
+        <trim prefix="set" suffixOverrides=",">
+            <if test="id != null">
+                id=#{id},
+            </if>
+            <if test="softwareId != null">
+                software_id=#{softwareId},
+            </if>
+            <if test="softwareType != null">
+                software_type=#{softwareType},
+            </if>
+            <if test="softwareName != null">
+                software_name=#{softwareName},
+            </if>
+            <if test="downloadCount != null">
+                download_count=#{downloadCount},
+            </if>
+            <if test="downloadTime != null">
+                download_time=#{downloadTime},
+            </if>
+            <if test="ip != null">
+                ip=#{ip}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteDownloadSwByMap" parameterType="java.util.Map">
+        delete from download_sw
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareId != null">
+                and software_id=#{softwareId}
+            </if>
+            <if test="softwareType != null">
+                and software_type=#{softwareType}
+            </if>
+            <if test="softwareName != null">
+                and software_name=#{softwareName}
+            </if>
+            <if test="downloadCount != null">
+                and download_count=#{downloadCount}
+            </if>
+            <if test="downloadTime != null">
+                and download_time=#{downloadTime}
+            </if>
+        </trim>
+    </delete>
+</mapper>

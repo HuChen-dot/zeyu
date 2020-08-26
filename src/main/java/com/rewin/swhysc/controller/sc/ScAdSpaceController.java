@@ -1,8 +1,6 @@
 package com.rewin.swhysc.controller.sc;
 
-import com.rewin.swhysc.bean.Advertise;
 import com.rewin.swhysc.bean.vo.ScAdvertiseVo;
-import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.service.AdSpaceService;
 import com.rewin.swhysc.util.AjaxResult;
 import org.slf4j.Logger;
@@ -13,9 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/swhysc/advertise")
 @RestController

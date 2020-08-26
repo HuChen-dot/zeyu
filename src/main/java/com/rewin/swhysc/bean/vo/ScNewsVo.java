@@ -9,12 +9,12 @@ import java.util.Date;
  */
 @Data
 public class ScNewsVo {
-    //主键
-    private Long id;
+    //新闻id
+    private Integer id;
     //新闻标题
     private String noticeTitle;
     //是否置顶
     private String isStick;
     //更新时间
-    private Date updateTime;
+    private String updateTime;
 }

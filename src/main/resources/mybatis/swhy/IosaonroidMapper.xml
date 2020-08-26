@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.IosaonroidMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getIosaonroidById" resultType="com.rewin.swhysc.bean.Iosaonroid">
+        select
+        id as id,
+        software_id as softwareId,
+        platform_type as platformType,
+        update_explain as updateExplain,
+
+        software_size as softwareSize,
+        version as version,
+        update_time as updateTime,
+
+        from iosaonroid
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getIosaonroidListByMap" resultType="com.rewin.swhysc.bean.Iosaonroid"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        software_id as softwareId,
+        platform_type as platformType,
+        update_explain as updateExplain,
+        software_size as softwareSize,
+        version as version,
+        update_time as updateTime
+
+        from iosaonroid
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareId != null">
+                and software_id=#{softwareId}
+            </if>
+            <if test="platformType != null">
+                and platform_type=#{platformType}
+            </if>
+            <if test="updateExplain != null">
+                and update_explain=#{updateExplain}
+            </if>
+
+            <if test="softwareSize != null">
+                and software_size=#{softwareSize}
+            </if>
+            <if test="version != null">
+                and version=#{version}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getIosaonroidCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from iosaonroid
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareId != null">
+                and software_id=#{softwareId}
+            </if>
+            <if test="platformType != null">
+                and platform_type=#{platformType}
+            </if>
+            <if test="updateExplain != null">
+                and update_explain=#{updateExplain}
+            </if>
+            <if test="softwareSize != null">
+                and software_size=#{softwareSize}
+            </if>
+            <if test="version != null">
+                and version=#{version}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertIosaonroid" parameterType="com.rewin.swhysc.bean.Iosaonroid"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_iosaonroid.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into iosaonroid(
+        id,
+        software_id,
+        platform_type,
+        update_explain,
+
+        software_size,
+        version,
+        update_time
+        )
+        values(
+        #{id},
+        #{softwareId},
+        #{platformType},
+        #{updateExplain},
+
+        #{softwareSize},
+        #{version},
+        #{updateTime}
+        )
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateIosaonroid" parameterType="com.rewin.swhysc.bean.Iosaonroid">
+        update iosaonroid
+        <trim prefix="set" suffixOverrides=",">
+            <if test="updateExplain != null">
+                update_explain=#{updateExplain},
+            </if>
+
+            <if test="softwareSize != null">
+                software_size=#{softwareSize},
+            </if>
+            <if test="version != null">
+                version=#{version},
+            </if>
+            <if test="updateTime != null">
+                update_time=#{updateTime},
+            </if>
+
+        </trim>
+        where software_id=#{softwareId}
+        and platform_type=#{platformType}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteIosaonroidByMap" parameterType="java.util.Map">
+        delete from iosaonroid
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="softwareId != null">
+                and software_id=#{softwareId}
+            </if>
+            <if test="platformType != null">
+                and platform_type=#{platformType}
+            </if>
+            <if test="updateExplain != null">
+                and update_explain=#{updateExplain}
+            </if>
+            <if test="softwareSize != null">
+                and software_size=#{softwareSize}
+            </if>
+            <if test="version != null">
+                and version=#{version}
+            </if>
+            <if test="updateTime != null">
+                and update_time=#{updateTime}
+            </if>
+        </trim>
+    </delete>
+</mapper>

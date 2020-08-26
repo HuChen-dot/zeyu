@@ -21,7 +21,7 @@ public class ScAdvertiseVo {
     //外链地址
     private String path;
     //图片路径
-    private String imgPath;
+    private String[] imgPath;
     //图标路径
     private String iconPath;
 

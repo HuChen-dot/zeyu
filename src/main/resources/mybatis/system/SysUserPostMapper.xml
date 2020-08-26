@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rewin.swhysc.project.system.mapper.SysUserPostMapper">
 
-    <resultMap type="SysUserPost" id="SysUserPostResult">
+    <resultMap type="com.rewin.swhysc.project.system.domain.SysUserPost" id="SysUserPostResult">
         <result property="userId" column="user_id"/>
         <result property="postId" column="post_id"/>
     </resultMap>

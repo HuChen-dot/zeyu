@@ -20,6 +20,7 @@ public interface NewsNoticeMapper {
      */
     List<NewsNotice> getNewsNoticeListByMap(Map<String, Object> param) throws Exception;
 
+
     /**
      * 根据传入的条件查询新闻列表
      */

@@ -84,6 +84,7 @@
                 and ICON_PATH=#{iconPath}
             </if>
         </trim>
+        order by order_no,createTime desc
     </select>
 
 
@@ -150,11 +151,16 @@
         path,
         status,
         img_path,
+        <if test="iconPath != null">
+            ICON_PATH,
+        </if>
         creator,
         create_time,
-        updater,
-        update_time,
-        ICON_PATH)
+        <if test="updater != null">
+            updater,
+        </if>
+        update_time
+        )
         values(
         #{id},
         #{title},
@@ -164,11 +170,16 @@
         #{path},
         #{status},
         #{imgPath},
+        <if test="iconPath != null">
+            #{iconPath},
+        </if>
         #{creator},
         #{createTime},
-        #{updater},
-        #{updateTime},
-        #{iconPath})
+        <if test="updater != null">
+            #{updater},
+        </if>
+        #{updateTime}
+        )
     </insert>
 
 

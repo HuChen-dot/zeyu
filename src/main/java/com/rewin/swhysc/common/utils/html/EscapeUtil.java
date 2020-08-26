@@ -118,10 +118,4 @@ public class EscapeUtil {
         return tmp.toString();
     }
 
-    public static void main(String[] args) {
-        String html = "alert('11111');";
-        System.out.println(EscapeUtil.clean(html));
-        System.out.println(EscapeUtil.escape(html));
-        System.out.println(EscapeUtil.unescape(html));
-    }
 }

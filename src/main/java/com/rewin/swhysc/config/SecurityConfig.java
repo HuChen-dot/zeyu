@@ -103,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                自己的逻辑
                 .antMatchers("/interestrate/**").anonymous()
                 .antMatchers("/swhysc/**").anonymous()
-                .antMatchers("/swhyscmanage/**").anonymous()
+                .antMatchers("/sys/**").anonymous()
                 .antMatchers("/channel/**").anonymous()
                 .antMatchers("/Infobase/**").anonymous()
                 .antMatchers("/common/download**").anonymous()
