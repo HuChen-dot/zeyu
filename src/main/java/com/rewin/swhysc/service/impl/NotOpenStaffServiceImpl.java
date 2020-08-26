@@ -99,6 +99,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setFormerId(addOpenStaffDto.getId().toString());
         //先根据id查询人员信息
         NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
+       //判断当前操作是否是存草稿（0为不存草稿，1为存草稿）
         if (addOpenStaffDto.getIsAdd() == 0) {
             notOpenStaff.setStatus(1);
             //修改原数据的状态
@@ -108,7 +109,6 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             notOpenStaffMapper.updateNotOpenStaff(upOpenStaff);
             //向主表插入数据
             BeanUtils.copyProperties(notOpenStaff, OpenStaff);
-            System.err.println("id：" + OpenStaff.getId());
             OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
             OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
             OpenStaff.setDeptId(addOpenStaffDto.getDeptId());
@@ -135,7 +135,6 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
 
             notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
         }
-        System.err.println("id：" + OpenStaff.getId());
         //封装参数，向中间表插入数据
         AuditRecord.setStaffId(OpenStaff.getId().toString());
         AuditRecord.setInfoTypeid(addOpenStaffDto.getStaffType());
@@ -155,15 +154,19 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
      * 逻辑删除：全量删除或批量删除
      */
     @Transactional
-    public Integer deNotOpenStaff(Map<String, Object> param, String id) throws Exception {
+    public Integer deNotOpenStaff(Map<String, Object> param, String id, int i) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //封装参数，向中间表插入数据
         AuditRecord AuditRecord = new AuditRecord();
         AuditRecord.setStaffId(" ");
         AuditRecord.setInfoTypeid(113);
         AuditRecord.setFormerId(id);
-        //如果不等于空就是批量删除，否则就是全量删除
+        //如果等于-1就是批量删除，否则就是全量删除
+        if (i == -1) {
             AuditRecord.setOperationId(4);
+        } else {
+            AuditRecord.setOperationId(8);
+        }
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
         AuditRecord.setSubmitter(loginUser.getUsername());

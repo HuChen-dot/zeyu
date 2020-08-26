@@ -130,14 +130,21 @@ public class NotOpenStaffController {
     @DeleteMapping("/{id}")
     public AjaxResult deleteNotOpenStaff(@PathVariable String id) {
         System.err.println("删除：" + id);
+        int i = id.indexOf("-2");
         Map<String, Object> map = new ConcurrentHashMap<>(6);
-        if (id != null) {
+        if (i == -1) {
             String[] split = id.split(",");
             map.put("array", split);
-            map.put("isAll", 1);
+            map.put("status", 4);
+        } else {
+            id = id.substring(0, id.indexOf("-2"));
+            System.err.println("截取后：" + id);
+            String[] split = id.split(",");
+            map.put("array", split);
+            map.put("status", 8);
         }
         try {
-            NotOpenStaffService.deNotOpenStaff(map,id);
+            NotOpenStaffService.deNotOpenStaff(map, id, i);
         } catch (Exception e) {
             log.error("删除数据库出错", e);
             return AjaxResult.error("删除失败，请重试");

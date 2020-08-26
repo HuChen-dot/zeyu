@@ -51,7 +51,7 @@ public class FileUploadUtils {
         return uploadPath;
     }
 
-    @Value("${file.uploadPath:d:/}")
+    @Value("${file.uploadPath:/opt/mager/upload/}")
     public void setUploadPath(String uploadPath) {
         FileUploadUtils.uploadPath = uploadPath;
     }
@@ -98,7 +98,6 @@ public class FileUploadUtils {
     public static String getAccessory() {
         return uploadPath + accessory;
     }
-
 
 
     /**
