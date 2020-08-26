@@ -2,25 +2,28 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.rewin.swhysc.mapper.dao.ConvertRateMapper">
+<mapper namespace="com.rewin.swhysc.mapper.dao.BondBdMapper">
 
-    <select id="getConverRateList" resultType="com.rewin.swhysc.bean.ConvertRate"
+    <select id="getBondBdList" resultType="com.rewin.swhysc.bean.BondBd"
             parameterType="java.util.Map">
         select
         ID as id,
         STOCK_CODE as stockCode,
         STOCK_NAME as stockName,
-        RATE as rate,
+        RZ_RATIO as rzRatio,
+        RQ_RATIO as rqRatio,
+        IS_RZ as isRz,
+        IS_RQ as isRq,
         BOURSE as bourse,
         CREATE_DATE as createDate,
         UPDATE_DATE as updateDate,
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
         STATE as state
-        from RZRQ_CONVERT_RATE
+        from RZRQ_BOND_BD
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
-                and ID=#{ID}
+                and ID=#{id}
             </if>
             <if test="stockCode != null">
                 and STOCK_CODE=#{stockCode}
@@ -46,19 +49,22 @@
     </select>
 
 
-    <select id="getConverRateInfo" resultType="com.rewin.swhysc.bean.ConvertRate">
+    <select id="getBondBdInfo" resultType="com.rewin.swhysc.bean.BondBd">
         select
         ID as id,
         STOCK_CODE as stockCode,
         STOCK_NAME as stockName,
-        RATE as rate,
+        RZ_RATIO as rzRatio,
+        RQ_RATIO as rqRatio,
+        IS_RZ as isRz,
+        IS_RQ as isRq,
         BOURSE as bourse,
         CREATE_DATE as createDate,
         UPDATE_DATE as updateDate,
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
         STATE as state
-        from RZRQ_CONVERT_RATE
+        from RZRQ_BOND_BD
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
                 and ID=#{ID}
@@ -68,15 +74,18 @@
     </select>
 
 
-    <insert id="insertConverRate" parameterType="com.rewin.swhysc.bean.ConvertRate"  keyProperty="id">
+    <insert id="insertBondBd" parameterType="com.rewin.swhysc.bean.BondBd"  keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
-            select SEQ_RZRQ_CONVERT_RATE.nextval as sysId from DUAL
+            select SEQ_RZRQ_BOND_BD.nextval as sysId from DUAL
         </selectKey>
-        insert into RZRQ_CONVERT_RATE(
+        insert into RZRQ_BOND_BD(
         ID,
         STOCK_CODE,
         STOCK_NAME,
-        RATE,
+        RZ_RATIO,
+        RQ_RATIO,
+        IS_RZ,
+        IS_RQ,
         BOURSE,
         CREATE_DATE,
         UPDATE_DATE,
@@ -88,7 +97,10 @@
         #{id},
         #{stockCode},
         #{stockName},
-        #{rate},
+        #{rzRatio},
+        #{rqRatio},
+        #{isRz},
+        #{isRq},
         #{bourse},
         #{createDate},
         #{updateDate},
@@ -97,17 +109,26 @@
         #{state})
     </insert>
 
-    <update id="updateConvertRate" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE
+    <update id="updateBondBd" parameterType="com.rewin.swhysc.bean.BondBd">
+        update RZRQ_BOND_BD
         <trim prefix="set" suffixOverrides=",">
             <if test="stockCode != null">
-                 STOCK_CODE=#{stockCode},
+                STOCK_CODE=#{stockCode},
             </if>
             <if test="stockName != null">
-                 STOCK_NAME=#{stockName},
+                STOCK_NAME=#{stockName},
             </if>
-            <if test="rate != null">
-                RATE=#{rate},
+            <if test="rzRatio != null">
+                RZ_RATIO=#{rzRatio},
+            </if>
+            <if test="rqRatio != null">
+                RQ_RATIO=#{rqRatio},
+            </if>
+            <if test="isRz != null">
+                IS_RZ=#{isRz},
+            </if>
+            <if test="isRq != null">
+                IS_RQ=#{isRq},
             </if>
             <if test="bourse != null">
                 BOURSE=#{bourse},
@@ -125,13 +146,12 @@
         where ID = #{id}
     </update>
 
-    <update id="updateConverRateAll" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='5' where STATE != '6'
+    <update id="updateBondBdAll" parameterType="com.rewin.swhysc.bean.BondBd">
+        update RZRQ_BOND_BD SET STATE='5' where STATE != '6'
     </update>
 
 
-    <update id="deleteBondBdAll" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='5' where STATE = '6'
+    <update id="deleteBondBdAll" parameterType="com.rewin.swhysc.bean.BondBd">
+        update RZRQ_BOND_BD SET STATE='5' where STATE = '6'
     </update>
-
 </mapper>

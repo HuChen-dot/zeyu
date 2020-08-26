@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.WarrantRatioMapper">
+
+    <select id="getWarrantRatioList" resultType="com.rewin.swhysc.bean.WarrantRatio"
+            parameterType="java.util.Map">
+        select
+        ID as id,
+        CLOSE_LINE as closeLine,
+        CORDON as cordon,
+        EXTRACT_LINE as extractLine,
+        MIN_LINE as minLine,
+        CREATE_DATE as createDate,
+        UPDATE_DATE as updateDate,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state,
+        AUDIT_ID as auditId
+        from RZRQ_WARRANT_RATIO
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{id}
+            </if>
+            <if test="createDate1 != null">
+                and to_char(CREATE_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{createDate1}
+            </if>
+            <if test="createDate2 != null">
+                and to_char(CREATE_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{createDate2}
+            </if>
+            <choose>
+                <when test="state != null">
+                    and STATE=#{state} and STATE != '6'
+                </when>
+                <otherwise>
+                    and STATE != '6'
+                </otherwise>
+            </choose>
+        </trim>
+    </select>
+
+
+    <select id="getWarrantRatioInfo" resultType="com.rewin.swhysc.bean.WarrantRatio">
+        select
+        ID as id,
+        CLOSE_LINE as closeLine,
+        CORDON as cordon,
+        EXTRACT_LINE as extractLine,
+        MIN_LINE as minLine,
+        CREATE_DATE as createDate,
+        UPDATE_DATE as updateDate,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state,
+        AUDIT_ID as auditId
+        from RZRQ_WARRANT_RATIO
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{ID}
+            </if>
+            and STATE != '6'
+        </trim>
+    </select>
+
+
+    <insert id="insertWarrantRatio" parameterType="com.rewin.swhysc.bean.WarrantRatio"  keyProperty="id">
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select SEQ_RZRQ_WARRANT_RATIO.nextval as sysId from DUAL
+        </selectKey>
+        insert into RZRQ_WARRANT_RATIO(
+        ID,
+        CLOSE_LINE,
+        CORDON,
+        EXTRACT_LINE,
+        MIN_LINE,
+        CREATE_DATE,
+        UPDATE_DATE,
+        CREATE_USER,
+        UPDATE_USER,
+        STATE,
+        AUDIT_ID
+        )
+        values(
+        #{id},
+        #{closeLine},
+        #{cordon},
+        #{extractLine},
+        #{minLine},
+        #{createDate},
+        #{updateDate},
+        #{createUser},
+        #{updateUser},
+        #{state},
+        #{auditId,jdbcType=VARCHAR}})
+    </insert>
+
+    <update id="updateWarrantRatio" parameterType="com.rewin.swhysc.bean.WarrantRatio">
+        update RZRQ_WARRANT_RATIO
+        <trim prefix="set" suffixOverrides=",">
+            <if test="closeLine != null">
+                CLOSE_LINE=#{closeLine},
+            </if>
+            <if test="cordon != null">
+                CORDON=#{cordon},
+            </if>
+            <if test="extractLine != null">
+                EXTRACT_LINE=#{extractLine},
+            </if>
+            <if test="minLine != null">
+                MIN_LINE=#{minLine},
+            </if>
+            <if test="updateDate != null">
+                UPDATE_DATE=#{updateDate},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER=#{updateUser},
+            </if>
+            <if test="state != null">
+                STATE=#{state},
+            </if>
+            <if test="auditId != null">
+                AUDIT_ID=#{auditId},
+            </if>
+        </trim>
+        where ID = #{id}
+    </update>
+
+
+
+</mapper>

@@ -9,5 +9,15 @@ import com.rewin.swhysc.bean.ConvertRate;
  */
 public interface ConvertRateService {
 
-    PageInfo<ConvertRate> getConverRateList(Integer pageNo, Integer pageSize,String stockCode,String stockName,String updateDate) throws Exception;
+    PageInfo<ConvertRate> getConverRateList(Integer pageNo, Integer pageSize,String stockCode,String stockName,String startDate,String endDate) throws Exception;
+
+    ConvertRate getConvertRateInfo(String id) throws Exception;
+
+    Integer insertConvertRate(ConvertRate convertRate) throws Exception;
+
+    Integer updateConvertRate(ConvertRate convertRate) throws Exception;
+
+    Integer deleteConvertRateAll() throws Exception;
+
+    Integer updateConvertRateAll() throws Exception;
 }

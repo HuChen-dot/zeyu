@@ -13,12 +13,11 @@ import java.util.Date;
 @Setter
 public class ConvertRateVo implements Serializable {
     private int id;
-    private int infoType;
     private String stockCode;
     private String stockName;
     private String rate;
     private String state;
-    private String bourseCode;
+    private String bourse;
     private String createUser;
     private Date createDate;
     private String updateUser;

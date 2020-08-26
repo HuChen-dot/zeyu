@@ -17,4 +17,6 @@ public interface ConvertRateMapper {
 
     Integer deleteConverRateAll() throws Exception;
 
+    Integer updateConverRateAll() throws Exception;
+
 }

@@ -1,14 +1,18 @@
 package com.rewin.swhysc.controller.manage;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 
+import com.rewin.swhysc.bean.RzrqAudit;
 import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.dto.AddConvertRateDto;
 import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
 import com.rewin.swhysc.service.ConvertRateService;
+import com.rewin.swhysc.util.StringUtils;
 import com.rewin.swhysc.util.file.ExcelReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +37,8 @@ public class ConvertRateController extends BaseController {
     ConvertRateMapper convertRateMapper;
 
     @Resource
+    RzrqAuditService rzrqAuditService;
+    @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
 
 
@@ -40,23 +46,49 @@ public class ConvertRateController extends BaseController {
      * 分页查询折算率信息列表
      */
     @GetMapping("list")
-    public AjaxResult getConverRateList(Integer pageNum, Integer pageSize,String stockCode,String stockName,String updateDate) {
+    public AjaxResult getConverRateList(Integer pageNum, Integer pageSize,String stockCode,String stockName,String startDate,String endDate ) {
         PageInfo<ConvertRate> converRateList = null;
         try {
-            System.out.println("---------------"+pageNum);
-            System.out.println("---------------"+pageSize);
             if(pageNum == null){
                 pageNum = 1;
             }
             if(pageSize == null){
                 pageSize = 10;
             }
-            converRateList = convertRateService.getConverRateList(pageNum, pageSize,stockCode,stockName,updateDate);
+            converRateList = convertRateService.getConverRateList(pageNum, pageSize,stockCode,stockName,startDate,endDate);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
         return AjaxResult.success("查询成功", converRateList);
+    }
+
+    /**
+     * 官网使用折算率查询
+     */
+    @GetMapping("queryList")
+    public AjaxResult queryConverRateList(Integer pageNum, Integer pageSize) {
+        Map<String, Object> map = new HashMap<>(1);
+        map.put("state", 2);
+        PageInfo<ConvertRate> convertRatePageInfo = null;
+        try {
+            if(pageNum == null){
+                pageNum = 1;
+            }
+            if(pageSize == null){
+                pageSize = 10;
+            }
+            //设置分页的起始页数和页面容量
+            PageHelper.startPage(pageNum, pageSize);
+            List<ConvertRate> converRateList = convertRateMapper.getConverRateList(map);
+
+            //把查询出来分页好的数据放进插件的分页对象中
+            convertRatePageInfo = new PageInfo<ConvertRate>(converRateList);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("sql错误");
+        }
+        return AjaxResult.success("查询成功", convertRatePageInfo);
     }
 
     /**
@@ -98,9 +130,18 @@ public class ConvertRateController extends BaseController {
         convertRate.setUpdateUser(loginUser.getUsername());
         convertRate.setCreateDate(new java.util.Date());
         convertRate.setUpdateDate(new java.util.Date());
-        convertRate.setState("0");
+        convertRate.setState("1");
         try {
             convertRateMapper.insertConverRate(convertRate);
+            RzrqAudit rzrqAudit = new RzrqAudit();
+            rzrqAudit.setInfoType("0");
+            rzrqAudit.setCommitTime(new java.util.Date());
+            rzrqAudit.setCommitUser(loginUser.getUsername());
+            rzrqAudit.setHandleType("0");
+            rzrqAudit.setAuditStatus("0");
+            rzrqAudit.setHandleNum(String.valueOf(convertRate.getId()));
+            rzrqAudit.setState("0");
+            rzrqAuditService.insertRzrqAudit(rzrqAudit);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -118,8 +159,18 @@ public class ConvertRateController extends BaseController {
         BeanUtils.copyProperties(addConvertRateDto, convertRate);
         convertRate.setUpdateUser(loginUser.getUsername());
         convertRate.setUpdateDate(new java.util.Date());
+        convertRate.setState("4");
         try {
             convertRateMapper.updateConvertRate(convertRate);
+            RzrqAudit rzrqAudit = new RzrqAudit();
+            rzrqAudit.setInfoType("0");
+            rzrqAudit.setCommitTime(new java.util.Date());
+            rzrqAudit.setCommitUser(loginUser.getUsername());
+            rzrqAudit.setHandleType("1");
+            rzrqAudit.setAuditStatus("0");
+            rzrqAudit.setHandleNum(String.valueOf(convertRate.getId()));
+            rzrqAudit.setState("0");
+            rzrqAuditService.insertRzrqAudit(rzrqAudit);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -132,12 +183,13 @@ public class ConvertRateController extends BaseController {
      */
     @PutMapping("delete")
     public AjaxResult deleteConverRateByID(String idStrings) {
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         String[] ids = idStrings.split(",");
         for(int i=0;i<ids.length;i++){
             ConvertRate convertRate = new ConvertRate();
             int id = Integer.parseInt(ids[i]);
             convertRate.setId(id);
-            convertRate.setState("1");
+            convertRate.setState("6");
             try {
                 convertRateMapper.updateConvertRate(convertRate);
             } catch (Exception e) {
@@ -153,6 +205,7 @@ public class ConvertRateController extends BaseController {
      */
     @PutMapping("deleteAll")
     public AjaxResult deleteConverRateAll() {
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         try {
             convertRateMapper.deleteConverRateAll();
         } catch (Exception e) {
@@ -189,16 +242,15 @@ public class ConvertRateController extends BaseController {
                     returnMsg += "第"+index+"行：【交易所编号(必填)】列不能为空;";
                 }else {
                     ConvertRate convertRate = new ConvertRate();
-                    convertRate.setInfoType(2);
                     convertRate.setStockCode(map[1]);
                     convertRate.setStockName(map[2]);
                     convertRate.setRate(map[3]);
-                    convertRate.setBourseCode(map[4]);
+                    convertRate.setBourse(map[4]);
                     convertRate.setCreateUser(loginUser.getUsername());
                     convertRate.setUpdateUser(loginUser.getUsername());
                     convertRate.setCreateDate(new java.util.Date());
                     convertRate.setUpdateDate(new java.util.Date());
-                    convertRate.setState("0");
+                    convertRate.setState("1");
                     list_ConverRate.add(convertRate);
                     index++;
                 }

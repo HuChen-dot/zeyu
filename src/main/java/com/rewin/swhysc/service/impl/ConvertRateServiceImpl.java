@@ -25,8 +25,7 @@ public class ConvertRateServiceImpl implements ConvertRateService {
     private ConvertRateMapper convertRateMapper;
 
     @Override
-    public PageInfo<ConvertRate> getConverRateList(Integer pageNo, Integer pageSize,String stockCode,String stockName,String updateDate) throws Exception {
-        List<ConvertRate> AdvertiseVoList = new ArrayList<>();
+    public PageInfo<ConvertRate> getConverRateList(Integer pageNo, Integer pageSize,String stockCode,String stockName,String startDate,String endDate) throws Exception {
         //设置分页的起始页数和页面容量
         PageHelper.startPage(pageNo, pageSize);
 
@@ -37,15 +36,49 @@ public class ConvertRateServiceImpl implements ConvertRateService {
         if(!StringUtils.isEmpty(stockName)){
             map.put("stockName", stockName);
         }
-        if(!StringUtils.isEmpty(updateDate)){
-            map.put("updateDate1", updateDate+" 00:00:00");
-            map.put("updateDate2", updateDate+" 23:59:59");
+        if(!StringUtils.isEmpty(startDate)){
+            map.put("updateDate1", startDate+" 00:00:00");
+
         }
-        List<ConvertRate> advertiseListByMap = convertRateMapper.getConverRateList(map);
+        if(!StringUtils.isEmpty(endDate)){
+            map.put("updateDate2", endDate+" 23:59:59");
+        }
+
+        List<ConvertRate> converRateList = convertRateMapper.getConverRateList(map);
 
         //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<ConvertRate> info = new PageInfo<ConvertRate>(advertiseListByMap);
+        PageInfo<ConvertRate> info = new PageInfo<ConvertRate>(converRateList);
         return info;
     }
 
+    @Override
+    public ConvertRate getConvertRateInfo(String id) throws Exception {
+        if(!StringUtils.isEmpty(id)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("id", id);
+            return convertRateMapper.getConverRateInfo(param);
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public Integer insertConvertRate(ConvertRate convertRate) throws Exception {
+        return convertRateMapper.insertConverRate(convertRate);
+    }
+
+    @Override
+    public Integer updateConvertRate(ConvertRate convertRate) throws Exception {
+        return convertRateMapper.updateConvertRate(convertRate);
+    }
+
+    @Override
+    public Integer deleteConvertRateAll() throws Exception {
+        return convertRateMapper.deleteConverRateAll();
+    }
+
+    @Override
+    public Integer updateConvertRateAll() throws Exception {
+        return convertRateMapper.updateConverRateAll();
+    }
 }

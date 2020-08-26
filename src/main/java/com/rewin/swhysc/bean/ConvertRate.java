@@ -13,12 +13,11 @@ import java.util.Date;
 @Setter
 public class ConvertRate implements Serializable {
     private int id;
-    private int infoType;
-    private String stockCode;
-    private String stockName;
-    private String rate;
-    private String state;
-    private String bourseCode;
+    private String stockCode; //证券代码
+    private String stockName;//证券名称
+    private String rate;    //折算率
+    private String state; //状态（0：草稿 1：待审核 2：通过 3：驳回 4：审核修改中  6：已删除）
+    private String bourse;//交易所
     private String createUser;
     private Date createDate;
     private String updateUser;
