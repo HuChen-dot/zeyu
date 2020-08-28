@@ -7,26 +7,39 @@ import com.rewin.swhysc.bean.NotOpenStaff;
 import com.rewin.swhysc.bean.SysDept;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
 import com.rewin.swhysc.bean.vo.NotOpenStaffVo;
+import com.rewin.swhysc.bean.vo.StaffAuditVo;
 import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
+import com.rewin.swhysc.common.exception.CustomException;
+import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
 import com.rewin.swhysc.mapper.dao.NotOpenStaffMapper;
+import com.rewin.swhysc.mapper.dao.SysDictTypeMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.security.service.TokenService;
 import com.rewin.swhysc.service.AuditRecordService;
 import com.rewin.swhysc.service.ISysDeptService;
 import com.rewin.swhysc.service.NotOpenStaffService;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
+import com.rewin.swhysc.util.StringUtils;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 非现场开户人员，业务实现层
+ */
 @Service
 public class NotOpenStaffServiceImpl implements NotOpenStaffService {
 
-
+    private static final Logger log = LoggerFactory.getLogger(NotOpenStaffServiceImpl.class);
     @Resource
     private NotOpenStaffMapper notOpenStaffMapper;
 
@@ -35,6 +48,10 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
 
     @Resource
     AuditRecordService AuditRecordService;
+
+
+    @Resource
+    SysDictTypeMapper SysDictTypeMapper;
 
     @Resource
     TokenService tokenService;
@@ -52,8 +69,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
     /**
      * 根据条件查询；返回多个对象
      */
-    public List<NotOpenStaff> getNotOpenStaffListByMap(Map
-                                                               <String, Object> param) throws Exception {
+    public List<NotOpenStaff> getNotOpenStaffListByMap(Map<String, Object> param) throws Exception {
         return notOpenStaffMapper.getNotOpenStaffListByMap(param);
     }
 
@@ -68,9 +84,8 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
     /**
      * 添加：根据传入的参数添加信息；返回影响的行数
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer AddNotOpenStaff(NotOpenStaff notOpenStaff) throws Exception {
-
         //向主表插入数据
         notOpenStaffMapper.insertNotOpenStaff(notOpenStaff);
         //封装参数，向中间表插入数据
@@ -80,11 +95,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setOperationId(1);
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
+        AuditRecord.setTableNames("not_open_staff");
         AuditRecord.setSubmitter(notOpenStaff.getCreator());
-        AuditRecord.setAuditor(" ");
-        AuditRecord.setAuditOpinion(" ");
-        AuditRecord.setAuditTime(new Date());
-        AuditRecord.setSubmitTime(notOpenStaff.getCreateTime());
+        AuditRecord.setSubmitTime(DateUtils.dateTimes(notOpenStaff.getCreateTime()));
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
         return integer;
     }
@@ -92,68 +105,91 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
     /**
      * 根据id修改：根据传入的参数修改对应的数据库类
      */
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer ModifyNotOpenStaff(AddOpenStaffDto addOpenStaffDto) throws Exception {
+        //获取当前用户
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-        AuditRecord AuditRecord = new AuditRecord();
-        NotOpenStaff OpenStaff = new NotOpenStaff();
-        AuditRecord.setFormerId(addOpenStaffDto.getId().toString());
-        //先根据id查询人员信息
-        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
-       //判断当前操作是否是存草稿（0为不存草稿，1为存草稿）
-        if (addOpenStaffDto.getIsAdd() == 0) {
-            notOpenStaff.setStatus(1);
-            //修改原数据的状态
-            NotOpenStaff upOpenStaff = new NotOpenStaff();
-            upOpenStaff.setId(addOpenStaffDto.getId());
-            upOpenStaff.setStatus(4);
-            notOpenStaffMapper.updateNotOpenStaff(upOpenStaff);
-            //向主表插入数据
-            BeanUtils.copyProperties(notOpenStaff, OpenStaff);
-            OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
-            OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
-            OpenStaff.setDeptId(addOpenStaffDto.getDeptId());
-            OpenStaff.setStaffNo(addOpenStaffDto.getStaffNo());
-            OpenStaff.setStaffType(addOpenStaffDto.getStaffType());
-            OpenStaff.setUpdater(loginUser.getUsername());
-            OpenStaff.setUpdateTime(new Date());
-            OpenStaff.setId(null);
-            System.err.println("id：" + OpenStaff.getId());
-            notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
-        } else {
-            notOpenStaff.setStatus(16);
-            //向主表插入数据
-            //向主表插入数据
-            BeanUtils.copyProperties(notOpenStaff, OpenStaff);
-            OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
-            OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
-            OpenStaff.setDeptId(addOpenStaffDto.getDeptId());
-            OpenStaff.setStaffNo(addOpenStaffDto.getStaffNo());
-            OpenStaff.setStaffType(addOpenStaffDto.getStaffType());
-            OpenStaff.setUpdater(loginUser.getUsername());
-            OpenStaff.setUpdateTime(new Date());
-            OpenStaff.setId(null);
 
-            notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
-        }
-        //封装参数，向中间表插入数据
+
+        //先根据id查询原始人员数据信息
+        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
+        //把原数据的状态修改成《已发布不可操作》
+        NotOpenStaff penStaff = new NotOpenStaff();
+        penStaff.setStatus(32);
+        penStaff.setId(addOpenStaffDto.getId());
+        notOpenStaffMapper.updateNotOpenStaff(penStaff);
+        //向主表插入新的数据
+        //初始化空集合
+        NotOpenStaff OpenStaff = new NotOpenStaff();
+        //先把原始人员信息复制到空集合中
+        BeanUtils.copyProperties(notOpenStaff, OpenStaff);
+        // 在使用修改的值替换掉复制好的空集合中的值
+        OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
+        OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
+        OpenStaff.setStatus(1);
+        OpenStaff.setDeptId(addOpenStaffDto.getDeptId());
+        OpenStaff.setStaffNo(addOpenStaffDto.getStaffNo());
+        OpenStaff.setPersonnelType(addOpenStaffDto.getPersonnelType());
+        OpenStaff.setUpdater(loginUser.getUsername());
+        OpenStaff.setUpdateTime(new Date());
+        OpenStaff.setId(null);
+        notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
+//        ----------------------------------
+        //封装参数，向中间审核表插入数据
+        //初始化空对象
+        AuditRecord AuditRecord = new AuditRecord();
+        //封装原id
+        AuditRecord.setFormerId(addOpenStaffDto.getId().toString());
+        //封装新添加数据的id
         AuditRecord.setStaffId(OpenStaff.getId().toString());
-        AuditRecord.setInfoTypeid(addOpenStaffDto.getStaffType());
+        AuditRecord.setInfoTypeid(113);
         AuditRecord.setOperationId(16);
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
+        AuditRecord.setTableNames("not_open_staff");
         AuditRecord.setSubmitter(loginUser.getUsername());
-        AuditRecord.setAuditor(" ");
-        AuditRecord.setAuditOpinion(" ");
-        AuditRecord.setAuditTime(new Date());
-        AuditRecord.setSubmitTime(new Date());
+        AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
         return integer;
+    }
+
+
+    /**
+     * 根据审核表id查询，审核信息的详细信息
+     */
+    @Override
+    public StaffAuditVo audit(AuditRecord auditRecord) throws Exception {
+        //获取非现场人员信息
+        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(auditRecord.getStaffId()));
+        //初始化空集合
+        StaffAuditVo StaffAuditVo = new StaffAuditVo();
+        //封装参数
+        BeanUtils.copyProperties(notOpenStaff, StaffAuditVo);
+        StaffAuditVo.setId(auditRecord.getId());
+        StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
+        StaffAuditVo.setDeptId(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+        StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
+        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        if (auditRecord.getOperationId() == 1) {
+            StaffAuditVo.setOperationId("新增");
+        } else if (auditRecord.getOperationId() == 16) {
+            StaffAuditVo.setOperationId("修改");
+        }
+        if (auditRecord.getStatus() != null && auditRecord.getStatus() == 1) {
+            StaffAuditVo.setStatus("通过");
+        } else if (auditRecord.getStatus() != null && auditRecord.getStatus() == 2) {
+            StaffAuditVo.setStatus("驳回");
+        }
+        StaffAuditVo.setFlowType(auditRecord.getFlowType());
+        StaffAuditVo.setSubmitter(auditRecord.getSubmitter());
+        StaffAuditVo.setSubmitTime(auditRecord.getSubmitTime());
+        return StaffAuditVo;
     }
 
     /**
      * 逻辑删除：全量删除或批量删除
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer deNotOpenStaff(Map<String, Object> param, String id, int i) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //封装参数，向中间表插入数据
@@ -172,8 +208,8 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setSubmitter(loginUser.getUsername());
         AuditRecord.setAuditor(" ");
         AuditRecord.setAuditOpinion(" ");
-        AuditRecord.setAuditTime(new Date());
-        AuditRecord.setSubmitTime(new Date());
+        AuditRecord.setAuditTime(DateUtils.dateTimes(new Date()));
+        AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
         return notOpenStaffMapper.deNotOpenStaff(param);
     }
@@ -192,8 +228,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             BeanUtils.copyProperties(notOpenStaff, NotOpenStaffVo);
             SysDept sysDept = ISysDeptService.selectDeptById(Long.parseLong(notOpenStaff.getDeptId().toString()));
             NotOpenStaffVo.setDeptName(sysDept.getDeptName());
-            if (notOpenStaff.getStaffType() == 113) {
-                NotOpenStaffVo.setStaffType("非现场开户见证人员");
+            //判断是哪一个开户人员的类别
+            if (notOpenStaff.getPersonnelType() == 210) {
+                NotOpenStaffVo.setPersonnelType("非现场开户见证人员");
             }
             list.add(NotOpenStaffVo);
         }
@@ -205,6 +242,101 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         info.setTotal(objects.getTotal());
         info.setData(list);
         return info;
+    }
+
+
+    /**
+     * 导入员工数据
+     *
+     * @param list     员工数据列表
+     * @param operName 操作用户
+     * @return 结果
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public String importOpenStaff(List<NotOpenStaff> list, String operName) {
+        if (StringUtils.isNull(list) || list.size() == 0) {
+            throw new CustomException("导入员工数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        List<Integer> count = new ArrayList<>();
+        for (NotOpenStaff user : list) {
+            try {
+                // 验证是否存在这个员工编号
+                boolean isexist = isexist(user.getCertificateNo());
+                if (!isexist) {
+                    notOpenStaffMapper.insertNotOpenStaff(user);
+                    successNum++;
+                    successMsg.append("<br/>" + successNum + "、账号 " + user.getStaffName() + " 导入成功");
+                    count.add(user.getId());
+                } else {
+                    failureNum++;
+                    failureMsg.append("<br/>" + failureNum + "、账号 " + user.getCertificateNo() + " 证书编号已存在");
+                }
+            } catch (Exception e) {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、账号 " + user.getStaffName() + " 导入失败：";
+                failureMsg.append(msg + e.getMessage());
+                log.error(msg, e);
+                throw new RuntimeException();
+            }
+        }
+        if (failureNum > 0) {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new CustomException(failureMsg.toString());
+        } else {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            //封装参数，向中间表插入数据
+            AuditRecord AuditRecord = new AuditRecord();
+            StringBuilder builder = new StringBuilder();
+            for (int j = 0; j < count.size(); j++)
+                if (j < count.size() - 1) {
+                    builder.append(count.get(j) + ",");
+                } else {
+                    builder.append(count.get(j));
+                }
+            AuditRecord.setStaffId(builder.toString());
+            AuditRecord.setInfoTypeid(113);
+            AuditRecord.setOperationId(2);
+            AuditRecord.setFlowType(1);
+            AuditRecord.setStatus(0);
+            AuditRecord.setTableNames("not_open_staff");
+            AuditRecord.setSubmitter(operName);
+            AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
+            try {
+                AuditRecordService.AddAuditRecord(AuditRecord);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("插入中间表失败", e);
+                throw new RuntimeException();
+            }
+        }
+        return successMsg.toString();
+    }
+
+    /**
+     * 根据条件查询对象，返回布尔值，是否存在该对象
+     * 存在返回true
+     * 不存在返回false
+     */
+    @Override
+    public boolean isexist(String certificateNo) {
+        Map<String, Object> map = new ConcurrentHashMap<>(1);
+        map.put("certificateNo", certificateNo);
+        boolean far = false;
+
+        try {
+            List<NotOpenStaff> notOpenStaffList = notOpenStaffMapper.getNotOpenStaffListByMap(map);
+            if (notOpenStaffList != null && notOpenStaffList.size() > 0) {
+                far = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return far;
     }
 
 }

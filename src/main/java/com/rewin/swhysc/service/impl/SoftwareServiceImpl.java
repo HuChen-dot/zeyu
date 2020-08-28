@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -135,7 +136,7 @@ public class SoftwareServiceImpl implements SoftwareService {
             }
             TabSoftwareVo.setSoftwareName(software.getSoftwareName());
             TabSoftwareVo.setSort(software.getSort());
-            TabSoftwareVo.setUpdateTime(DateUtils.dateTime(software.getUpdateTime()));
+            TabSoftwareVo.setUpdateTime(software.getUpdateTime());
             listVo.add(TabSoftwareVo);
         }
 
@@ -152,7 +153,7 @@ public class SoftwareServiceImpl implements SoftwareService {
     /**
      * 添加：添加软件主表和软件从表；返回影响的行数
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer AddSoftware(SoftwareDto softwareDto) throws Exception {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
 
@@ -162,8 +163,8 @@ public class SoftwareServiceImpl implements SoftwareService {
         software.setSkipUrl(softwareDto.getSkipUrl() == null ? " " : softwareDto.getSkipUrl());
         software.setCreator(loginUser.getUsername());
         software.setUpdater(loginUser.getUsername());
-        software.setCreateTime(new Date());
-        software.setUpdateTime(new Date());
+        software.setCreateTime(DateUtils.dateTimes(new Date()));
+        software.setUpdateTime(DateUtils.dateTimes(new Date()));
         software.setSort(1);
         software.setIsShow(0);
         softwareMapper.insertSoftware(software);
@@ -206,13 +207,13 @@ public class SoftwareServiceImpl implements SoftwareService {
     /**
      * 根据id修改：修改软件主表和软件从表；返回影响的行数
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer ModifySoftware(SoftwareDto softwareDto) throws Exception {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Software software = new Software();
         BeanUtils.copyProperties(softwareDto, software);
         software.setUpdater(loginUser.getUsername());
-        software.setUpdateTime(new Date());
+        software.setUpdateTime(DateUtils.dateTimes(new Date()));
         softwareMapper.updateSoftware(software);
 
         Iosaonroid iosaonroid = new Iosaonroid();
@@ -258,8 +259,8 @@ public class SoftwareServiceImpl implements SoftwareService {
             SoftwareVo SoftwareVo = new SoftwareVo();
             SoftwareVo.setSoftwareTypeName(sysDictType.getDictName());
             BeanUtils.copyProperties(software, SoftwareVo);
-            SoftwareVo.setUpdateTime(DateUtils.dateTime(software.getUpdateTime()));
-            SoftwareVo.setCreateTime(DateUtils.dateTime(software.getCreateTime()));
+            SoftwareVo.setUpdateTime(software.getUpdateTime());
+            SoftwareVo.setCreateTime(software.getCreateTime());
             listVo.add(SoftwareVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中

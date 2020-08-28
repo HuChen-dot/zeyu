@@ -17,8 +17,8 @@ public class AddOpenStaffDto {
     private Integer staffNo;
     //证书编号
     private String certificateNo;
+
     //人员类型
-    private Integer staffType;
-    //标记是否存草稿
-    private Integer isAdd;
+    private Integer personnelType;
+
 }

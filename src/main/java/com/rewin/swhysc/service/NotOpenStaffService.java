@@ -1,8 +1,11 @@
 package com.rewin.swhysc.service;
 
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.NotOpenStaff;
+import com.rewin.swhysc.bean.SysUser;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
 import com.rewin.swhysc.bean.vo.NotOpenStaffVo;
+import com.rewin.swhysc.bean.vo.StaffAuditVo;
 import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
 import com.rewin.swhysc.util.page.PageInfo;
 
@@ -41,6 +44,12 @@ public interface NotOpenStaffService {
      */
     Integer ModifyNotOpenStaff(AddOpenStaffDto addOpenStaffDto) throws Exception;
 
+
+    /**
+     * 根据审核表id查询，审核信息的详细信息
+     */
+    StaffAuditVo audit(AuditRecord auditRecord) throws Exception;
+
     /**
      * 逻辑删除：全量删除或批量删除
      */
@@ -50,4 +59,20 @@ public interface NotOpenStaffService {
      * 根据条件分页查询；返回分页查询后的多个对象
      */
     PageInfo<NotOpenStaffVo> queryNotOpenStaffPageByMap(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception;
+
+    /**
+     * 导入员工数据
+     *
+     * @param userList 用户数据列表
+     * @param operName 操作用户
+     * @return 结果
+     */
+    String importOpenStaff(List<NotOpenStaff> userList, String operName);
+
+    /**
+     * 根据条件查询对象，返回布尔值，是否存在该对象
+     * 存在返回true
+     * 不存在返回false
+     */
+    boolean isexist(String certificateNo);
 }

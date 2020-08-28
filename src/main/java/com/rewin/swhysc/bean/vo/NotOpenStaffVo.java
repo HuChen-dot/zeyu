@@ -19,8 +19,10 @@ public class NotOpenStaffVo {
     private Integer staffNo;
     //证书编号
     private String certificateNo;
-    //人员类型
+    //信息类型
     private String staffType;
+    //人员类型
+    private String personnelType;
 
 
 }
