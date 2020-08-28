@@ -6,6 +6,7 @@ import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.IdUtils;
 import com.rewin.swhysc.util.VerifyCodeUtils;
 import com.rewin.swhysc.util.redis.RedisCache;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,10 +29,12 @@ public class CaptchaController {
     /**
      * 生成验证码
      */
+    @ApiOperation("生成验证码")
     @GetMapping("/captchaImage")
     public AjaxResult getCode(HttpServletResponse response) throws IOException {
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+        System.out.println(verifyCode);
         // 唯一标识
         String uuid = IdUtils.simpleUUID();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
