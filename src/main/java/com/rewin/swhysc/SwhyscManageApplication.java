@@ -7,7 +7,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
-@MapperScan("com.rewin.swhysc.mapper.*")
+//@MapperScan("com.rewin.swhysc.mapper.*")
+@tk.mybatis.spring.annotation.MapperScan("com.rewin.swhysc.mapper.*")
 @EnableTransactionManagement
 public class SwhyscManageApplication {
 

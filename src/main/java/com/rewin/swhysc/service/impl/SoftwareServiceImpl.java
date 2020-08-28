@@ -6,10 +6,15 @@ import com.rewin.swhysc.bean.Iosaonroid;
 import com.rewin.swhysc.bean.Software;
 import com.rewin.swhysc.bean.SoftwareInfoForSc;
 import com.rewin.swhysc.bean.SysDictType;
+import com.rewin.swhysc.bean.dto.DownloadCountDto;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
-import com.rewin.swhysc.bean.vo.SoftwareByidVo;
-import com.rewin.swhysc.bean.vo.SoftwareVo;
-import com.rewin.swhysc.bean.vo.TabSoftwareVo;
+import com.rewin.swhysc.bean.pojo.DownloadCount;
+import com.rewin.swhysc.bean.vo.*;
+import com.rewin.swhysc.common.constant.BusinessConstants;
+import com.rewin.swhysc.common.constant.ExceptionCode;
+import com.rewin.swhysc.common.exception.CustomException;
+import com.rewin.swhysc.common.utils.ExceptionMsgUtils;
+import com.rewin.swhysc.mapper.dao.DownloadCountMapper;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
 import com.rewin.swhysc.security.LoginUser;
@@ -18,8 +23,10 @@ import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -39,6 +46,9 @@ public class SoftwareServiceImpl implements SoftwareService {
     private IosaonroidMapper iosaonroidMapper;
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
+
+    @Autowired
+    private DownloadCountMapper downloadCountMapper;
 
     /**
      * 根据软件id查询软件详细信息
@@ -269,9 +279,110 @@ public class SoftwareServiceImpl implements SoftwareService {
     }
 
     @Override
-    public List<SoftwareInfoForSc> getSoftwareInfoForSc(Integer type) throws Exception {
-        softwareMapper.getSoftwareInfoForSc(type);
-        return null;
+    public List<SoftwareInfoForScVo> getSoftwareInfoForSc(Integer type) throws Exception{
+        List<SoftwareInfoForScVo> list = new ArrayList<>();
+        //参数转化
+        if (type == 0) {
+            //查询PC
+            type = BusinessConstants.SOFTWARE_TYPE_PC;
+        } else if (type == 1) {
+            //查询手机
+            type = BusinessConstants.SOFTWARE_TYPE_MOBILE;
+        } else if (type == 2) {
+            //查询全部
+            type = null;
+        }
+        //从数据库查询软件信息
+        List<SoftwareInfoForSc> softInfoList = softwareMapper.getSoftwareInfoForSc(type);
+        if (!CollectionUtils.isEmpty(softInfoList)) {
+            //遍历数据
+            for (SoftwareInfoForSc softwareInfoForSc : softInfoList) {
+                SoftwareInfoForScVo softwareInfoForScVo = new SoftwareInfoForScVo();
+                softwareInfoForScVo.setName(softwareInfoForSc.getSoftwareName());//软件名称
+                softwareInfoForScVo.setLogo(softwareInfoForSc.getSoftwareImg());//软件图标
+                softwareInfoForScVo.setIntroduce(softwareInfoForSc.getDescribe());//软件简介
+                Integer softwareType = softwareInfoForSc.getSoftwareType();//软件平台(PC/手机)
+                softwareInfoForScVo.setPlatform(softwareType);
+                softwareInfoForScVo.setQRCode(softwareInfoForSc.getQrCode());//软件二维码
+                softwareInfoForScVo.setSort(softwareInfoForSc.getSort());//软件排序优先级
+                //PC端软件详细信息
+                if (softwareType == BusinessConstants.SOFTWARE_TYPE_PC) {
+                    PCInfo pcInfo = new PCInfo();
+                    pcInfo.setFileUrl(softwareInfoForSc.getFileUrl());//软件下载地址
+                    pcInfo.setSize(softwareInfoForSc.getSoftwareSize());//软件大小
+                    pcInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());//软件更新时间
+                    pcInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());//软件更新描述
+                    softwareInfoForScVo.setPcInfo(pcInfo);
+                }
+                //手机端软件详细信息
+                if (softwareType == BusinessConstants.SOFTWARE_TYPE_MOBILE) {
+                    //软件ID
+                    Integer id = softwareInfoForSc.getId();
+                    //手机平台(安卓/IOS)
+                    Integer platformType = softwareInfoForSc.getPlatformType();
+                    Boolean isNewInfo = true;
+                    if (list.size() > 0) {
+                        for (SoftwareInfoForScVo oldInfo : list) {
+                            Integer infoId = oldInfo.getId();
+                            //是否已存在手机平台信息
+                            if (id == infoId) {
+                                isNewInfo = false;
+                                //存入IOS端详细数据
+                                if (platformType == BusinessConstants.PLATFORM_IOS) {
+                                    IOSInfo iosInfo = new IOSInfo();
+                                    iosInfo.setSize(softwareInfoForSc.getSoftwareSize());
+                                    iosInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
+                                    iosInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
+                                    oldInfo.setIosInfo(iosInfo);
+                                }
+                                //存入安卓端详细数据
+                                if (platformType == BusinessConstants.PLATFORM_ANDROID) {
+                                    AndroidInfo androidInfo = new AndroidInfo();
+                                    androidInfo.setFileUrl(softwareInfoForSc.getFileUrl());
+                                    androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
+                                    androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
+                                    androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
+                                    oldInfo.setAndroidInfo(androidInfo);
+                                }
+                            }
+                        }
+                    }
+                    //如果是新数据
+                    if (isNewInfo) {
+                        if (platformType == BusinessConstants.PLATFORM_IOS) {
+                            IOSInfo iosInfo = new IOSInfo();
+                            iosInfo.setSize(softwareInfoForSc.getSoftwareSize());
+                            iosInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
+                            iosInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
+                            softwareInfoForScVo.setIosInfo(iosInfo);
+                        }
+                        //存入安卓端详细数据
+                        if (platformType == BusinessConstants.PLATFORM_ANDROID) {
+                            AndroidInfo androidInfo = new AndroidInfo();
+                            androidInfo.setFileUrl(softwareInfoForSc.getFileUrl());
+                            androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
+                            androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
+                            androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
+                            softwareInfoForScVo.setAndroidInfo(androidInfo);
+                        }
+                    } else {
+                        continue;
+                    }
+                }
+                softwareInfoForScVo.setId(softwareInfoForSc.getId()); //软件ID
+                list.add(softwareInfoForScVo);
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public Integer insertSoftwareDownloadCount(DownloadCountDto downloadCountDto) throws Exception{
+        DownloadCount downloadCount = new DownloadCount();
+        downloadCount.setSoftwareid(downloadCountDto.getSoftwareID());
+        downloadCount.setIp(downloadCountDto.getIP());
+        downloadCount.setSoftwaretype(downloadCountDto.getSoftwareType());
+        return downloadCountMapper.insertSelective(downloadCount);
     }
 
 }

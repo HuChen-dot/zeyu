@@ -1,5 +1,8 @@
 package com.rewin.swhysc.controller.sc;
 
+import com.rewin.swhysc.bean.dto.DownloadCountDto;
+import com.rewin.swhysc.bean.vo.SoftwareInfoForScVo;
+import com.rewin.swhysc.common.constant.ExceptionCode;
 import com.rewin.swhysc.common.utils.ExceptionMsgUtils;
 import com.rewin.swhysc.service.SoftwareService;
 import com.rewin.swhysc.util.AjaxResult;
@@ -7,10 +10,12 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import java.util.List;
+
 
 /**
  * @program: swhyscManageServer
@@ -27,7 +32,7 @@ public class ScSoftwareController {
     private ExceptionMsgUtils exceptionMsgUtils;
 
     @Autowired
-    private SoftwareService softwareServiceImpl;
+    private SoftwareService softwareService;
 
     /**
      * @Description:软件下载信息列表查询
@@ -38,9 +43,33 @@ public class ScSoftwareController {
      */
     @ApiOperation("软件下载信息查询")
     @PostMapping("/infolist")
-    public AjaxResult getSoftwareInfoList(@RequestBody Integer type) throws Exception {
-        System.out.println(exceptionMsgUtils.getExecptionMsg("-006101"));
-        softwareServiceImpl.getSoftwareInfoForSc(type);
-        return null;
+    public AjaxResult getSoftwareInfoList(@RequestParam @NotBlank Integer type) {
+        List<SoftwareInfoForScVo> list = null;
+        try {
+            list =  softwareService.getSoftwareInfoForSc(type);
+        }catch (Exception e){
+            log.error("软件下载信息查询失败",e);
+            return AjaxResult.error(exceptionMsgUtils.getExecptionMsg(ExceptionCode.QUERY_SOFTWAREINFO_EXCEPTION));
+        }
+        return AjaxResult.success(list);
+    }
+
+    /**
+     * @Description:软件下载次数记录
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/8/26 14:30
+     */
+    @ApiOperation("软件下载次数记录")
+    @PostMapping("/downloadcount")
+    public AjaxResult insertSoftwareDownloadCount(@RequestBody @Valid DownloadCountDto downloadCountDto){
+        try{
+            softwareService.insertSoftwareDownloadCount(downloadCountDto);
+        }catch (Exception e){
+            log.error("记录软件下载次数失败",e);
+            return AjaxResult.error();
+        }
+        return AjaxResult.success();
     }
 }

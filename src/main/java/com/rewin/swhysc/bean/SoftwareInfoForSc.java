@@ -4,7 +4,6 @@ package com.rewin.swhysc.bean;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -40,5 +39,14 @@ public class SoftwareInfoForSc implements Serializable {
 
     private String qrCode;
 
-    private BigDecimal isShow;
+    private Integer isShow;
+
+    private Integer platformType;
+
+    private String softwareSize;
+
+    private String updateExplain;
+
+    private String softwareUpdateTime;
+
 }

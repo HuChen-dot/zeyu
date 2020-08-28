@@ -1,16 +1,14 @@
 package com.rewin.swhysc.service;
 
 import com.rewin.swhysc.bean.Software;
-import com.rewin.swhysc.bean.SoftwareInfoForSc;
+import com.rewin.swhysc.bean.dto.DownloadCountDto;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
 import com.rewin.swhysc.bean.vo.SoftwareByidVo;
+import com.rewin.swhysc.bean.vo.SoftwareInfoForScVo;
 import com.rewin.swhysc.bean.vo.SoftwareVo;
 import com.rewin.swhysc.bean.vo.TabSoftwareVo;
 import com.rewin.swhysc.util.page.PageInfo;
-import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-import java.util.Map;
 import java.util.List;
 import java.util.Map;
 
@@ -73,5 +71,15 @@ public interface SoftwareService {
      * @Author: sinan@rewin.com.cn
      * @Date: 2020/8/25 9:21
      */
-    List<SoftwareInfoForSc> getSoftwareInfoForSc(@Param(value = "type") Integer type) throws Exception;
+    List<SoftwareInfoForScVo> getSoftwareInfoForSc(Integer type) throws Exception;
+
+    /**
+     * @Description:软件下载次数记录
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/8/26 15:21
+     */
+    Integer insertSoftwareDownloadCount(DownloadCountDto downloadCountDto)throws Exception;
+
 }
