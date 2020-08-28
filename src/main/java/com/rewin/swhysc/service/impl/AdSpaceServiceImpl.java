@@ -69,7 +69,6 @@ public class AdSpaceServiceImpl implements AdSpaceService {
             BeanUtils.copyProperties(advertise, AdvertiseVo);
             AdvertiseVo.setAdSpaceName(adSpace.getAdName());
             AdvertiseVo.setViewName(page.getAdName());
-            System.err.println("时间：" + advertise.getUpdateTime());
             AdvertiseVo.setUpdateTime(advertise.getUpdateTime());
             AdvertiseVoList.add(AdvertiseVo);
         }

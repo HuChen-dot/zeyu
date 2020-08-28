@@ -17,7 +17,8 @@
         creator as creator,
         create_time as createTime,
         updater as updater,
-        update_time as updateTime
+        update_time as updateTime,
+        PERSONNEL_TYPE as personnelType
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -40,7 +41,8 @@
         creator as creator,
         create_time as createTime,
         updater as updater,
-        update_time as updateTime
+        update_time as updateTime,
+        PERSONNEL_TYPE as personnelType
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -133,7 +135,8 @@
         create_time,
         updater,
         update_time,
-        status)
+        status,
+        PERSONNEL_TYPE)
         values(
         #{id},
         #{deptId},
@@ -143,9 +146,10 @@
         #{staffType},
         #{creator},
         #{createTime},
-        #{updater},
-        #{updateTime},
-        #{status})
+        #{updater,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=DATE},
+        #{status},
+        #{personnelType,jdbcType=TINYINT})
     </insert>
 
 
@@ -184,7 +188,6 @@
                 update_time=#{updateTime}
             </if>
         </trim>
-        <if test="isAll != null"></if>
         where id = #{id}
     </update>
 

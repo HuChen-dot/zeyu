@@ -17,7 +17,13 @@ public interface SysDictTypeMapper {
     /**
      * 根据id查询；返回单个对象
      */
-    SysDictType getSysDictTypeById(@Param(value = "id") Integer id)throws Exception;
+    SysDictType getSysDictTypeById(@Param(value = "id") Integer id) throws Exception;
+
+    /**
+     * 根据id查询；返回单个字典名称
+     */
+    String getNameById(@Param(value = "id") Integer id) throws Exception;
+
     /**
      * 根据条件分页查询字典类型
      *

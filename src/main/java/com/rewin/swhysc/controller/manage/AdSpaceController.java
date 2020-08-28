@@ -135,7 +135,6 @@ public class AdSpaceController extends BaseController {
      */
     @PostMapping()
     public AjaxResult addAdvertise(@RequestBody AddAdvertiseDto AdverDto) {
-        System.err.println("添加：" + AdverDto);
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         Advertise adse = new Advertise();
         BeanUtils.copyProperties(AdverDto, adse);

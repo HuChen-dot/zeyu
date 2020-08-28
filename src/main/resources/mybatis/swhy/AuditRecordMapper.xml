@@ -18,7 +18,8 @@
         submit_time as submitTime,
         audit_time as auditTime,
         FORMER_ID as formerId,
-        staff_id as staffId
+        staff_id as staffId,
+        TABLE_NAMES as tableNames
         from audit_record
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -42,7 +43,8 @@
         submit_time as submitTime,
         audit_time as auditTime,
         FORMER_ID as formerId,
-        staff_id as staffId
+        staff_id as staffId,
+        TABLE_NAMES as tableNames
         from audit_record
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -77,6 +79,44 @@
             </if>
             <if test="staffId != null">
                 and staff_id=#{staffId}
+            </if>
+        </trim>
+    </select>
+
+    <!--首页查询， 根据条件查询信息列表-->
+    <select id="getAuditRecordList" resultType="com.rewin.swhysc.bean.AuditRecord"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        info_typeid as infoTypeid,
+        operation_id as operationId,
+        flow_type as flowType,
+        status as status,
+        submitter as submitter,
+        audit_opinion as auditOpinion,
+        auditor as auditor,
+        submit_time as submitTime,
+        audit_time as auditTime,
+        FORMER_ID as formerId,
+        staff_id as staffId,
+        TABLE_NAMES as tableNames
+        from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="infoTypeid != null">
+                and info_typeid=#{infoTypeid}
+            </if>
+            <if test="operationId != null">
+                and operation_id=#{operationId}
+            </if>
+            <if test="flowType != null">
+                and flow_type=#{flowType}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="beginTime != null">
+                and submit_time &gt;=#{beginTime}
+                and submit_time &lt;= #{endTime}
             </if>
         </trim>
     </select>
@@ -140,7 +180,8 @@
         submit_time,
         audit_time,
         FORMER_ID,
-        staff_id)
+        staff_id,
+        TABLE_NAMES)
         values(
         #{id},
         #{infoTypeid},
@@ -148,13 +189,25 @@
         #{flowType},
         #{status},
         #{submitter},
-        #{auditOpinion},
-        #{auditor},
+        #{auditOpinion,jdbcType=VARCHAR},
+        #{auditor,jdbcType=VARCHAR},
         #{submitTime},
-        #{auditTime},
-        #{formerId},
-        #{staffId})
+        #{auditTime,jdbcType=DATE},
+        #{formerId,jdbcType=VARCHAR},
+        #{staffId},
+        #{tableNames,jdbcType=VARCHAR})
     </insert>
+
+    <!--    根据不同的入参审核不同的表内容-->
+    <update id="dynamicUpdateTable" parameterType="java.util.Map">
+        update ${tabName}
+        <trim prefix="set" suffixOverrides=",">
+            <if test="status != null">
+                status=#{status},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
 
 
     <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->

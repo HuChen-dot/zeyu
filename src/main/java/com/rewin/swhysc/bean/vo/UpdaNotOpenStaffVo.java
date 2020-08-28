@@ -19,7 +19,9 @@ public class UpdaNotOpenStaffVo {
     private Integer staffNo;
     //证书编号
     private String certificateNo;
-    //人员类型
+    //信息类型
     private Integer staffType;
+    //人员类型
+    private Integer personnelType;
 
 }

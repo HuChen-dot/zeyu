@@ -20,6 +20,7 @@ import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -136,7 +137,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         }
 
         UpdataNewsVo.setIsStick(newsNotice.getIsStick());
-        UpdataNewsVo.setCreateTime(DateUtils.dateTime(newsNotice.getCreateTime()));
+        UpdataNewsVo.setCreateTime(newsNotice.getCreateTime());
         UpdataNewsVo.setOpinion(newsNotice.getOpinion());
         UpdataNewsVo.setId(newsNotice.getId());
         UpdataNewsVo.setVerifier(newsNotice.getVerifier());
@@ -172,12 +173,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
      */
     @Override
     public Integer updateNewsNotice(NewsNotice NewsNotice) throws Exception {
-
-
-        newsNoticeMapper.updateNewsNotice(NewsNotice);
-
-
-        return null;
+        return newsNoticeMapper.updateNewsNotice(NewsNotice);
     }
 
 
@@ -228,7 +224,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
             } else if (newsVo.getStatus().equals("32")) {
                 newsVo.setStatus("驳回");
             }
-            newsVo.setUpdateTime(DateUtils.dateTime(newsNotice.getUpdateTime()));
+            newsVo.setUpdateTime(newsNotice.getUpdateTime());
 
             listnews.add(newsVo);
         }
@@ -247,7 +243,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
      * 添加：根据传入的参数添加新闻表，新闻内容表，和新闻附件表；返回影响的行数
      */
     //添加事务
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer AddNewsNotice(AddNewsDto AddNewsDto) throws Exception {
         //获取登录当前用户的信息
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
@@ -262,9 +258,9 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         } else {
             newsNotice.setStatus("4");
         }
-        newsNotice.setCreateTime(new Date());
+        newsNotice.setCreateTime(DateUtils.dateTimes(new Date()));
         newsNotice.setCreator(loginUser.getUsername());
-        newsNotice.setUpdateTime(new Date());
+        newsNotice.setUpdateTime(DateUtils.dateTimes(new Date()));
         newsNotice.setUpdater(loginUser.getUsername());
         newsNotice.setOpinion("");
         newsNotice.setAuditor(AddNewsDto.getAuthor() == null ? " " : AddNewsDto.getAuthor());
@@ -295,7 +291,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
     /**
      * 根据id修改：根据传入的参数修改新闻表，新闻内容表，和新闻附件表；返回影响的行数
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer ModifyNewsNotice(AddNewsDto AddNewsDto) throws Exception {
         Integer integer = null;
         //获取登录当前用户的信息
@@ -312,7 +308,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         } else {
             newsNotice.setStatus("4");
         }
-        newsNotice.setUpdateTime(new Date());
+        newsNotice.setUpdateTime(DateUtils.dateTimes(new Date()));
         newsNotice.setUpdater(loginUser.getUsername());
         newsNotice.setFlow(2);
         newsNoticeMapper.updateNewsNotice(newsNotice);
@@ -380,7 +376,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
             ScNewsVo ScNewsVo = new ScNewsVo();
 
             BeanUtils.copyProperties(newsNotice, ScNewsVo);
-            ScNewsVo.setUpdateTime(DateUtils.dateTime(newsNotice.getUpdateTime()));
+            ScNewsVo.setUpdateTime(newsNotice.getUpdateTime());
 
             list.add(ScNewsVo);
         }
@@ -393,5 +389,19 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         info.setData(list);
         return info;
     }
+
+
+    /**
+     * 修改新闻置顶状态
+     */
+    @Override
+    public Integer ModifyStick(Integer id, Integer stick) throws Exception {
+        NewsNotice NewsNotice = new NewsNotice();
+        NewsNotice.setId(id);
+        NewsNotice.setIsStick(stick);
+        return newsNoticeMapper.updateNewsNotice(NewsNotice);
+
+    }
+
 
 }

@@ -44,7 +44,6 @@ public class DownloadSwController {
      */
     @GetMapping("list")
     public AjaxResult getsowftwareBylist(DnSwDto DnSwDto) {
-        System.err.println("下载对象：" + DnSwDto);
         Map<String, Object> map = new HashMap<>(4);
         if (DnSwDto.getSoftwareName() != null) {
             map.put("softwareName", DnSwDto.getSoftwareName());

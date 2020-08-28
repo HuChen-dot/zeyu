@@ -73,4 +73,9 @@ public interface NewsNoticeService {
      * 根据条件分页查询；返回分页查询后的多个对象
      */
     PageInfo<ScNewsVo> queryNewsNoticePageByMap(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception;
+
+    /**
+     * 修改新闻置顶状态
+     */
+    Integer ModifyStick(Integer id, Integer stick) throws Exception;
 }
