@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.OpenDeptMapper">
+  <resultMap id="BaseResultMap" type="com.rewin.swhysc.bean.pojo.OpenDept">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <result column="OPEN_DEPT" jdbcType="VARCHAR" property="openDept" />
+    <result column="DESCCR" jdbcType="VARCHAR" property="desccr" />
+  </resultMap>
+
+</mapper>
