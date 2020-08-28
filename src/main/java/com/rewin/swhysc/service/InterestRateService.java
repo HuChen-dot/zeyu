@@ -5,13 +5,14 @@ import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.InterestRate;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
  * 融资融卷专栏------利率费率
  */
 public interface InterestRateService{
-    PageInfo<InterestRate> getInterestRateList(Integer pageNo, Integer pageSize, String state,String startDate,String endDate) throws Exception;
+    List<InterestRateVo> getInterestRateList() throws Exception;
 
     PageInfo<InterestRateVo> getInterestRateVoList(Integer pageNo, Integer pageSize, String state, String startDate, String endDate) throws Exception;
 

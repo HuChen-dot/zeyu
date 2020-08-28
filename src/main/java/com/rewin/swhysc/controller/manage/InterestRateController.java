@@ -1,16 +1,13 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageInfo;
-import com.rewin.swhysc.bean.BondBd;
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.InterestRate;
-import com.rewin.swhysc.bean.RzrqAudit;
-import com.rewin.swhysc.bean.dto.BondBdDto;
 import com.rewin.swhysc.bean.dto.InterestRateDto;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
 import com.rewin.swhysc.mapper.dao.InterestRateMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.InterestRateService;
-import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
 import org.slf4j.Logger;
@@ -33,8 +30,6 @@ public class InterestRateController extends BaseController {
     @Resource
     InterestRateMapper interestRateMapper;
 
-    @Resource
-    RzrqAuditService rzrqAuditService;
 
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
@@ -59,22 +54,6 @@ public class InterestRateController extends BaseController {
             return AjaxResult.error("sql错误");
         }
         return AjaxResult.success("查询成功", interestRateVoPageInfo);
-    }
-
-    /**
-     * 官网使用利率费率查询
-     */
-    @GetMapping("queryList")
-    public AjaxResult queryInterestRateList() {
-        Map<String, Object> map = new HashMap<>(1);
-        map.put("state", 2);
-        List<InterestRate> interestRateList = null;
-        try {
-            interestRateList = interestRateMapper.getInterestRateList(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return AjaxResult.success("查询成功", interestRateList);
     }
 
     /**
@@ -108,47 +87,19 @@ public class InterestRateController extends BaseController {
         interestRate.setState("1");
         try {
             interestRateService.insertInterestRate(interestRate);
-            RzrqAudit rzrqAudit = new RzrqAudit();
-            rzrqAudit.setInfoType("3");
-            rzrqAudit.setCommitTime(new java.util.Date());
-            rzrqAudit.setCommitUser(loginUser.getUsername());
-            rzrqAudit.setHandleType("0");
-            rzrqAudit.setAuditStatus("0");
-            rzrqAudit.setHandleNum(String.valueOf(interestRate.getId()));
-            rzrqAudit.setState("0");
-            rzrqAuditService.insertRzrqAudit(rzrqAudit);
-            InterestRate changeAudit = new InterestRate();
-            changeAudit.setAuditId(String.valueOf(rzrqAudit.getId()));
-            changeAudit.setId(interestRate.getId());
-            interestRateService.updateInterestRate(changeAudit);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(3);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(interestRate.getAuditId());//操作id
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
         return AjaxResult.success("添加成功");
-    }
-
-    /**
-     *存草稿
-     */
-    @PostMapping("addDraft")
-    public AjaxResult addInterestRateDraft(InterestRateDto interestRateDto) {
-        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
-
-        InterestRate interestRate = new InterestRate();
-        BeanUtils.copyProperties(interestRateDto, interestRate);
-        interestRate.setCreateUser(loginUser.getUsername());
-        interestRate.setUpdateUser(loginUser.getUsername());
-        interestRate.setCreateDate(new java.util.Date());
-        interestRate.setUpdateDate(new java.util.Date());
-        interestRate.setState("0");
-        try {
-            interestRateService.insertInterestRate(interestRate);
-        } catch (Exception e) {
-            log.error("查询数据库出错", e);
-            return AjaxResult.error("sql错误");
-        }
-        return AjaxResult.success("添加草稿成功");
     }
 
     /**
@@ -164,19 +115,6 @@ public class InterestRateController extends BaseController {
         interestRate.setState("1");
         try {
             interestRateService.updateInterestRate(interestRate);
-            RzrqAudit rzrqAudit = new RzrqAudit();
-            rzrqAudit.setInfoType("3");
-            rzrqAudit.setCommitTime(new java.util.Date());
-            rzrqAudit.setCommitUser(loginUser.getUsername());
-            rzrqAudit.setHandleType("1");
-            rzrqAudit.setAuditStatus("0");
-            rzrqAudit.setHandleNum(String.valueOf(interestRate.getId()));
-            rzrqAudit.setState("0");
-            rzrqAuditService.insertRzrqAudit(rzrqAudit);
-            InterestRate changeAudit = new InterestRate();
-            changeAudit.setAuditId(String.valueOf(rzrqAudit.getId()));
-            changeAudit.setId(interestRate.getId());
-            interestRateService.updateInterestRate(changeAudit);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -197,19 +135,6 @@ public class InterestRateController extends BaseController {
         interestRate.setState("4");
         try {
             interestRateService.updateInterestRate(interestRate);
-            RzrqAudit rzrqAudit = new RzrqAudit();
-            rzrqAudit.setInfoType("3");
-            rzrqAudit.setCommitTime(new java.util.Date());
-            rzrqAudit.setCommitUser(loginUser.getUsername());
-            rzrqAudit.setHandleType("1");
-            rzrqAudit.setAuditStatus("0");
-            rzrqAudit.setHandleNum(String.valueOf(interestRate.getId()));
-            rzrqAudit.setState("0");
-            rzrqAuditService.insertRzrqAudit(rzrqAudit);
-            InterestRate changeAudit = new InterestRate();
-            changeAudit.setAuditId(String.valueOf(rzrqAudit.getId()));
-            changeAudit.setId(interestRate.getId());
-            interestRateService.updateInterestRate(changeAudit);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");

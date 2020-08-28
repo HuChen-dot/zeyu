@@ -1,4 +1,4 @@
-package com.rewin.swhysc.bean;
+package com.rewin.swhysc.bean.vo;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-public class BondBd implements Serializable {
+public class BondBdVo implements Serializable {
     private int id;
     private String stockCode;//证券代码
     private String stockName;//证券名称
@@ -21,10 +21,10 @@ public class BondBd implements Serializable {
     private String isRq;//是否融券
     private String bourse;//交易所
     private String createUser;
-    private Date createDate;
+    private String createDate;
     private String updateUser;
-    private Date updateDate;
+    private String updateDate;
     private String state;//状态（1:新增待审核(不可操作)；2:已发布(可操作)；3:驳回(可操作)；4:修改待审核(不可操作)；
     // 5:已发布(不可操作)；6:已发布，删除待审核(不可操作)；7:已废弃(不展示不可操作)）
-    private Date trimDate;//调整日期
+    private String trimDate;//调整日期
 }

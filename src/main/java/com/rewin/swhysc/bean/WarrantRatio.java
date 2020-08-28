@@ -23,4 +23,5 @@ public class WarrantRatio implements Serializable {
     private Date updateDate;
     private String state;//状态（0：草稿 1：待审核 2：已发布 3：驳回 4：审核修改中  6：已删除 7已下架）
     private String auditId; //审核记录ID
+    private Date trimDate;//调整日期
 }

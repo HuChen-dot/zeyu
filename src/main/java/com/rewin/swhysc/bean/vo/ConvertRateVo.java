@@ -19,8 +19,8 @@ public class ConvertRateVo implements Serializable {
     private String state;
     private String bourse;
     private String createUser;
-    private Date createDate;
+    private String createDate;
     private String updateUser;
-    private Date updateDate;
-
+    private String updateDate;
+    private String trimDate;//调整日期
 }

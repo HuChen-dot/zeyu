@@ -4,6 +4,8 @@ package com.rewin.swhysc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.BondBd;
+import com.rewin.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.bean.vo.BondBdVo;
 import com.rewin.swhysc.mapper.dao.BondBdMapper;
 import com.rewin.swhysc.service.BondBdService;
 import com.rewin.swhysc.util.StringUtils;
@@ -24,7 +26,7 @@ public class BondBdServiceImpl implements BondBdService {
     private BondBdMapper bondBdMapper;
 
     @Override
-    public PageInfo<BondBd> getBondBdList(Integer pageNo, Integer pageSize, String stockCode, String stockName,String startDate,String endDate) throws Exception {
+    public PageInfo<BondBdVo> getBondBdList(Integer pageNo, Integer pageSize, String stockCode, String stockName,String trimDate) throws Exception {
        //设置分页的起始页数和页面容量
         PageHelper.startPage(pageNo, pageSize);
 
@@ -35,17 +37,32 @@ public class BondBdServiceImpl implements BondBdService {
         if(!StringUtils.isEmpty(stockName)){
             map.put("stockName", stockName);
         }
-        if(!StringUtils.isEmpty(startDate)){
-            map.put("updateDate1", startDate+" 00:00:00");
+        if(!StringUtils.isEmpty(trimDate)){
+            map.put("trimDate", trimDate+" 00:00:00");
         }
-        if(!StringUtils.isEmpty(endDate)){
-            map.put("updateDate2", endDate+" 23:59:59");
-        }
-        List<BondBd> bondBdList = bondBdMapper.getBondBdList(map);
+        List<BondBdVo> bondBdList = bondBdMapper.getBondBdList(map);
 
         //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<BondBd> info = new PageInfo<BondBd>(bondBdList);
+        PageInfo<BondBdVo> info = new PageInfo<BondBdVo>(bondBdList);
         return info;
+    }
+
+    @Override
+    public List<BondBdVo> getBondBdState(String stockCode, String stockName, String trimDate) throws Exception {
+        Map<String, Object> map = new HashMap<>(1);
+        if(!StringUtils.isEmpty(stockCode)){
+            map.put("stockCode", stockCode);
+        }
+        if(!StringUtils.isEmpty(stockName)){
+            map.put("stockName", stockName);
+        }
+        if(!StringUtils.isEmpty(trimDate)){
+            map.put("trimDate", trimDate+" 00:00:00");
+        }
+
+        List<BondBdVo> bondBdList = bondBdMapper.getBondBdState(map);
+
+        return bondBdList;
     }
 
     @Override
@@ -70,12 +87,24 @@ public class BondBdServiceImpl implements BondBdService {
     }
 
     @Override
-    public Integer deleteBondBdAll() throws Exception {
-        return bondBdMapper.deleteBondBdAll();
+    public Integer subDelApproval(String ids) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            return bondBdMapper.subDelApproval(param);
+        }else{
+            return null;
+        }
     }
 
     @Override
-    public Integer updateBondBdAll() throws Exception {
-        return bondBdMapper.updateBondBdAll();
+    public Integer delByIds(String ids) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            return bondBdMapper.delByIds(param);
+        }else{
+            return null;
+        }
     }
 }

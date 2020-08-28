@@ -28,6 +28,8 @@ public class BondBdDto {
     private String isRq;//是否融券
     @NotEmpty(message = "交易所不能为空")
     private String bourse;//交易所
+    @NotEmpty(message = "调整日期不能为空")
+    private Date trimDate;//调整日期
     private String createUser;
     private Date createDate;
     private String updateUser;

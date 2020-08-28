@@ -2,6 +2,7 @@ package com.rewin.swhysc.mapper.dao;
 
 
 import com.rewin.swhysc.bean.WarrantRatio;
+import com.rewin.swhysc.bean.vo.WarrantRatioVo;
 
 import java.util.List;
 import java.util.Map;
@@ -10,7 +11,9 @@ import java.util.Map;
  * 融资融卷专栏------维持担保比例
  */
 public interface WarrantRatioMapper  {
-    List<WarrantRatio> getWarrantRatioList(Map<String, Object> param) throws Exception;
+    List<WarrantRatioVo> getWarrantRatioVoList(Map<String, Object> param) throws Exception;
+
+    List<WarrantRatioVo> getWarrantRatioList(Map<String, Object> param) throws Exception;
 
     WarrantRatio getWarrantRatioInfo(Map<String, Object> param) throws Exception;
 

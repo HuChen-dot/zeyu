@@ -3,13 +3,18 @@ package com.rewin.swhysc.service;
 
 import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.bean.vo.ConvertRateVo;
+
+import java.util.List;
 
 /**
  * 广告位表数据业务层
  */
 public interface ConvertRateService {
 
-    PageInfo<ConvertRate> getConverRateList(Integer pageNo, Integer pageSize,String stockCode,String stockName,String startDate,String endDate) throws Exception;
+    PageInfo<ConvertRateVo> getConverRateList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception;
+
+    List<ConvertRateVo> getConverRateState(String stockCode, String stockName, String trimDate) throws Exception;
 
     ConvertRate getConvertRateInfo(String id) throws Exception;
 
@@ -17,7 +22,7 @@ public interface ConvertRateService {
 
     Integer updateConvertRate(ConvertRate convertRate) throws Exception;
 
-    Integer deleteConvertRateAll() throws Exception;
+    Integer subDelApproval(String ids) throws Exception;
 
-    Integer updateConvertRateAll() throws Exception;
+    Integer delByIds(String ids) throws Exception;
 }

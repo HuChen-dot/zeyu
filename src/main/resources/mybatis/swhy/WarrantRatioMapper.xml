@@ -4,44 +4,65 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rewin.swhysc.mapper.dao.WarrantRatioMapper">
 
-    <select id="getWarrantRatioList" resultType="com.rewin.swhysc.bean.WarrantRatio"
+    <select id="getWarrantRatioList" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo"
             parameterType="java.util.Map">
-        select
+         select
         ID as id,
         CLOSE_LINE as closeLine,
         CORDON as cordon,
         EXTRACT_LINE as extractLine,
         MIN_LINE as minLine,
-        CREATE_DATE as createDate,
-        UPDATE_DATE as updateDate,
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
         STATE as state,
-        AUDIT_ID as auditId
-        from RZRQ_WARRANT_RATIO
+        AUDIT_ID as auditId,
+        to_char(CREATE_DATE,'yyyy-MM-dd hh24:mi:ss') AS createDate,
+        to_char(UPDATE_DATE,'yyyy-MM-dd hh24:mi:ss') AS updateDate,
+        to_char(TRIM_DATE,'yyyy-MM-dd') AS trimDate
+        from RZRQ_WARRANT_RATIO where STATE in ('2','5','6')
+    </select>
+
+    <select id="getWarrantRatioVoList" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo"
+            parameterType="java.util.Map">
+        select
+        a.ID as id,
+        a.CLOSE_LINE as closeLine,
+        a.CORDON as cordon,
+        a.EXTRACT_LINE as extractLine,
+        a.MIN_LINE as minLine,
+        to_char(a.CREATE_DATE,'yyyy-MM-dd hh24:mi:ss') AS createDate,
+        to_char(a.UPDATE_DATE,'yyyy-MM-dd hh24:mi:ss') AS updateDate,
+        a.CREATE_USER as createUser,
+        a.UPDATE_USER as updateUser,
+        a.STATE as state,
+        a.AUDIT_ID as auditId,
+        to_char(a.TRIM_DATE,'yyyy-MM-dd') as trimDate,
+        b.AUDITOR AS auditor,
+        b.AUDIT_OPINION AS auditOpinion
+        FROM
+        RZRQ_WARRANT_RATIO a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
-                and ID=#{id}
+                and a.ID=#{id}
             </if>
-            <if test="createDate1 != null">
-                and to_char(CREATE_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{createDate1}
+            <if test="startDate != null">
+                and to_char(a.TRIM_DATE,'yyyy-mm-dd 00:00:00') &gt;= #{startDate}
             </if>
-            <if test="createDate2 != null">
-                and to_char(CREATE_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{createDate2}
+            <if test="endDate != null">
+                and to_char(a.TRIM_DATE,'yyyy-mm-dd 23:59:59') &lt;= #{endDate}
             </if>
             <choose>
                 <when test="state != null">
-                    and STATE=#{state} and STATE != '6'
+                    and a.STATE=#{state} and a.STATE != '7'
                 </when>
                 <otherwise>
-                    and STATE != '6'
+                    and a.STATE != '7'
                 </otherwise>
             </choose>
         </trim>
     </select>
 
-
-    <select id="getWarrantRatioInfo" resultType="com.rewin.swhysc.bean.WarrantRatio">
+    <select id="getWarrantRatioInfo" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo">
         select
         ID as id,
         CLOSE_LINE as closeLine,
@@ -53,7 +74,8 @@
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
         STATE as state,
-        AUDIT_ID as auditId
+        AUDIT_ID as auditId,
+        TRIM_DATE as trimDate
         from RZRQ_WARRANT_RATIO
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
@@ -79,7 +101,8 @@
         CREATE_USER,
         UPDATE_USER,
         STATE,
-        AUDIT_ID
+        AUDIT_ID,
+        TRIM_DATE
         )
         values(
         #{id},
@@ -92,7 +115,8 @@
         #{createUser},
         #{updateUser},
         #{state},
-        #{auditId,jdbcType=VARCHAR}})
+        #{auditId,jdbcType=VARCHAR}},
+        #{trimDate})
     </insert>
 
     <update id="updateWarrantRatio" parameterType="com.rewin.swhysc.bean.WarrantRatio">
@@ -121,6 +145,9 @@
             </if>
             <if test="auditId != null">
                 AUDIT_ID=#{auditId},
+            </if>
+            <if test="trimDate != null">
+                TRIM_DATE=#{trimDate},
             </if>
         </trim>
         where ID = #{id}

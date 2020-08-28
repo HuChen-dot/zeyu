@@ -22,6 +22,8 @@ public class WarrantRatioDto {
     private String extractLine;//担保物提取线
     @NotEmpty(message = "最低线不能为空")
     private String minLine;//最低线
+    @NotEmpty(message = "调整日期不能为空")
+    private Date trimDate;//调整日期
     private String createUser;
     private Date createDate;
     private String updateUser;

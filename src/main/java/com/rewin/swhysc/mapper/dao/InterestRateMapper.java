@@ -11,7 +11,7 @@ import java.util.Map;
  * 融资融卷专栏------利率费率
  */
 public interface InterestRateMapper{
-    List<InterestRate> getInterestRateList(Map<String, Object> param) throws Exception;
+    List<InterestRateVo> getInterestRateList(Map<String, Object> param) throws Exception;
 
     List<InterestRateVo> getInterestRateVoList(Map<String, Object> param) throws Exception;
 

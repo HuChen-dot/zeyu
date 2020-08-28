@@ -4,29 +4,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 融资融卷专栏------利率费率
  */
 @Getter
 @Setter
-public class InterestRateVo implements Serializable {
+public class WarrantRatioVo implements Serializable {
     private int id;
-    private String rzRate;//融资利率
-    private String rqRate;//融券利率
-    private String rzLataCharge;//融资逾期罚息率
-    private String rqLataCharge;//融券逾期罚息率
-    private String rzQuotaRate;//融资占用额度费率
-    private String rqQuotaRate;//融券占用额度费率
+    private String closeLine;//平仓线
+    private String cordon;//警戒线
+    private String extractLine;//担保物提取线
+    private String minLine;//最低线
     private String createUser;
     private String createDate;
     private String updateUser;
     private String updateDate;
+    private String auditId; //审核记录ID
+    private String trimDate;//调整日期
     private String state;//状态（1:新增待审核(不可操作)；2:已发布(可操作)；3:驳回(可操作)；4:修改待审核(不可操作)；
                         // 5:已发布(不可操作)；6:已发布，删除待审核(不可操作)；7:已废弃(不展示不可操作)）
-    private String auditId; //审核记录ID
     private String auditor;
     private String auditOpinion;
-    private String trimDate;//调整日期
 }

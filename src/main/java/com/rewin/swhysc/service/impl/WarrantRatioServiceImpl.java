@@ -4,6 +4,7 @@ package com.rewin.swhysc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.WarrantRatio;
+import com.rewin.swhysc.bean.vo.WarrantRatioVo;
 import com.rewin.swhysc.mapper.dao.WarrantRatioMapper;
 import com.rewin.swhysc.service.WarrantRatioService;
 import com.rewin.swhysc.util.StringUtils;
@@ -23,7 +24,14 @@ public class WarrantRatioServiceImpl implements WarrantRatioService {
     private WarrantRatioMapper warrantRatioMapper;
 
     @Override
-    public PageInfo<WarrantRatio> getWarrantRatioList(Integer pageNo, Integer pageSize, String state,String startDate,String endDate) throws Exception {
+    public List<WarrantRatioVo> getWarrantRatioList() throws Exception {
+        Map<String, Object> map = new HashMap<>(1);
+        List<WarrantRatioVo> warrantRatioList = warrantRatioMapper.getWarrantRatioList(map);
+        return warrantRatioList;
+    }
+
+    @Override
+    public PageInfo<WarrantRatioVo> getWarrantRatioVoList(Integer pageNo, Integer pageSize, String state,String startDate,String endDate) throws Exception {
         //设置分页的起始页数和页面容量
         PageHelper.startPage(pageNo, pageSize);
 
@@ -37,10 +45,10 @@ public class WarrantRatioServiceImpl implements WarrantRatioService {
         if(!StringUtils.isEmpty(endDate)){
             map.put("createDate2", endDate+" 23:59:59");
         }
-        List<WarrantRatio> warrantRatioList = warrantRatioMapper.getWarrantRatioList(map);
+        List<WarrantRatioVo> warrantRatioList = warrantRatioMapper.getWarrantRatioVoList(map);
 
         //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<WarrantRatio> info = new PageInfo<WarrantRatio>(warrantRatioList);
+        PageInfo<WarrantRatioVo> info = new PageInfo<WarrantRatioVo>(warrantRatioList);
         return info;
     }
 

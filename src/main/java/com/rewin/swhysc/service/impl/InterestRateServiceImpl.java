@@ -25,25 +25,10 @@ public class InterestRateServiceImpl implements InterestRateService {
     private InterestRateMapper interestRateMapper;
 
     @Override
-    public PageInfo<InterestRate> getInterestRateList(Integer pageNo, Integer pageSize, String state,String startDate,String endDate) throws Exception {
-       //设置分页的起始页数和页面容量
-        PageHelper.startPage(pageNo, pageSize);
-
+    public List<InterestRateVo> getInterestRateList() throws Exception {
         Map<String, Object> map = new HashMap<>(1);
-        if(!StringUtils.isEmpty(state)){
-            map.put("state", state);
-        }
-        if(!StringUtils.isEmpty(startDate)){
-            map.put("createDate1", startDate+" 00:00:00");
-        }
-        if(!StringUtils.isEmpty(endDate)){
-            map.put("createDate2", endDate+" 23:59:59");
-        }
-        List<InterestRate> interestRateListByMap = interestRateMapper.getInterestRateList(map);
-
-        //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<InterestRate> info = new PageInfo<InterestRate>(interestRateListByMap);
-        return info;
+        List<InterestRateVo> interestRateListByMap = interestRateMapper.getInterestRateList(map);
+        return interestRateListByMap;
     }
 
     @Override
@@ -56,10 +41,10 @@ public class InterestRateServiceImpl implements InterestRateService {
             map.put("state", state);
         }
         if(!StringUtils.isEmpty(startDate)){
-            map.put("createDate1", startDate+" 00:00:00");
+            map.put("startDate", startDate+" 00:00:00");
         }
         if(!StringUtils.isEmpty(endDate)){
-            map.put("createDate2", endDate+" 23:59:59");
+            map.put("endDate", endDate+" 23:59:59");
         }
         List<InterestRateVo> interestRateListByMap = interestRateMapper.getInterestRateVoList(map);
 

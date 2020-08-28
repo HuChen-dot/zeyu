@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rewin.swhysc.mapper.dao.BondBdMapper">
 
-    <select id="getBondBdList" resultType="com.rewin.swhysc.bean.BondBd"
+    <select id="getBondBdList" resultType="com.rewin.swhysc.bean.vo.BondBdVo"
             parameterType="java.util.Map">
         select
         ID as id,
@@ -15,11 +15,12 @@
         IS_RZ as isRz,
         IS_RQ as isRq,
         BOURSE as bourse,
-        CREATE_DATE as createDate,
-        UPDATE_DATE as updateDate,
+        to_char(CREATE_DATE,'yyyy-MM-dd') as createDate,
+        to_char(UPDATE_DATE,'yyyy-MM-dd') as updateDate,
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
-        STATE as state
+        STATE as state,
+        to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
         from RZRQ_BOND_BD
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
@@ -31,23 +32,48 @@
             <if test="stockName != null">
                 and STOCK_NAME=#{stockName}
             </if>
-            <if test="updateDate1 != null">
-                and to_char(UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &gt;= #{updateDate1}
+            <if test="trimDate != null">
+                and to_char(TRIM_DATE,'yyyy-mm-dd 00:00:00') = #{trimDate}
             </if>
-            <if test="updateDate2 != null">
-                and to_char(UPDATE_DATE,'yyyy-mm-dd hh24:mi:ss') &lt;= #{updateDate2}
-            </if>
-            <choose>
-                <when test="state != null">
-                    and STATE=#{state} and STATE != '6'
-                </when>
-                <otherwise>
-                    and STATE != '6'
-                </otherwise>
-            </choose>
+            and STATE in ('2','5','6')
         </trim>
     </select>
 
+
+    <select id="getBondBdState" resultType="com.rewin.swhysc.bean.vo.BondBdVo"
+            parameterType="java.util.Map">
+        select
+        ID as id,
+        STOCK_CODE as stockCode,
+        STOCK_NAME as stockName,
+        RZ_RATIO as rzRatio,
+        RQ_RATIO as rqRatio,
+        IS_RZ as isRz,
+        IS_RQ as isRq,
+        BOURSE as bourse,
+        to_char(CREATE_DATE,'yyyy-MM-dd') as createDate,
+        to_char(UPDATE_DATE,'yyyy-MM-dd') as updateDate,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state,
+        to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
+        from RZRQ_BOND_BD
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{ID}
+            </if>
+            <if test="stockCode != null">
+                and STOCK_CODE=#{stockCode}
+            </if>
+            <if test="stockName != null">
+                and STOCK_NAME=#{stockName}
+            </if>
+            <if test="trimDate != null">
+                and to_char(TRIM_DATE,'yyyy-mm-dd 00:00:00') = #{trimDate}
+            </if>
+            and STATE = '2'
+        </trim>
+    </select>
 
     <select id="getBondBdInfo" resultType="com.rewin.swhysc.bean.BondBd">
         select
@@ -63,13 +89,13 @@
         UPDATE_DATE as updateDate,
         CREATE_USER as createUser,
         UPDATE_USER as updateUser,
-        STATE as state
+        STATE as state,
+        TRIM_DATE as trimDate
         from RZRQ_BOND_BD
         <trim prefix="where" prefixOverrides="and | or">
             <if test="ID != null">
                 and ID=#{ID}
             </if>
-            and STATE != '6'
         </trim>
     </select>
 
@@ -91,7 +117,8 @@
         UPDATE_DATE,
         CREATE_USER,
         UPDATE_USER,
-        STATE
+        STATE,
+        TRIM_DATE
         )
         values(
         #{id},
@@ -106,7 +133,8 @@
         #{updateDate},
         #{createUser},
         #{updateUser},
-        #{state})
+        #{state},
+        #{trimDate})
     </insert>
 
     <update id="updateBondBd" parameterType="com.rewin.swhysc.bean.BondBd">
@@ -142,16 +170,18 @@
             <if test="state != null">
                 STATE=#{state},
             </if>
+            <if test="trimDate != null">
+                TRIM_DATE=#{trimDate},
+            </if>
         </trim>
         where ID = #{id}
     </update>
 
-    <update id="updateBondBdAll" parameterType="com.rewin.swhysc.bean.BondBd">
-        update RZRQ_BOND_BD SET STATE='5' where STATE != '6'
+    <update id="subDelApproval" parameterType="com.rewin.swhysc.bean.ConvertRate">
+        update RZRQ_CONVERT_RATE SET STATE='6'  where ID in (#{ids})
     </update>
 
-
-    <update id="deleteBondBdAll" parameterType="com.rewin.swhysc.bean.BondBd">
-        update RZRQ_BOND_BD SET STATE='5' where STATE = '6'
+    <update id="delByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
+        update RZRQ_CONVERT_RATE SET STATE='7'  where ID in (#{ids})
     </update>
 </mapper>

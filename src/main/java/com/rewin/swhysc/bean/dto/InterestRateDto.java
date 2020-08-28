@@ -26,10 +26,13 @@ public class InterestRateDto {
     private String rzQuotaRate;//融资占用额度费率
     @NotEmpty(message = "融券占用额度费率不能为空")
     private String rqQuotaRate;//融券占用额度费率
+    @NotEmpty(message = "调整日期不能为空")
+    private Date trimDate;//调整日期
     private String createUser;
     private Date createDate;
     private String updateUser;
     private Date updateDate;
-    private String state;//状态（0：草稿 1：待审核 2：已发布 3：驳回 4：审核修改中 5：审核删除中 6：已删除 7已下架）
+    private String state;//状态（1:新增待审核(不可操作)；2:已发布(可操作)；3:驳回(可操作)；4:修改待审核(不可操作)；
+                        // 5:已发布(不可操作)；6:已发布，删除待审核(不可操作)；7:已废弃(不展示不可操作)）
     private String auditId; //审核记录ID
 }
