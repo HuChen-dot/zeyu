@@ -67,9 +67,22 @@ public class FileUploadUtils {
         FileUploadUtils.software = software;
     }
 
-
+    /**
+     * 图片和总路径上传地址
+     *
+     * @return
+     */
     public static String getProfile() {
         return uploadPath + profile;
+    }
+
+    /**
+     * 图片上传地址
+     *
+     * @return
+     */
+    public static String getProfiles() {
+        return profile;
     }
 
     @Value("${file.profile:images}")
@@ -77,9 +90,23 @@ public class FileUploadUtils {
         FileUploadUtils.profile = profile;
     }
 
-
+    /**
+     * 附件和总路径上传地址
+     *
+     * @return
+     */
     public static String getAccessory() {
         return uploadPath + accessory;
+    }
+
+
+    /**
+     * 附件上传地址
+     *
+     * @return
+     */
+    public static String getAccessorys() {
+        return accessory;
     }
 
     @Value("${file.accessory:accessory}")

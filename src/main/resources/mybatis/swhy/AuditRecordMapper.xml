@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.AuditRecordMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getAuditRecordById" resultType="com.rewin.swhysc.bean.AuditRecord">
+        select
+        id as id,
+        info_typeid as infoTypeid,
+        operation_id as operationId,
+        flow_type as flowType,
+        status as status,
+        submitter as submitter,
+        audit_opinion as auditOpinion,
+        auditor as auditor,
+        submit_time as submitTime,
+        audit_time as auditTime,
+        FORMER_ID as formerId,
+        staff_id as staffId
+        from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getAuditRecordListByMap" resultType="com.rewin.swhysc.bean.AuditRecord"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        info_typeid as infoTypeid,
+        operation_id as operationId,
+        flow_type as flowType,
+        status as status,
+        submitter as submitter,
+        audit_opinion as auditOpinion,
+        auditor as auditor,
+        submit_time as submitTime,
+        audit_time as auditTime,
+        FORMER_ID as formerId,
+        staff_id as staffId
+        from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="infoTypeid != null">
+                and info_typeid=#{infoTypeid}
+            </if>
+            <if test="operationId != null">
+                and operation_id=#{operationId}
+            </if>
+            <if test="flowType != null">
+                and flow_type=#{flowType}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="submitter != null">
+                and submitter=#{submitter}
+            </if>
+            <if test="auditOpinion != null">
+                and audit_opinion=#{auditOpinion}
+            </if>
+            <if test="auditor != null">
+                and auditor=#{auditor}
+            </if>
+            <if test="submitTime != null">
+                and submit_time=#{submitTime}
+            </if>
+            <if test="formerId != null">
+                and FORMER_ID=#{formerId}
+            </if>
+            <if test="staffId != null">
+                and staff_id=#{staffId}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getAuditRecordCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="infoTypeid != null">
+                and info_typeid=#{infoTypeid}
+            </if>
+            <if test="operationId != null">
+                and operation_id=#{operationId}
+            </if>
+            <if test="flowType != null">
+                and flow_type=#{flowType}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="submitter != null">
+                and submitter=#{submitter}
+            </if>
+            <if test="auditOpinion != null">
+                and audit_opinion=#{auditOpinion}
+            </if>
+            <if test="auditor != null">
+                and auditor=#{auditor}
+            </if>
+            <if test="submitTime != null">
+                and submit_time=#{submitTime}
+            </if>
+
+            <if test="auditTime != null">
+                and audit_time=#{auditTime}
+            </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertAuditRecord" parameterType="com.rewin.swhysc.bean.AuditRecord"
+    >
+
+        <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+            select seq_audit_record.nextval as sysId from DUAL
+        </selectKey>
+
+        insert into audit_record(
+        id,
+        info_typeid,
+        operation_id,
+        flow_type,
+        status,
+        submitter,
+        audit_opinion,
+        auditor,
+        submit_time,
+        audit_time,
+        FORMER_ID,
+        staff_id)
+        values(
+        #{id},
+        #{infoTypeid},
+        #{operationId},
+        #{flowType},
+        #{status},
+        #{submitter},
+        #{auditOpinion},
+        #{auditor},
+        #{submitTime},
+        #{auditTime},
+        #{formerId},
+        #{staffId})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateAuditRecord" parameterType="com.rewin.swhysc.bean.AuditRecord">
+        update audit_record
+        <trim prefix="set" suffixOverrides=",">
+            <if test="infoTypeid != null">
+                info_typeid=#{infoTypeid},
+            </if>
+            <if test="operationId != null">
+                operation_id=#{operationId},
+            </if>
+            <if test="flowType != null">
+                flow_type=#{flowType},
+            </if>
+            <if test="status != null">
+                status=#{status},
+            </if>
+            <if test="submitter != null">
+                submitter=#{submitter},
+            </if>
+            <if test="auditOpinion != null">
+                audit_opinion=#{auditOpinion},
+            </if>
+            <if test="auditor != null">
+                auditor=#{auditor},
+            </if>
+            <if test="submitTime != null">
+                submit_time=#{submitTime},
+            </if>
+            <if test="auditTime != null">
+                audit_time=#{auditTime}
+            </if>
+            <if test="formerId != null">
+                FORMER_ID=#{formerId}
+            </if>
+            <if test="staffId != null">
+                staff_id=#{staffId}
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteAuditRecordByMap" parameterType="java.util.Map">
+        delete from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+            <if test="infoTypeid != null">
+                and info_typeid=#{infoTypeid}
+            </if>
+            <if test="operationId != null">
+                and operation_id=#{operationId}
+            </if>
+            <if test="flowType != null">
+                and flow_type=#{flowType}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="submitter != null">
+                and submitter=#{submitter}
+            </if>
+            <if test="auditOpinion != null">
+                and audit_opinion=#{auditOpinion}
+            </if>
+            <if test="auditor != null">
+                and auditor=#{auditor}
+            </if>
+            <if test="submitTime != null">
+                and submit_time=#{submitTime}
+            </if>
+        </trim>
+    </delete>
+</mapper>

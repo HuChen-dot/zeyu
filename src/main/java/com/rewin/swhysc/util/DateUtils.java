@@ -59,7 +59,6 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
 
-
     public static final String parseDateToStr(final String format, final Date date) {
         return new SimpleDateFormat(format).format(date);
     }
@@ -101,11 +100,19 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
             return null;
         }
     }
+
     /**
-     * 日期转换成字符串格式
+     * 日期转换成字符串格式(年月日)
      */
     public static final String dateTime(final Date date) {
         return parseDateToStr(YYYY_MM_DD, date);
+    }
+
+    /**
+     * 日期转换成字符串格式(年月日时分秒）
+     */
+    public static final String dateTimes(final Date date) {
+        return parseDateToStr(YYYY_MM_DD_HH_MM_SS, date);
     }
 
     /**

@@ -16,5 +16,8 @@ public class viewOrAdVo {
     private String adName;
     //广告位图片尺寸大小
     private String imageSizes;
+    //广告位图标尺寸大小
+    private String icoeSize;
+
 
 }

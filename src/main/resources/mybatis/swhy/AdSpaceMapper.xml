@@ -37,7 +37,8 @@
         create_time as createTime,
         updater as updater,
         update_time as updateTime,
-        IMAGE_SIZES as imageSizes
+        IMAGE_SIZES as imageSizes,
+        ICOE_SIZE as icoeSize
         from ad_space
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -65,6 +66,7 @@
                 and IMAGE_SIZES=#{imageSizes}
             </if>
         </trim>
+
     </select>
 
 

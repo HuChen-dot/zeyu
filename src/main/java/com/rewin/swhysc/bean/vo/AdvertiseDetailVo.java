@@ -27,9 +27,9 @@ public class AdvertiseDetailVo implements Serializable {
     //菜单状态（0显示 1隐藏）
     private Integer status;
     //图片路径
-    private String imgPath;
+    private String[] imgPath;
     //图片名称
-    private String imgPathName;
+    private String[] imgPathName;
     //图标路径
     private String iconPath;
     //图标名称
@@ -40,6 +40,5 @@ public class AdvertiseDetailVo implements Serializable {
     private Integer viewId;
     //广告位名称
     private String AdSpaceName;
-    //广告位图片尺寸大小
-    private String imageSizes;
+
 }

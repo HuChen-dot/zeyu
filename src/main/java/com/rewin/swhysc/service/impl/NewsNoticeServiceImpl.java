@@ -72,7 +72,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         ScNewsDetailsVo.setAccessoryName(AccessoryName);
         String accessoryPath = newsAccessory.getAccessoryPath();
         //附件上传地址
-        String accessory = FileUploadUtils.getAccessory();
+        String accessory = FileUploadUtils.getAccessorys();
         List<String> listpath = new ArrayList<>();
         if (accessoryPath != null && accessoryPath != "") {
             String[] Path = accessoryPath.split(",");
@@ -109,7 +109,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         map.put("newsId", id);
         NewsAccessory newsAccessory = NewsAccessoryMapper.getNewsAccessoryListByMap(map).get(0);
         //附件上传地址
-        String accessory = RuoYiConfig.getAccessory();
+//        String accessory = RuoYiConfig.getAccessory();
 
         //复制封装参数
         String[] ccessoryName = newsAccessory.getAccessoryName().split(",");
@@ -117,7 +117,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         String[] ccessoryPath = newsAccessory.getAccessoryPath().split(",");
         String[] AccessoryPath = new String[ccessoryPath.length];
         for (int i = 0; i < ccessoryPath.length; i++) {
-            AccessoryPath[i] = FileUploadUtils.getAccessory() + "/" + ccessoryPath[i];
+            AccessoryPath[i] = FileUploadUtils.getAccessorys() + "/" + ccessoryPath[i];
         }
         UpdataNewsVo.setAccessoryPath(AccessoryPath);
         UpdataNewsVo.setAuthor(newsContent.getAuthor());
@@ -152,6 +152,9 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         }
         if (newsNotice.getNoticeTypeId() == 12) {
             UpdataNewsVo.setNoticeTypeName("公司新闻");
+        }
+        if (newsNotice.getNoticeTypeId() == 13) {
+            UpdataNewsVo.setNoticeTypeName("业务通知");
         }
 
         return UpdataNewsVo;
@@ -264,7 +267,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         newsNotice.setUpdateTime(new Date());
         newsNotice.setUpdater(loginUser.getUsername());
         newsNotice.setOpinion("");
-        newsNotice.setAuditor(AddNewsDto.getAuthor());
+        newsNotice.setAuditor(AddNewsDto.getAuthor() == null ? " " : AddNewsDto.getAuthor());
         newsNotice.setVerifier("");
         newsNotice.setFlow(2);
 
@@ -273,10 +276,10 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         //添加新闻内容表
         NewsContent newsContent = new NewsContent();
         newsContent.setNewsId(newsNotice.getId());
-        newsContent.setAuthor(AddNewsDto.getAuthor());
+        newsContent.setAuthor(AddNewsDto.getAuthor() == null ? " " : AddNewsDto.getAuthor());
         newsContent.setNewsContent(AddNewsDto.getNewsContent() == null ? "" : AddNewsDto.getNewsContent());
         newsContent.setNoticeTitle(AddNewsDto.getNoticeTitle());
-        newsContent.setSource(AddNewsDto.getSource());
+        newsContent.setSource(AddNewsDto.getSource() == null ? " " : AddNewsDto.getSource());
         newsContent.setType(AddNewsDto.getType() == null ? " " : AddNewsDto.getType());
 
         NewsContentMapper.insertNewsContent(newsContent);
@@ -341,6 +344,26 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         NewsNotice newsNotice = new NewsNotice();
         newsNotice.setId(id);
         newsNotice.setStatus("16");
+        return newsNoticeMapper.updateNewsNotice(newsNotice);
+    }
+
+    /**
+     * 删除：把新闻的状态修改为已下架
+     */
+    public Integer DeleteNewsNotice(Integer id) throws Exception {
+        NewsNotice newsNotice = new NewsNotice();
+        newsNotice.setId(id);
+        newsNotice.setStatus("8");
+        return newsNoticeMapper.updateNewsNotice(newsNotice);
+    }
+
+    /**
+     * 提交：把新闻的状态修改为审核中
+     */
+    public Integer sbtNewsNotice(Integer id) throws Exception {
+        NewsNotice newsNotice = new NewsNotice();
+        newsNotice.setId(id);
+        newsNotice.setStatus("4");
         return newsNoticeMapper.updateNewsNotice(newsNotice);
     }
 

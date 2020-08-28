@@ -15,6 +15,10 @@ import com.rewin.swhysc.common.constant.ExceptionCode;
 import com.rewin.swhysc.common.exception.CustomException;
 import com.rewin.swhysc.common.utils.ExceptionMsgUtils;
 import com.rewin.swhysc.mapper.dao.DownloadCountMapper;
+import com.rewin.swhysc.bean.vo.SoftwareByidVo;
+import com.rewin.swhysc.bean.vo.SoftwareVo;
+import com.rewin.swhysc.bean.vo.TabSoftwareVo;
+import com.rewin.swhysc.controller.manage.SoftwareController;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
 import com.rewin.swhysc.security.LoginUser;
@@ -22,6 +26,8 @@ import com.rewin.swhysc.service.SoftwareService;
 import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class SoftwareServiceImpl implements SoftwareService {
 
-
+    private static final Logger log = LoggerFactory.getLogger(SoftwareServiceImpl.class);
     @Resource
     private SoftwareMapper softwareMapper;
 
@@ -122,10 +128,12 @@ public class SoftwareServiceImpl implements SoftwareService {
         List<Software> softwareList = softwareMapper.getSoftwareListByMap(param);
         //转换参数
         List<TabSoftwareVo> listVo = new ArrayList<TabSoftwareVo>();
+
         for (Software software : softwareList) {
             TabSoftwareVo TabSoftwareVo = new TabSoftwareVo();
             TabSoftwareVo.setId(software.getId());
             //封装转换TAB类型名称
+            log.info("空指针：", software.getIsShow());
             if (software.getIsShow() == 1) {
                 TabSoftwareVo.setIsShowName("电脑版");
             } else if (software.getIsShow() == 2) {

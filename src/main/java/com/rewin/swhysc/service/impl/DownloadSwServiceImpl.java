@@ -6,6 +6,7 @@ import com.rewin.swhysc.bean.DownloadSw;
 import com.rewin.swhysc.bean.vo.DownloadSwVo;
 import com.rewin.swhysc.mapper.dao.DownloadSwMapper;
 import com.rewin.swhysc.service.DownloadSwService;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class DownloadSwServiceImpl implements DownloadSwService {
         for (DownloadSw sw : downloadSw) {
             DownloadSwVo DownloadSwVo = new DownloadSwVo();
             BeanUtils.copyProperties(sw, DownloadSwVo);
+            DownloadSwVo.setDownloadTimes(DateUtils.dateTime(sw.getDownloadTime()));
             if (sw.getSoftwareType() == 111) {
                 DownloadSwVo.setSoftwareTypeName("电脑端");
             }
