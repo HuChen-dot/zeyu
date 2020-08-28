@@ -30,5 +30,5 @@ public interface ScStaffInfoService {
      * @Author: sinan@rewin.com.cn
      * @Date: 2020/8/27 14:07
      */
-    List<MarketerInfoVo> getMarketerInfo(MarketerDto marketerDto)throws Exception;
+    MarketerInfoVo getMarketerInfo(MarketerDto marketerDto)throws Exception;
 }

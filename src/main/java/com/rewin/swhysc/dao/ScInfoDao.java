@@ -2,8 +2,10 @@ package com.rewin.swhysc.dao;
 
 import com.rewin.swhysc.bean.pojo.Marketer;
 import com.rewin.swhysc.bean.pojo.OpenDept;
+import com.rewin.swhysc.util.page.PageInfo;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @program: swhyscManageServer
@@ -14,5 +16,6 @@ import java.util.List;
 public interface ScInfoDao {
     List<OpenDept> getOpenDeptList();
 
-    List<Marketer> getMarketerInfoList(String isWest,String searcKey,String staffType);
+    PageInfo<Marketer> getMarketerInfoList(String isWest, String staffType, String searchKey, Set<String> OpenDept,
+                                           Integer pageNum, Integer pageSize);
 }

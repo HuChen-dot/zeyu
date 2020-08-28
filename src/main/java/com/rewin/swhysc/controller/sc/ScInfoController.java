@@ -65,14 +65,14 @@ public class ScInfoController {
     @ApiOperation("营销人员信息查询")
     @PostMapping("/marketer")
     public AjaxResult getMarketerInfo(@RequestBody @Valid MarketerDto marketerDto){
-        List<MarketerInfoVo> list;
+        MarketerInfoVo marketerInfoVo;
         try{
-            list = scStaffInfoService.getMarketerInfo(marketerDto);
+            marketerInfoVo = scStaffInfoService.getMarketerInfo(marketerDto);
         }catch (Exception e){
             e.printStackTrace();
             return AjaxResult.error();
         }
-        return AjaxResult.success(list);
+        return AjaxResult.success(marketerInfoVo);
     }
 
 }

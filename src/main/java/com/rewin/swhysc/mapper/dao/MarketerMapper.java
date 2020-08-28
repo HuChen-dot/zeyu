@@ -14,5 +14,5 @@ public interface MarketerMapper extends BaseMapper<Marketer> {
     List<Marketer> queryMarketerInfoList(@Param("isWest") String isWest,
                                          @Param("searchKey") String searcKey,
                                          @Param("staffType") String staffType,
-                                         @Param("list") Set<String> searchKey);
+                                         @Param("list") Set<String> OpenDept);
 }

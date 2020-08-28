@@ -17,6 +17,6 @@ public class MarketerDto {
     @NotBlank
     private String staffType;
     private String searchKey;
-    private String pageNum;
-    private String pageSize;
+    private Integer pageNum;
+    private Integer pageSize;
 }

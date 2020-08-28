@@ -37,7 +37,7 @@
         FROM VJJR_SW v
         <trim prefix="where" prefixOverrides="and | or">
             <choose>
-                <when test="isWest eq '1'">
+                <when test="isWest eq '1'.toString">
                     AND YYB_4 IN
                     <foreach collection="list" item="item" open="(" separator="," close=")">
                         #{item}
@@ -50,12 +50,13 @@
                     </foreach>
                 </otherwise>
             </choose>
-            <if test="searchKey != null and type != ''">
-                AND (CERT_NO LIKE '%'#{searchKey}'%' OR JJRZSBH LIKE '%'#{searchKey}'%' OR JJRXM LIKE '%'#{searchKey}'%'
-                OR JJRBH LIKE '%'#{searchKey}'%' OR YYB_NAME LIKE '%'#{searchKey}'%')
+            <if test="searchKey != null and searchKey != ''">
+                AND (CERT_NO LIKE '%'|| #{searchKey} ||'%' OR JJRZSBH LIKE '%'|| #{searchKey} ||'%'
+                OR JJRXM LIKE '%'|| #{searchKey} ||'%' OR JJRBH LIKE '%'|| #{searchKey} ||'%'
+                OR YYB_NAME LIKE '%'|| #{searchKey} ||'%')
             </if>
             <choose>
-                <when test="staffType eq '0'">
+                <when test="staffType eq '0'.toString">
                     AND JJRLB IN ('1','2','6','8')
                 </when>
                 <otherwise>

@@ -2,6 +2,8 @@ package com.rewin.swhysc.bean.vo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @program: swhyscManageServer
  * @description:营销人员信息
@@ -10,10 +12,8 @@ import lombok.Data;
  **/
 @Data
 public class MarketerInfoVo {
-    private String name;
-    private String number;
-    private String certificate;
-    private String agentTime;
-    private String branchName;
-    private String workAddress;
+    List<MarketerInfo> marketerInfos;
+    private Integer pages;
+    private Integer pageNum;
+    private Integer pageSize;
 }
