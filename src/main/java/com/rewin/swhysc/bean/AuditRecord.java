@@ -24,18 +24,23 @@ public class AuditRecord implements Serializable {
     //审核人
     private String auditor;
     //提交时间
-    private String submitTime;
-
+    private Date submitTime;
     //审核时间
-    private String auditTime;
+    private Date auditTime;
 
+    //提交时间(字符类型）
+    private String submitTimes;
+    //审核时间（字符类型）
+    private String auditTimes;
     //之前的id
     private String formerId;
-
     //信息主键id
     private String staffId;
-
     //表名（表示当前数据在那一张表中）
     private String tableNames;
+    //文件地址
+    private String fileUrl;
+    //文件名称
+    private String fileName;
 
 }

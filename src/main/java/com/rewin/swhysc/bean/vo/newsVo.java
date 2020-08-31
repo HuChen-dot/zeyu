@@ -30,6 +30,6 @@ public class newsVo {
     private String verifier;
     //是否置顶
     private String isStick;
-    //更新时间
-    private String updateTime;
+    //创建时间
+    private String createTime;
 }

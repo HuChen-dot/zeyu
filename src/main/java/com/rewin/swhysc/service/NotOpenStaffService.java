@@ -4,10 +4,12 @@ import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.NotOpenStaff;
 import com.rewin.swhysc.bean.SysUser;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
+import com.rewin.swhysc.bean.vo.DeleStaffAuditVo;
 import com.rewin.swhysc.bean.vo.NotOpenStaffVo;
 import com.rewin.swhysc.bean.vo.StaffAuditVo;
 import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -46,9 +48,20 @@ public interface NotOpenStaffService {
 
 
     /**
-     * 根据审核表id查询，审核信息的详细信息
+     * 根据审核表id查询，《增加或修改》审核信息的详细信息
      */
     StaffAuditVo audit(AuditRecord auditRecord) throws Exception;
+
+    /**
+     * 根据审核表id查询，《批量删除或全量删除》审核信息的详细信息
+     */
+    DeleStaffAuditVo deteAudit(AuditRecord auditRecord) throws Exception;
+
+
+    /**
+     * 根据审核表id查询，《批量上传》审核信息的详细信息
+     */
+    DeleStaffAuditVo uploadingAudit(AuditRecord auditRecord) throws Exception;
 
     /**
      * 逻辑删除：全量删除或批量删除
@@ -67,7 +80,7 @@ public interface NotOpenStaffService {
      * @param operName 操作用户
      * @return 结果
      */
-    String importOpenStaff(List<NotOpenStaff> userList, String operName);
+    String importOpenStaff(List<NotOpenStaff> userList, String operName, MultipartFile[] file);
 
     /**
      * 根据条件查询对象，返回布尔值，是否存在该对象

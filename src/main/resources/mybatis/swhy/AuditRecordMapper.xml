@@ -15,11 +15,13 @@
         submitter as submitter,
         audit_opinion as auditOpinion,
         auditor as auditor,
-        submit_time as submitTime,
-        audit_time as auditTime,
+        to_char(submit_time,'yyyy-MM-dd HH24:mi:ss') as submitTimes,
+        to_char(audit_time,'yyyy-MM-dd HH24:mi:ss') as auditTimes,
         FORMER_ID as formerId,
         staff_id as staffId,
-        TABLE_NAMES as tableNames
+        TABLE_NAMES as tableNames,
+        FILE_URL as fileUrl,
+        FILE_NAME as fileName
         from audit_record
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -40,11 +42,13 @@
         submitter as submitter,
         audit_opinion as auditOpinion,
         auditor as auditor,
-        submit_time as submitTime,
-        audit_time as auditTime,
+        to_char(submit_time,'yyyy-MM-dd HH24:mi:ss') as submitTimes,
+        to_char(audit_time,'yyyy-MM-dd HH24:mi:ss') as auditTimes,
         FORMER_ID as formerId,
         staff_id as staffId,
-        TABLE_NAMES as tableNames
+        TABLE_NAMES as tableNames,
+        FILE_URL as fileUrl,
+        FILE_NAME as fileName
         from audit_record
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -95,11 +99,13 @@
         submitter as submitter,
         audit_opinion as auditOpinion,
         auditor as auditor,
-        submit_time as submitTime,
-        audit_time as auditTime,
+        to_char(submit_time,'yyyy-MM-dd HH24:mi:ss') as submitTimes,
+        to_char(audit_time,'yyyy-MM-dd HH24:mi:ss') as auditTimes,
         FORMER_ID as formerId,
         staff_id as staffId,
-        TABLE_NAMES as tableNames
+        TABLE_NAMES as tableNames,
+        FILE_URL as fileUrl,
+        FILE_NAME as fileName
         from audit_record
         <trim prefix="where" prefixOverrides="and | or">
             <if test="infoTypeid != null">
@@ -181,7 +187,9 @@
         audit_time,
         FORMER_ID,
         staff_id,
-        TABLE_NAMES)
+        TABLE_NAMES,
+        FILE_URL,
+        FILE_NAME)
         values(
         #{id},
         #{infoTypeid},
@@ -195,7 +203,9 @@
         #{auditTime,jdbcType=DATE},
         #{formerId,jdbcType=VARCHAR},
         #{staffId},
-        #{tableNames,jdbcType=VARCHAR})
+        #{tableNames,jdbcType=VARCHAR},
+        #{fileUrl,jdbcType=VARCHAR},
+        #{fileName,jdbcType=VARCHAR})
     </insert>
 
     <!--    根据不同的入参审核不同的表内容-->

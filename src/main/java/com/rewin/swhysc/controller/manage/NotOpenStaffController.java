@@ -88,6 +88,24 @@ public class NotOpenStaffController {
 
     }
 
+    /**
+     * 根据审核表id查询人员审核信息
+     * 在列表中展示
+     */
+    @GetMapping("check/{id}")
+    public AjaxResult getcheck(@PathVariable Integer id) {
+
+        UpdaNotOpenStaffVo notOpenStaff = null;
+        try {
+            notOpenStaff = NotOpenStaffService.getNotOpenStaffById(id);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("查询失败，请重试");
+        }
+        return AjaxResult.success("查询成功", notOpenStaff);
+
+    }
+
 
     /**
      * 添加
@@ -181,10 +199,10 @@ public class NotOpenStaffController {
      * 获取批量上传的文件并转换成list集合
      */
     @PostMapping("/importData")
-    public AjaxResult importData(MultipartFile file) throws Exception {
+    public AjaxResult importData(MultipartFile[] file) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         ExcelUtil<NotOpenStaff> util = new ExcelUtil<NotOpenStaff>(NotOpenStaff.class);
-        List<NotOpenStaff> list = util.importExcel(file.getInputStream());
+        List<NotOpenStaff> list = util.importExcel(file[0].getInputStream());
 
 
         //创建空集合转换填充基础信息
@@ -198,7 +216,7 @@ public class NotOpenStaffController {
             OpenStaff.setCreateTime(new Date());
             OpenStaffList.add(OpenStaff);
         }
-        String message = NotOpenStaffService.importOpenStaff(OpenStaffList, loginUser.getUsername());
+        String message = NotOpenStaffService.importOpenStaff(OpenStaffList, loginUser.getUsername(), file);
         return AjaxResult.success(message);
     }
 
