@@ -224,7 +224,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
             } else if (newsVo.getStatus().equals("32")) {
                 newsVo.setStatus("驳回");
             }
-            newsVo.setUpdateTime(newsNotice.getUpdateTime());
+            newsVo.setCreateTime(newsNotice.getCreateTime());
 
             listnews.add(newsVo);
         }
@@ -249,7 +249,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         //添加新闻表
         NewsNotice newsNotice = new NewsNotice();
-        newsNotice.setIsStick(AddNewsDto.getIsStick());
+        newsNotice.setIsStick(2);
         newsNotice.setNoticeTitle(AddNewsDto.getNoticeTitle());
         newsNotice.setNoticeTypeId(AddNewsDto.getNoticeTypeId());
         //判断这次新增是否是存草稿
@@ -260,11 +260,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         }
         newsNotice.setCreateTime(DateUtils.dateTimes(new Date()));
         newsNotice.setCreator(loginUser.getUsername());
-        newsNotice.setUpdateTime(DateUtils.dateTimes(new Date()));
-        newsNotice.setUpdater(loginUser.getUsername());
-        newsNotice.setOpinion("");
-        newsNotice.setAuditor(AddNewsDto.getAuthor() == null ? " " : AddNewsDto.getAuthor());
-        newsNotice.setVerifier("");
+        newsNotice.setAuditor(AddNewsDto.getAuthor());
         newsNotice.setFlow(2);
 
 
@@ -299,7 +295,6 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         //修改新闻表
         NewsNotice newsNotice = new NewsNotice();
         newsNotice.setId(AddNewsDto.getId());
-        newsNotice.setIsStick(AddNewsDto.getIsStick());
         newsNotice.setNoticeTitle(AddNewsDto.getNoticeTitle());
         newsNotice.setNoticeTypeId(AddNewsDto.getNoticeTypeId());
         //判断这次新增是否是存草稿

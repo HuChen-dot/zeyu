@@ -121,8 +121,8 @@
                 and flow=#{flow}
             </if>
             <if test="beginTime != null">
-                and update_time &gt;=#{beginTime}
-                and update_time &lt;= #{endTime}
+                and create_time &gt;=#{beginTime}
+                and create_time &lt;= #{endTime}
             </if>
         </trim>
     </select>
@@ -195,14 +195,14 @@
         #{noticeTypeId},
         #{status},
         #{flow},
-        #{opinion},
-        #{auditor},
+        #{opinion,jdbcType=VARCHAR},
+        #{auditor,jdbcType=VARCHAR},
         #{isStick},
         #{creator},
         #{createTime},
-        #{updater},
-        #{updateTime},
-        #{verifier})
+        #{updater,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=VARCHAR},
+        #{verifier,jdbcType=VARCHAR})
     </insert>
 
 

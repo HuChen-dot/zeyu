@@ -3,6 +3,7 @@ package com.rewin.swhysc.controller.manage;
 import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.dto.RecordDto;
 import com.rewin.swhysc.bean.vo.AuditRecordVo;
+import com.rewin.swhysc.bean.vo.DeleStaffAuditVo;
 import com.rewin.swhysc.bean.vo.StaffAuditVo;
 import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
 import com.rewin.swhysc.service.AuditRecordService;
@@ -43,6 +44,7 @@ public class AuditRecordController {
      */
     @GetMapping("list")
     public AjaxResult getRecordBylist(RecordDto RecordDto) {
+        System.err.println("查询：" + RecordDto);
         Map<String, Object> map = new HashMap<>(10);
         //判断信息类型
         if (RecordDto.getInfoTypeid() != null && RecordDto.getInfoTypeid() != -1) {
@@ -62,6 +64,7 @@ public class AuditRecordController {
         }
         if (RecordDto.getBeginTime() != null && RecordDto.getEndTime() != null &&
                 RecordDto.getBeginTime().length() > 0 && RecordDto.getEndTime().length() > 0) {
+            System.err.println("进入公示信息审核时间");
             map.put("beginTime", DateUtils.parseDate(RecordDto.getBeginTime()));
             map.put("endTime", DateUtils.parseDate(RecordDto.getEndTime()));
         }
@@ -77,7 +80,7 @@ public class AuditRecordController {
 
 
     /**
-     * 根据审核表id查询，审核信息的详细信息
+     * 根据审核表id查询，增加，修改操作 审核信息的详细信息
      * 用来审核前的初始化工作
      */
     @GetMapping("info/{id}")
@@ -85,9 +88,62 @@ public class AuditRecordController {
         //获取审核表信息
         try {
             AuditRecord auditRecord = auditRecordMapper.getAuditRecordById(id);
+//   -------------------------------------------------------------
+            //判断是否是《非现场开户人员》
             if (auditRecord.getInfoTypeid() == 113) {
-                StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
-                return AjaxResult.success("查询成功", audit);
+                //判断是否是《增加或修改操作》
+                if (auditRecord.getOperationId() == 1 || auditRecord.getOperationId() == 16) {
+                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
+                    return AjaxResult.success("查询成功", audit);
+                }
+                //判断是否是《批量删除或全量删除操作操作》
+                if (auditRecord.getOperationId() == 4 || auditRecord.getOperationId() == 8) {
+                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
+                //判断是否是《批量上传操作》
+                if (auditRecord.getOperationId() == 2) {
+                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.uploadingAudit(auditRecord);
+                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
+            }
+//   ---------------------------------------------------------------------
+            //判断是否是《债券投资相关人员信息》
+            if (auditRecord.getInfoTypeid() == 114) {
+                //判断是否是《增加或修改操作》
+                if (auditRecord.getOperationId() == 1 || auditRecord.getOperationId() == 16) {
+//                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
+//                    return AjaxResult.success("查询成功", audit);
+                }
+                //判断是否是《批量删除或全量删除操作操作》
+                if (auditRecord.getOperationId() == 4 || auditRecord.getOperationId() == 8) {
+//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
+                //判断是否是《批量上传操作》
+                if (auditRecord.getOperationId() == 2) {
+//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
+            }
+//------------------------------------------------------------------
+            //判断是否是《私募资产管理业务从业人员信息》
+            if (auditRecord.getInfoTypeid() == 115) {
+                //判断是否是《增加或修改操作》
+                if (auditRecord.getOperationId() == 1 || auditRecord.getOperationId() == 16) {
+//                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
+//                    return AjaxResult.success("查询成功", audit);
+                }
+                //判断是否是《批量删除或全量删除操作操作》
+                if (auditRecord.getOperationId() == 4 || auditRecord.getOperationId() == 8) {
+//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
+                //判断是否是《批量上传操作》
+                if (auditRecord.getOperationId() == 2) {
+//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

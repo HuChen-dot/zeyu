@@ -57,6 +57,7 @@ public class NewsNoticeController {
      */
     @GetMapping("list")
     public AjaxResult getnewsBylist(newsDto newsDto) {
+        System.err.println("新闻" + newsDto);
         Map<String, Object> map = new HashMap<>(4);
         if (newsDto.getNoticeTypeId() != null && newsDto.getNoticeTypeId() != 0) {
             map.put("noticeTypeId", newsDto.getNoticeTypeId());
@@ -74,8 +75,10 @@ public class NewsNoticeController {
 
         if (newsDto.getBeginTime() != null && newsDto.getEndTime() != null &&
                 newsDto.getBeginTime().length() > 0 && newsDto.getEndTime().length() > 0) {
-            map.put("beginTime", DateUtils.parseDate(newsDto.getBeginTime()));
-            map.put("endTime", DateUtils.parseDate(newsDto.getEndTime()));
+//            map.put("beginTime", DateUtils.parseDate(newsDto.getBeginTime()));
+//            map.put("endTime", DateUtils.parseDate(newsDto.getEndTime()));
+            map.put("beginTime", newsDto.getBeginTime());
+            map.put("endTime", newsDto.getEndTime());
         }
         map.put("pageNum", newsDto.getPageNum());
         map.put("pageSize", newsDto.getPageSize());

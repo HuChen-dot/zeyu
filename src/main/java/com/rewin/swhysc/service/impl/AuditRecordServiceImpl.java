@@ -41,11 +41,12 @@ public class AuditRecordServiceImpl implements AuditRecordService {
     public PageInfo<AuditRecordVo> getAuditRecordList(Map<String, Object> param, Integer pageNum, Integer pageSize) throws Exception {
         //设置分页的起始页数和页面容量
         Page<Object> objects = PageHelper.startPage(pageNum, pageSize);
-        List<AuditRecord> auditRecord = auditRecordMapper.getAuditRecordListByMap(param);
+        List<AuditRecord> auditRecord = auditRecordMapper.getAuditRecordList(param);
         List<AuditRecordVo> auditRecordVo = new ArrayList<AuditRecordVo>();
         for (AuditRecord record : auditRecord) {
             AuditRecordVo AuditRecordVo = new AuditRecordVo();
             BeanUtils.copyProperties(record, AuditRecordVo);
+            AuditRecordVo.setSubmitTime(record.getSubmitTimes());
             //判断封装信息类型
             if (record.getInfoTypeid() == 113) {
                 AuditRecordVo.setInfoTypeidName("非现场开户人员信息");
@@ -97,6 +98,7 @@ public class AuditRecordServiceImpl implements AuditRecordService {
     @Override
     public Integer verifyInfo(AuditRecord auditRecord, Integer falg, String auditOpinion) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+        AuditRecord audit = new AuditRecord();
         //表名
         String tableNames = auditRecord.getTableNames();
         System.err.println(tableNames);
@@ -142,20 +144,58 @@ public class AuditRecordServiceImpl implements AuditRecordService {
                 table.put("id", Integer.parseInt(auditRecord.getFormerId()));
                 auditRecordMapper.dynamicUpdateTable(table);
             }
-            //修改审核表当前数据
-            AuditRecord audit = new AuditRecord();
-            audit.setId(auditRecord.getId());
-            audit.setFlowType(2);
             audit.setStatus(1);
-            audit.setAuditor(loginUser.getUsername());
-            audit.setAuditTime(DateUtils.dateTimes(new Date()));
-            audit.setAuditOpinion(auditOpinion);
-            auditRecordMapper.updateAuditRecord(audit);
-
         } else {
-
+            //下面是驳回逻辑
+            Integer operationId = auditRecord.getOperationId();
+            String formerId = auditRecord.getFormerId();
+            //1表示新增操作，2表示批量上传操作
+            if (operationId == 1 || operationId == 2) {
+                //获取新增的数据id,并转换成数组
+                String[] split = auditRecord.getStaffId().split(",");
+                //依次把新增的数据状态修改为已删除
+                for (String id : split) {
+                    table.put("tabName", tableNames);
+                    table.put("status", 4);
+                    table.put("id", Integer.parseInt(id));
+                    auditRecordMapper.dynamicUpdateTable(table);
+                }
+            }
+            //4表示批量删除操作，2表示全量删除操作
+            if (operationId == 4 || operationId == 8) {
+                //获取需要删除的数据id,并转换成数组
+                String[] split = auditRecord.getFormerId().split(",");
+                //依次把删除的数据状态修改为已发布
+                for (String id : split) {
+                    table.put("tabName", tableNames);
+                    table.put("status", 2);
+                    table.put("id", Integer.parseInt(id));
+                    auditRecordMapper.dynamicUpdateTable(table);
+                }
+            }
+            //16表示修改操作
+            if (operationId == 16) {
+                //把新增的数据的状态修改为已删除
+                table.put("tabName", tableNames);
+                table.put("status", 4);
+                table.put("id", Integer.parseInt(auditRecord.getStaffId()));
+                auditRecordMapper.dynamicUpdateTable(table);
+                //把原数据的数据的状态修改为已发布
+                table.put("tabName", tableNames);
+                table.put("status", 2);
+                table.put("id", Integer.parseInt(auditRecord.getFormerId()));
+                auditRecordMapper.dynamicUpdateTable(table);
+            }
+            audit.setStatus(2);
         }
-
+        //修改审核表当前数据
+        audit.setId(auditRecord.getId());
+        audit.setFlowType(2);
+        audit.setAuditor(loginUser.getUsername());
+        audit.setAuditTime(new Date());
+        System.err.println("审核意见：=====》" + auditOpinion);
+        audit.setAuditOpinion("null".equals(auditOpinion) ? " " : auditOpinion);
+        auditRecordMapper.updateAuditRecord(audit);
         return null;
     }
 

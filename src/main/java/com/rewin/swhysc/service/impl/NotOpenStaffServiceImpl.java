@@ -6,10 +6,9 @@ import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.NotOpenStaff;
 import com.rewin.swhysc.bean.SysDept;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
-import com.rewin.swhysc.bean.vo.NotOpenStaffVo;
-import com.rewin.swhysc.bean.vo.StaffAuditVo;
-import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
+import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.common.exception.CustomException;
+import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
 import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
 import com.rewin.swhysc.mapper.dao.NotOpenStaffMapper;
 import com.rewin.swhysc.mapper.dao.SysDictTypeMapper;
@@ -21,6 +20,7 @@ import com.rewin.swhysc.service.NotOpenStaffService;
 import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.StringUtils;
+import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +28,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -97,7 +99,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setStatus(0);
         AuditRecord.setTableNames("not_open_staff");
         AuditRecord.setSubmitter(notOpenStaff.getCreator());
-        AuditRecord.setSubmitTime(DateUtils.dateTimes(notOpenStaff.getCreateTime()));
+        AuditRecord.setSubmitTime(notOpenStaff.getCreateTime());
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
         return integer;
     }
@@ -148,14 +150,14 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setStatus(0);
         AuditRecord.setTableNames("not_open_staff");
         AuditRecord.setSubmitter(loginUser.getUsername());
-        AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
+        AuditRecord.setSubmitTime(new Date());
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
         return integer;
     }
 
 
     /**
-     * 根据审核表id查询，审核信息的详细信息
+     * 根据审核表id查询，增加，修改操作 审核信息的详细信息
      */
     @Override
     public StaffAuditVo audit(AuditRecord auditRecord) throws Exception {
@@ -182,7 +184,92 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         }
         StaffAuditVo.setFlowType(auditRecord.getFlowType());
         StaffAuditVo.setSubmitter(auditRecord.getSubmitter());
-        StaffAuditVo.setSubmitTime(auditRecord.getSubmitTime());
+        StaffAuditVo.setSubmitTime(auditRecord.getSubmitTimes());
+        return StaffAuditVo;
+    }
+
+
+    /**
+     * 根据审核表id查询，《批量删除或全量删除》审核信息的详细信息
+     */
+    @Override
+    public DeleStaffAuditVo deteAudit(AuditRecord auditRecord) throws Exception {
+        List<BatchesRemVo> list = new ArrayList<>();
+        String[] split = auditRecord.getFormerId().split(",");
+        for (String s : split) {
+            BatchesRemVo BatchesRemVo = new BatchesRemVo();
+            NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(s));
+            BatchesRemVo.setStaffName(notOpenStaff.getStaffName());
+            BatchesRemVo.setDeptName(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+            list.add(BatchesRemVo);
+        }
+        //获取非现场人员信息
+        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(split[0]));
+        //初始化空集合
+        DeleStaffAuditVo StaffAuditVo = new DeleStaffAuditVo();
+        //封装参数
+        BeanUtils.copyProperties(notOpenStaff, StaffAuditVo);
+        StaffAuditVo.setId(auditRecord.getId());
+        StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
+        StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
+        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        StaffAuditVo.setList(list);
+        if (auditRecord.getOperationId() == 4) {
+            StaffAuditVo.setOperationId("批量删除");
+        } else if (auditRecord.getOperationId() == 8) {
+            StaffAuditVo.setOperationId("全量删除");
+        }
+        if (auditRecord.getStatus() != null && auditRecord.getStatus() == 1) {
+            StaffAuditVo.setStatus("通过");
+        } else if (auditRecord.getStatus() != null && auditRecord.getStatus() == 2) {
+            StaffAuditVo.setStatus("驳回");
+        }
+        StaffAuditVo.setFlowType(auditRecord.getFlowType());
+        StaffAuditVo.setSubmitter(auditRecord.getSubmitter());
+        StaffAuditVo.setSubmitTime(auditRecord.getSubmitTimes());
+        return StaffAuditVo;
+    }
+
+
+    /**
+     * 根据审核表id查询，《批量上传》审核信息的详细信息
+     */
+    @Override
+    public DeleStaffAuditVo uploadingAudit(AuditRecord auditRecord) throws Exception {
+        List<BatchesRemVo> list = new ArrayList<>();
+        String[] split = auditRecord.getStaffId().split(",");
+        for (String s : split) {
+            BatchesRemVo BatchesRemVo = new BatchesRemVo();
+            NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(s));
+            BatchesRemVo.setStaffName(notOpenStaff.getStaffName());
+            BatchesRemVo.setDeptName(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+            list.add(BatchesRemVo);
+        }
+        //获取非现场人员信息
+        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(split[0]));
+        //初始化空集合
+        DeleStaffAuditVo StaffAuditVo = new DeleStaffAuditVo();
+        //封装参数
+        BeanUtils.copyProperties(notOpenStaff, StaffAuditVo);
+        StaffAuditVo.setId(auditRecord.getId());
+        StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
+        StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
+        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        StaffAuditVo.setList(list);
+        if (auditRecord.getOperationId() == 2) {
+            StaffAuditVo.setOperationId("批量上传");
+        }
+        if (auditRecord.getStatus() != null && auditRecord.getStatus() == 1) {
+            StaffAuditVo.setStatus("通过");
+        } else if (auditRecord.getStatus() != null && auditRecord.getStatus() == 2) {
+            StaffAuditVo.setStatus("驳回");
+        }
+        StaffAuditVo.setFileUrl(FileUploadUtils.getAccessorys() + "/" + auditRecord.getFileUrl());
+        StaffAuditVo.setFileName(auditRecord.getFileName());
+        StaffAuditVo.setFlowType(auditRecord.getFlowType());
+        StaffAuditVo.setSubmitter(auditRecord.getSubmitter());
+        System.err.println("时间：" + auditRecord.getSubmitTimes());
+        StaffAuditVo.setSubmitTime(auditRecord.getSubmitTimes());
         return StaffAuditVo;
     }
 
@@ -206,11 +293,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
         AuditRecord.setSubmitter(loginUser.getUsername());
-        AuditRecord.setAuditor(" ");
-        AuditRecord.setAuditOpinion(" ");
-        AuditRecord.setAuditTime(DateUtils.dateTimes(new Date()));
-        AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
-        Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
+        AuditRecord.setTableNames("not_open_staff");
+        AuditRecord.setSubmitTime(new Date());
+        AuditRecordService.AddAuditRecord(AuditRecord);
         return notOpenStaffMapper.deNotOpenStaff(param);
     }
 
@@ -254,7 +339,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public String importOpenStaff(List<NotOpenStaff> list, String operName) {
+    public String importOpenStaff(List<NotOpenStaff> list, String operName, MultipartFile[] file) {
         if (StringUtils.isNull(list) || list.size() == 0) {
             throw new CustomException("导入员工数据不能为空！");
         }
@@ -298,6 +383,18 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
                 } else {
                     builder.append(count.get(j));
                 }
+            //此处文件上传开始
+            FileName fileName = null;
+            try {
+                fileName = FileUploadUtils.upload(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                failureMsg.insert(0, "很抱歉，导入成功，但是上传失败！请重新上传");
+            } catch (InvalidExtensionException e) {
+                e.printStackTrace();
+            }
+            AuditRecord.setFileName(fileName.getFileName());
+            AuditRecord.setFileUrl(fileName.getRandomName());
             AuditRecord.setStaffId(builder.toString());
             AuditRecord.setInfoTypeid(113);
             AuditRecord.setOperationId(2);
@@ -305,7 +402,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             AuditRecord.setStatus(0);
             AuditRecord.setTableNames("not_open_staff");
             AuditRecord.setSubmitter(operName);
-            AuditRecord.setSubmitTime(DateUtils.dateTimes(new Date()));
+            AuditRecord.setSubmitTime(new Date());
             try {
                 AuditRecordService.AddAuditRecord(AuditRecord);
             } catch (Exception e) {
