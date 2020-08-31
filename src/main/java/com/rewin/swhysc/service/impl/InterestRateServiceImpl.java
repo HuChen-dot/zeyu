@@ -1,13 +1,14 @@
 package com.rewin.swhysc.service.impl;
 
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.InterestRate;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
 import com.rewin.swhysc.mapper.dao.InterestRateMapper;
 import com.rewin.swhysc.service.InterestRateService;
 import com.rewin.swhysc.util.StringUtils;
+import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -34,7 +35,7 @@ public class InterestRateServiceImpl implements InterestRateService {
     @Override
     public PageInfo<InterestRateVo> getInterestRateVoList(Integer pageNo, Integer pageSize, String state, String startDate, String endDate) throws Exception {
         //设置分页的起始页数和页面容量
-        PageHelper.startPage(pageNo, pageSize);
+        Page<Object> objects = PageHelper.startPage(pageNo, pageSize);
 
         Map<String, Object> map = new HashMap<>(1);
         if(!StringUtils.isEmpty(state)){
@@ -48,8 +49,12 @@ public class InterestRateServiceImpl implements InterestRateService {
         }
         List<InterestRateVo> interestRateListByMap = interestRateMapper.getInterestRateVoList(map);
 
-        //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<InterestRateVo> info = new PageInfo<InterestRateVo>(interestRateListByMap);
+        PageInfo<InterestRateVo> info = new PageInfo<InterestRateVo>();
+        info.setPageSize(objects.getPageSize());
+        info.setPageNum(objects.getPageNum());
+        info.setPages(objects.getPages());
+        info.setTotal(objects.getTotal());
+        info.setData(interestRateListByMap);
         return info;
     }
 

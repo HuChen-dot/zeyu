@@ -1,6 +1,7 @@
 package com.rewin.swhysc.mapper.dao;
 
 import com.rewin.swhysc.bean.AuditRecord;
+import com.rewin.swhysc.bean.vo.RzrqAuditVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -50,5 +51,10 @@ public interface AuditRecordMapper {
      * 删除： 根据map删除对象；返回影响的行数
      */
     Integer deleteAuditRecordByMap(Map<String, Object> param) throws Exception;
+
+    /**
+     * 首页查询， 根据条件查询融资融券列表
+     */
+    List<RzrqAuditVo> getRzrqAuditList(Map<String, Object> param) throws Exception;
 
 }

@@ -1,14 +1,16 @@
 package com.rewin.swhysc.controller.manage;
 
-import com.github.pagehelper.PageInfo;
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.WarrantRatio;
 import com.rewin.swhysc.bean.dto.WarrantRatioDto;
 import com.rewin.swhysc.bean.vo.WarrantRatioVo;
 import com.rewin.swhysc.mapper.dao.WarrantRatioMapper;
 import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.service.AuditRecordService;
 import com.rewin.swhysc.service.WarrantRatioService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
+import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -27,7 +29,7 @@ public class WarrantRatioController extends BaseController {
     WarrantRatioService warrantRatioService;
 
     @Resource
-    WarrantRatioMapper warrantRatioMapper;
+    AuditRecordService auditRecordService;
 
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
@@ -54,22 +56,6 @@ public class WarrantRatioController extends BaseController {
             return AjaxResult.error("sql错误");
         }
         return AjaxResult.success("查询成功", warrantRatioPageInfo);
-    }
-
-    /**
-     * 官网使用维持担保比例查询
-     */
-    @GetMapping("queryList")
-    public AjaxResult queryInterestRateList() {
-        Map<String, Object> map = new HashMap<>(1);
-        map.put("state", 2);
-        List<WarrantRatioVo> warrantRatioList = null;
-        try {
-            warrantRatioList = warrantRatioMapper.getWarrantRatioList(map);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return AjaxResult.success("查询成功", warrantRatioList);
     }
 
     /**
@@ -103,6 +89,17 @@ public class WarrantRatioController extends BaseController {
         warrantRatio.setState("1");
         try {
             warrantRatioService.insertWarrantRatio(warrantRatio);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(2);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
+            warrantRatioService.updateWarrantRatio(warrantRatio);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -123,6 +120,17 @@ public class WarrantRatioController extends BaseController {
         warrantRatio.setState("1");
         try {
             warrantRatioService.updateWarrantRatio(warrantRatio);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(2);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
+            warrantRatioService.updateWarrantRatio(warrantRatio);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -140,9 +148,30 @@ public class WarrantRatioController extends BaseController {
         BeanUtils.copyProperties(warrantRatioDto, warrantRatio);
         warrantRatio.setUpdateUser(loginUser.getUsername());
         warrantRatio.setUpdateDate(new java.util.Date());
-        warrantRatio.setState("4");
         try {
-            warrantRatioService.updateWarrantRatio(warrantRatio);
+            WarrantRatio warrant = warrantRatioService.getWarrantRatioInfo(String.valueOf(warrantRatio.getId()));
+            if("3".equals(warrant.getState())){
+                warrantRatio.setState("1");
+                warrantRatioService.updateWarrantRatio(warrantRatio);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(2);//信息类型id
+                auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
+                warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
+                warrantRatioService.updateWarrantRatio(warrantRatio);
+            }else if("2".equals(warrant.getState())){
+                warrant.setState("5");
+                warrantRatio.setState("4");
+                warrantRatioService.updateWarrantRatio(warrant);
+                warrantRatioService.insertWarrantRatio(warrantRatio);
+            }else{
+                return AjaxResult.error("该条数据有待审核流程未结");
+            }
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -164,6 +193,17 @@ public class WarrantRatioController extends BaseController {
         warrantRatio.setState("6");
         try {
             warrantRatioService.updateWarrantRatio(warrantRatio);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(2);//信息类型id
+            auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，3,删除；4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
+            warrantRatioService.updateWarrantRatio(warrantRatio);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -182,7 +222,7 @@ public class WarrantRatioController extends BaseController {
         warrantRatio.setUpdateUser(loginUser.getUsername());
         warrantRatio.setUpdateDate(new java.util.Date());
         warrantRatio.setId(Integer.parseInt(id));
-        warrantRatio.setState("7");
+        warrantRatio.setState("8");
         try {
             warrantRatioService.updateWarrantRatio(warrantRatio);
         } catch (Exception e) {

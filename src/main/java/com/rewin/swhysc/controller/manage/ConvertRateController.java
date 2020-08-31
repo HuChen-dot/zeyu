@@ -1,15 +1,16 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.rewin.swhysc.util.page.PageInfo;
 
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.service.AuditRecordService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.dto.AddConvertRateDto;
-import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
 import com.rewin.swhysc.service.ConvertRateService;
 import com.rewin.swhysc.util.StringUtils;
 import com.rewin.swhysc.util.file.ExcelReader;
@@ -33,7 +34,7 @@ public class ConvertRateController extends BaseController {
     ConvertRateService convertRateService;
 
     @Resource
-    ConvertRateMapper convertRateMapper;
+    AuditRecordService auditRecordService;
 
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
@@ -67,9 +68,7 @@ public class ConvertRateController extends BaseController {
     public AjaxResult getConverRate(@PathVariable Integer id) {
         ConvertRate converRate = null;
         try {
-            Map<String, Object> map = new HashMap<>(1);
-            map.put("ID", id);
-            converRate = convertRateMapper.getConverRateInfo(map);
+            converRate = convertRateService.getConvertRateInfo(String.valueOf(id));
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -102,6 +101,15 @@ public class ConvertRateController extends BaseController {
         convertRate.setState("1");
         try {
             convertRateService.insertConvertRate(convertRate);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(0);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -124,11 +132,30 @@ public class ConvertRateController extends BaseController {
             if("3".equals(convert.getState())){
                 convertRate.setState("1");
                 convertRateService.updateConvertRate(convertRate);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(0);//信息类型id
+                auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
             }else if("2".equals(convert.getState())){
                 convert.setState("5");
                 convertRate.setState("4");
                 convertRateService.updateConvertRate(convert);
                 convertRateService.insertConvertRate(convertRate);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(0);//信息类型id
+                auditRecord.setOperationId(16);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
+                auditRecord.setFormerId(String.valueOf(convert.getId()));
+                auditRecordService.AddAuditRecord(auditRecord);
             }else{
                 return AjaxResult.error("该条数据有待审核流程未结");
             }
@@ -173,9 +200,27 @@ public class ConvertRateController extends BaseController {
             }
             if(ids.length>1){
                 //创建批量删除审核记录
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(0);//信息类型id
+                auditRecord.setOperationId(4);//操作类型id(1:新增，2批量上传，3删除，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(deltoapprovalids);//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
                 //id(,分隔)
             }else{
                 //创建删除审核记录
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(0);//信息类型id
+                auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，3删除，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(deltoapprovalids);//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
                 //id(,分隔)
             }
         } catch (Exception e) {
@@ -200,6 +245,15 @@ public class ConvertRateController extends BaseController {
             ids = ids.substring(0,ids.length()-1);
             convertRateService.subDelApproval(ids);
             //创建全部删除审核记录
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(0);//信息类型id
+            auditRecord.setOperationId(8);//操作类型id(1:新增，2批量上传，3删除，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(ids);//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
             //id(,分隔)
         } catch (Exception e) {
             log.error("查询数据库出错", e);
@@ -250,7 +304,7 @@ public class ConvertRateController extends BaseController {
             }
             for (int j=0;j<list_ConverRate.size();j++){
                 try {
-                    convertRateMapper.insertConverRate(list_ConverRate.get(j));
+                    convertRateService.insertConvertRate(list_ConverRate.get(j));
                     log.info("插入第"+j+"条数据成功："+list_ConverRate.get(j).toString());
                 } catch (Exception e) {
                     log.error("查询数据库出错", e);

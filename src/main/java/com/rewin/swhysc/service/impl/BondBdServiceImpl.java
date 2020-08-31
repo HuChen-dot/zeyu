@@ -1,14 +1,15 @@
 package com.rewin.swhysc.service.impl;
 
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.BondBd;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.vo.BondBdVo;
 import com.rewin.swhysc.mapper.dao.BondBdMapper;
 import com.rewin.swhysc.service.BondBdService;
 import com.rewin.swhysc.util.StringUtils;
+import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -26,9 +27,9 @@ public class BondBdServiceImpl implements BondBdService {
     private BondBdMapper bondBdMapper;
 
     @Override
-    public PageInfo<BondBdVo> getBondBdList(Integer pageNo, Integer pageSize, String stockCode, String stockName,String trimDate) throws Exception {
+    public PageInfo<BondBdVo> getBondBdList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception {
        //设置分页的起始页数和页面容量
-        PageHelper.startPage(pageNo, pageSize);
+        Page<Object> objects = PageHelper.startPage(pageNo, pageSize);
 
         Map<String, Object> map = new HashMap<>(1);
         if(!StringUtils.isEmpty(stockCode)){
@@ -42,8 +43,12 @@ public class BondBdServiceImpl implements BondBdService {
         }
         List<BondBdVo> bondBdList = bondBdMapper.getBondBdList(map);
 
-        //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<BondBdVo> info = new PageInfo<BondBdVo>(bondBdList);
+        PageInfo<BondBdVo> info = new PageInfo<BondBdVo>();
+        info.setPageSize(objects.getPageSize());
+        info.setPageNum(objects.getPageNum());
+        info.setPages(objects.getPages());
+        info.setTotal(objects.getTotal());
+        info.setData(bondBdList);
         return info;
     }
 

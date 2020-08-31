@@ -1,15 +1,10 @@
 package com.rewin.swhysc.controller.sc;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.rewin.swhysc.bean.BondBd;
-import com.rewin.swhysc.bean.InterestRate;
-import com.rewin.swhysc.bean.WarrantRatio;
+import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.vo.BondBdVo;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
 import com.rewin.swhysc.bean.vo.WarrantRatioVo;
-import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
 import com.rewin.swhysc.service.BondBdService;
 import com.rewin.swhysc.service.ConvertRateService;
 import com.rewin.swhysc.service.InterestRateService;

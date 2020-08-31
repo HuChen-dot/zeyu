@@ -1,9 +1,9 @@
 package com.rewin.swhysc.service;
 
 
-import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
+import com.rewin.swhysc.util.page.PageInfo;
 
 import java.util.List;
 

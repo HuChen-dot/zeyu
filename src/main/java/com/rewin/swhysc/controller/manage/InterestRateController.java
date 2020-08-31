@@ -1,12 +1,13 @@
 package com.rewin.swhysc.controller.manage;
 
-import com.github.pagehelper.PageInfo;
+import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.InterestRate;
 import com.rewin.swhysc.bean.dto.InterestRateDto;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
 import com.rewin.swhysc.mapper.dao.InterestRateMapper;
 import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.service.AuditRecordService;
 import com.rewin.swhysc.service.InterestRateService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
@@ -28,8 +29,7 @@ public class InterestRateController extends BaseController {
     InterestRateService interestRateService;
 
     @Resource
-    InterestRateMapper interestRateMapper;
-
+    AuditRecordService auditRecordService;
 
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
@@ -95,6 +95,9 @@ public class InterestRateController extends BaseController {
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
             //auditRecord.setSubmitTime(new java.util.Date());//提交时间
             auditRecord.setStaffId(interestRate.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+            interestRateService.updateInterestRate(interestRate);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -115,6 +118,17 @@ public class InterestRateController extends BaseController {
         interestRate.setState("1");
         try {
             interestRateService.updateInterestRate(interestRate);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(3);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(interestRate.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+            interestRateService.updateInterestRate(interestRate);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -132,9 +146,30 @@ public class InterestRateController extends BaseController {
         BeanUtils.copyProperties(interestRateDto, interestRate);
         interestRate.setUpdateUser(loginUser.getUsername());
         interestRate.setUpdateDate(new java.util.Date());
-        interestRate.setState("4");
         try {
-            interestRateService.updateInterestRate(interestRate);
+            InterestRate interest = interestRateService.getInterestRateInfo(String.valueOf(interestRate.getId()));
+            if("3".equals(interest.getState())){
+                interestRate.setState("1");
+                interestRateService.updateInterestRate(interestRate);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(3);//信息类型id
+                auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(interestRate.getAuditId());//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
+                interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+                interestRateService.updateInterestRate(interestRate);
+            }else if("2".equals(interest.getState())){
+                interest.setState("5");
+                interestRate.setState("4");
+                interestRateService.updateInterestRate(interest);
+                interestRateService.insertInterestRate(interestRate);
+            }else{
+                return AjaxResult.error("该条数据有待审核流程未结");
+            }
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -156,6 +191,17 @@ public class InterestRateController extends BaseController {
         interestRate.setState("6");
         try {
             interestRateService.updateInterestRate(interestRate);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(3);//信息类型id
+            auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，3,删除；4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(interestRate.getAuditId());//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
+            interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+            interestRateService.updateInterestRate(interestRate);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -164,7 +210,7 @@ public class InterestRateController extends BaseController {
     }
 
     /**
-     *
+     *下架
      */
     @PutMapping("undercarriage")
     public AjaxResult undercarriage(String id) {
@@ -174,7 +220,7 @@ public class InterestRateController extends BaseController {
         interestRate.setUpdateUser(loginUser.getUsername());
         interestRate.setUpdateDate(new java.util.Date());
         interestRate.setId(Integer.parseInt(id));
-        interestRate.setState("7");
+        interestRate.setState("8");
         try {
             interestRateService.updateInterestRate(interestRate);
         } catch (Exception e) {

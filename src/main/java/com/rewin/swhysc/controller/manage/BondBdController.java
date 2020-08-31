@@ -1,12 +1,14 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.rewin.swhysc.util.page.PageInfo;
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.BondBd;
 import com.rewin.swhysc.bean.dto.BondBdDto;
 import com.rewin.swhysc.bean.vo.BondBdVo;
 import com.rewin.swhysc.mapper.dao.BondBdMapper;
 import com.rewin.swhysc.security.LoginUser;
+import com.rewin.swhysc.service.AuditRecordService;
 import com.rewin.swhysc.service.BondBdService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
@@ -32,7 +34,7 @@ public class BondBdController extends BaseController {
     BondBdService bondBdService;
 
     @Resource
-    BondBdMapper bondBdMapper;
+    AuditRecordService auditRecordService;
 
     @Resource
     com.rewin.swhysc.security.service.TokenService TokenService;
@@ -90,6 +92,15 @@ public class BondBdController extends BaseController {
         bondBd.setState("1");
         try {
             bondBdService.insertBondBd(bondBd);
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(1);//信息类型id
+            auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -112,11 +123,30 @@ public class BondBdController extends BaseController {
             if("3".equals(bond.getState())){
                 bondBd.setState("1");
                 bondBdService.updateBondBd(bondBd);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(1);//信息类型id
+                auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
             }else if("2".equals(bond.getState())){
                 bond.setState("5");
                 bondBd.setState("4");
                 bondBdService.updateBondBd(bond);
                 bondBdService.insertBondBd(bondBd);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(1);//信息类型id
+                auditRecord.setOperationId(16);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
+                auditRecord.setFormerId(String.valueOf(bond.getId()));
+                auditRecordService.AddAuditRecord(auditRecord);
             }else{
                 return AjaxResult.error("该条数据有待审核流程未结");
             }
@@ -162,9 +192,27 @@ public class BondBdController extends BaseController {
             if(ids.length>1){
                 //创建批量删除审核记录
                 //id(,分隔)
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(1);//信息类型id
+                auditRecord.setOperationId(4);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(deltoapprovalids);//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
             }else{
                 //创建删除审核记录
                 //id(,分隔)
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(1);//信息类型id
+                auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(deltoapprovalids);//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
             }
         } catch (Exception e) {
             log.error("查询数据库出错", e);
@@ -178,6 +226,7 @@ public class BondBdController extends BaseController {
      */
     @PutMapping("deleteAll")
     public AjaxResult deleteConverRateAll() {
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         try {
             List<BondBdVo> bondBdList = bondBdService.getBondBdState(null,null,null);
             String ids ="";
@@ -188,6 +237,15 @@ public class BondBdController extends BaseController {
             bondBdService.subDelApproval(ids);
             //创建全部删除审核记录
             //id(,分隔)
+            AuditRecord auditRecord = new AuditRecord();
+            auditRecord.setInfoTypeid(1);//信息类型id
+            auditRecord.setOperationId(8);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+            auditRecord.setSubmitter(loginUser.getUsername());//提交人
+            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(ids);//操作id
+            auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");

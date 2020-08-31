@@ -1,9 +1,9 @@
 package com.rewin.swhysc.service;
 
 
-import com.github.pagehelper.PageInfo;
 import com.rewin.swhysc.bean.InterestRate;
 import com.rewin.swhysc.bean.vo.InterestRateVo;
+import com.rewin.swhysc.util.page.PageInfo;
 
 import java.util.List;
 import java.util.Map;

@@ -1,8 +1,9 @@
 package com.rewin.swhysc.service.impl;
 
 
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
+import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
@@ -28,7 +29,7 @@ public class ConvertRateServiceImpl implements ConvertRateService {
     @Override
     public PageInfo<ConvertRateVo> getConverRateList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception {
         //设置分页的起始页数和页面容量
-        PageHelper.startPage(pageNo, pageSize);
+        Page<Object> objects = PageHelper.startPage(pageNo, pageSize);
 
         Map<String, Object> map = new HashMap<>(1);
         if(!StringUtils.isEmpty(stockCode)){
@@ -43,8 +44,12 @@ public class ConvertRateServiceImpl implements ConvertRateService {
 
         List<ConvertRateVo> converRateList = convertRateMapper.getConverRateList(map);
 
-        //把查询出来分页好的数据放进插件的分页对象中
-        PageInfo<ConvertRateVo> info = new PageInfo<ConvertRateVo>(converRateList);
+        PageInfo<ConvertRateVo> info = new PageInfo<ConvertRateVo>();
+        info.setPageSize(objects.getPageSize());
+        info.setPageNum(objects.getPageNum());
+        info.setPages(objects.getPages());
+        info.setTotal(objects.getTotal());
+        info.setData(converRateList);
         return info;
     }
 

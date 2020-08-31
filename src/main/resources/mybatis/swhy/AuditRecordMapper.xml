@@ -294,4 +294,54 @@
             </if>
         </trim>
     </delete>
+
+    <!--首页查询， 根据条件查询信息列表-->
+    <select id="getRzrqAuditList" resultType="com.rewin.swhysc.bean.vo.RzrqAuditVo"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        info_typeid as infoTypeid,
+        operation_id as operationId,
+        flow_type as flowType,
+        status as status,
+        submitter as submitter,
+        audit_opinion as auditOpinion,
+        auditor as auditor,
+        to_char(submit_time,'yyyy-MM-dd HH24:mi:ss') as submitTimes,
+        to_char(audit_time,'yyyy-MM-dd HH24:mi:ss') as auditTimes,
+        FORMER_ID as formerId,
+        staff_id as staffId,
+        TABLE_NAMES as tableNames,
+        FILE_URL as fileUrl,
+        FILE_NAME as fileName
+        from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="operationId != null">
+                and operation_id=#{operationId}
+            </if>
+            <if test="flowType != null">
+                and flow_type=#{flowType}
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="startDate != null">
+                and to_char(submit_time,'yyyy-mm-dd 00:00:00') &gt;= #{startDate}
+            </if>
+            <if test="endDate != null">
+                and to_char(submit_time,'yyyy-mm-dd 23:59:59') &lt;= #{endDate}
+            </if>
+            <if test="infoTypeid != null">
+                and info_typeid=#{infoTypeid}
+            </if>
+            <choose>
+                <when test="infoTypeid != null">
+                    and info_typeid=#{infoTypeid}
+                </when>
+                <otherwise>
+                    and info_typeid in (0,1,2,3)
+                </otherwise>
+            </choose>
+        </trim>
+    </select>
 </mapper>
