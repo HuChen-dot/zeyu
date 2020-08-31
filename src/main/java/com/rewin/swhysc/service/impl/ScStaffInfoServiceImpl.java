@@ -77,7 +77,7 @@ public class ScStaffInfoServiceImpl implements ScStaffInfoService {
                 marketerDto.getPageNum(),
                 marketerDto.getPageSize());
 
-        marketerInfoVo.setPages(getMarketerInfoList.getPages());
+        marketerInfoVo.setTotal(getMarketerInfoList.getPages());
         marketerInfoVo.setPageNum(getMarketerInfoList.getPageNum());
         marketerInfoVo.setPageSize(getMarketerInfoList.getPageSize());
         List<Marketer> marketers = getMarketerInfoList.getData();

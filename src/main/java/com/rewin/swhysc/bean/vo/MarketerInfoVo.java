@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 public class MarketerInfoVo {
     List<MarketerInfo> marketerInfos;
-    private Integer pages;
+    private Integer total;
     private Integer pageNum;
     private Integer pageSize;
 }
