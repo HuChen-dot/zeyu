@@ -64,6 +64,9 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
     }
 
     public static final Date dateTime(final String ts) {
+        if (ts == null) {
+            return null;
+        }
         try {
             return new SimpleDateFormat(YYYY_MM_DD).parse(ts);
         } catch (ParseException e) {
