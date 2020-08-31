@@ -43,12 +43,21 @@ public class DruidConfig {
         return druidProperties.dataSource(dataSource);
     }
 
+    @Bean
+    @ConfigurationProperties("spring.datasource.druid.swhybase")
+    @ConditionalOnProperty(prefix = "spring.datasource.druid.swhybase", name = "enabled", havingValue = "true")
+    public DataSource swhybaseDataSource(DruidProperties druidProperties) {
+        DruidDataSource dataSource = DruidDataSourceBuilder.create().build();
+        return druidProperties.dataSource(dataSource);
+    }
+
     @Bean(name = "dynamicDataSource")
     @Primary
     public DynamicDataSource dataSource(DataSource masterDataSource) {
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
+        setDataSource(targetDataSources, DataSourceType.SWHYBASE.name(), "swhybaseDataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 

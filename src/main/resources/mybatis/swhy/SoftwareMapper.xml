@@ -249,4 +249,29 @@
             </if>
         </trim>
     </delete>
+
+    <select id="getSoftwareInfoForSc" resultType="com.rewin.swhysc.bean.SoftwareInfoForSc">
+        select
+        s."ID" as id,
+        s.SOFTWARE_NAME as softwareName,
+        s.DESCRIBE as describe,
+        s.SOFTWARE_IMG as softwareImg,
+        s.SOFTWARE_TYPE as softwareType,
+        s.QR_CODE as qrCode,
+        s.FILE_URL as fileUrl,
+        s.SORT as sort,
+        i.PLATFORM_TYPE as platformType,
+        i.SOFTWARE_SIZE as softwareSize,
+        i.UPDATE_EXPLAIN as updateExplain,
+        i.UPDATE_TIME as softwareUpdateTime
+        from software s ,IOSAONROID i
+        <where>
+            s. ID = i.SOFTWARE_ID
+            AND s.status =  '2'
+            <if test="type != null and type != ''">
+                and s.SOFTWARE_TYPE=#{type}
+            </if>
+        </where>
+        order  by s.sort
+    </select>
 </mapper>

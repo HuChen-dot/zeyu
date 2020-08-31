@@ -1,6 +1,7 @@
 package com.rewin.swhysc.mapper.dao;
 
 import com.rewin.swhysc.bean.Software;
+import com.rewin.swhysc.bean.SoftwareInfoForSc;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,5 +37,14 @@ public interface SoftwareMapper {
      * 删除： 根据map删除对象；返回影响的行数
      */
     Integer deleteSoftwareByMap(Map<String, Object> param) throws Exception;
+
+    /**
+     * @Description:前台查询软件信息列表
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/8/25 9:21
+     */
+    List<SoftwareInfoForSc> getSoftwareInfoForSc(@Param(value = "type") Integer type) throws Exception;
 
 }
