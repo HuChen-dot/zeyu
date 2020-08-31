@@ -120,6 +120,9 @@ public class SoftwareController {
     @GetMapping("listtab")
     public AjaxResult getSoftwareByTab(Integer tabId, Integer pageNum, Integer pageSize) {
         Map<String, Object> map = new ConcurrentHashMap<>(1);
+        if (tabId == null) {
+            return AjaxResult.error("请选择TAB类型后，重试！！！");
+        }
         map.put("isShow", tabId);
         PageInfo<TabSoftwareVo> softwareVoPageInfo = null;
         try {

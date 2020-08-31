@@ -23,6 +23,16 @@
             </if>
         </trim>
     </select>
+
+    <!-- 根据id查询；返回字典名称 -->
+    <select id="getNameById" resultType="java.lang.String">
+        select
+        dict_name as dictName
+        from sys_dict_type
+        where dict_id=#{id}
+
+    </select>
+
     <resultMap type="com.rewin.swhysc.bean.SysDictType" id="SysDictTypeResult">
         <id property="dictId" column="dict_id"/>
         <result property="dictName" column="dict_name"/>

@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.BondInvestmentMapper">
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getBondInvestmentById" resultType="com.rewin.swhysc.bean.BondInvestment">
+        select
+                id as id,
+                dept_id as deptId,
+                staff_name as staffName,
+                staff_type as staffType,
+                duty as duty,
+                post_type as postType,
+                work_phone as workPhone,
+                dimission_time as dimissionTime,
+                staff_sort as staffSort,
+                creator as creator,
+                create_time as createTime,
+                updater as updater,
+                update_time as updateTime,
+                status as status
+        from bond_investment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件查询；返回多个对象-->
+    <select id="getBondInvestmentListByMap" resultType="com.rewin.swhysc.bean.BondInvestment"
+            parameterType="java.util.Map">
+        select
+                id as id,
+                dept_id as deptId,
+                staff_name as staffName,
+                staff_type as staffType,
+                duty as duty,
+                post_type as postType,
+                work_phone as workPhone,
+                dimission_time as dimissionTime,
+                staff_sort as staffSort,
+                creator as creator,
+                create_time as createTime,
+                updater as updater,
+                update_time as updateTime,
+                status as status
+        from bond_investment
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="deptId != null">
+                        and dept_id=#{deptId}
+                    </if>
+                    <if test="staffName != null">
+                        and staff_name=#{staffName}
+                    </if>
+                    <if test="staffType != null">
+                        and staff_type=#{staffType}
+                    </if>
+                    <if test="duty != null">
+                        and duty=#{duty}
+                    </if>
+                    <if test="postType != null">
+                        and post_type=#{postType}
+                    </if>
+                    <if test="workPhone != null">
+                        and work_phone=#{workPhone}
+                    </if>
+                    <if test="dimissionTime != null">
+                        and dimission_time=#{dimissionTime}
+                    </if>
+                    <if test="staffSort != null">
+                        and staff_sort=#{staffSort}
+                    </if>
+                    <if test="creator != null">
+                        and creator=#{creator}
+                    </if>
+                    <if test="createTime != null">
+                        and create_time=#{createTime}
+                    </if>
+                    <if test="updater != null">
+                        and updater=#{updater}
+                    </if>
+                    <if test="updateTime != null">
+                        and update_time=#{updateTime}
+                    </if>
+        </trim>
+    </select>
+
+
+    <!--  查询数量：根据传入的条件查询目标数量；返回查询的数量 -->
+    <select id="getBondInvestmentCountByMap" resultType="integer" parameterType="java.util.Map">
+        select count(*) from bond_investment
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="deptId != null">
+                        and dept_id=#{deptId}
+                    </if>
+                    <if test="staffName != null">
+                        and staff_name=#{staffName}
+                    </if>
+                    <if test="staffType != null">
+                        and staff_type=#{staffType}
+                    </if>
+                    <if test="duty != null">
+                        and duty=#{duty}
+                    </if>
+                    <if test="postType != null">
+                        and post_type=#{postType}
+                    </if>
+                    <if test="workPhone != null">
+                        and work_phone=#{workPhone}
+                    </if>
+                    <if test="dimissionTime != null">
+                        and dimission_time=#{dimissionTime}
+                    </if>
+                    <if test="staffSort != null">
+                        and staff_sort=#{staffSort}
+                    </if>
+                    <if test="creator != null">
+                        and creator=#{creator}
+                    </if>
+                    <if test="createTime != null">
+                        and create_time=#{createTime}
+                    </if>
+                    <if test="updater != null">
+                        and updater=#{updater}
+                    </if>
+                    <if test="updateTime != null">
+                        and update_time=#{updateTime}
+                    </if>
+                    <if test="status != null">
+                        and status=#{status}
+                    </if>
+        </trim>
+    </select>
+
+    <!--  添加：根据传入的参数添加信息；返回影响的行数 -->
+    <insert id="insertBondInvestment" parameterType="com.rewin.swhysc.bean.BondInvestment">
+            <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
+                select seq_bond_investment.nextval as sysId from DUAL
+            </selectKey>
+        insert into bond_investment(
+                    dept_id,
+                    staff_name,
+                    staff_type,
+                    duty,
+                    post_type,
+                    work_phone,
+                    dimission_time,
+                    staff_sort,
+                    creator,
+                    create_time,
+                    updater,
+                    update_time,
+                    status)
+        values(
+                    #{deptId},
+                    #{staffName},
+                    #{staffType},
+                    #{duty},
+                    #{postType},
+                    #{workPhone},
+                    #{dimissionTime},
+                    #{staffSort},
+                    #{creator},
+                    #{createTime},
+                    #{updater},
+                    #{updateTime},
+                    #{status})
+    </insert>
+
+
+    <!--  根据id修改：根据传入的参数修改对应的数据库类；返回影响的行数-->
+    <update id="updateBondInvestment" parameterType="com.rewin.swhysc.bean.BondInvestment">
+        update bond_investment
+        <trim prefix="set" suffixOverrides=",">
+                        <if test="deptId != null">
+                            dept_id=#{deptId},
+                        </if>
+                        <if test="staffName != null">
+                            staff_name=#{staffName},
+                        </if>
+                        <if test="staffType != null">
+                            staff_type=#{staffType},
+                        </if>
+                        <if test="duty != null">
+                            duty=#{duty},
+                        </if>
+                        <if test="postType != null">
+                            post_type=#{postType},
+                        </if>
+                        <if test="workPhone != null">
+                            work_phone=#{workPhone},
+                        </if>
+                        <if test="dimissionTime != null">
+                            dimission_time=#{dimissionTime},
+                        </if>
+                        <if test="staffSort != null">
+                            staff_sort=#{staffSort},
+                        </if>
+                        <if test="creator != null">
+                            creator=#{creator},
+                        </if>
+                        <if test="createTime != null">
+                            create_time=#{createTime},
+                        </if>
+                        <if test="updater != null">
+                            updater=#{updater},
+                        </if>
+                        <if test="updateTime != null">
+                            update_time=#{updateTime},
+                        </if>
+                        <if test="status != null">
+                            status=#{status}
+                        </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <!--  删除： 根据map删除对象；返回影响的行数-->
+    <delete id="deleteBondInvestmentByMap" parameterType="java.util.Map">
+        delete from bond_investment
+        <trim prefix="where" prefixOverrides="and | or">
+                    <if test="id != null">
+                        and id=#{id}
+                    </if>
+                    <if test="deptId != null">
+                        and dept_id=#{deptId}
+                    </if>
+                    <if test="staffName != null">
+                        and staff_name=#{staffName}
+                    </if>
+                    <if test="staffType != null">
+                        and staff_type=#{staffType}
+                    </if>
+                    <if test="duty != null">
+                        and duty=#{duty}
+                    </if>
+                    <if test="postType != null">
+                        and post_type=#{postType}
+                    </if>
+                    <if test="workPhone != null">
+                        and work_phone=#{workPhone}
+                    </if>
+                    <if test="dimissionTime != null">
+                        and dimission_time=#{dimissionTime}
+                    </if>
+                    <if test="staffSort != null">
+                        and staff_sort=#{staffSort}
+                    </if>
+                    <if test="creator != null">
+                        and creator=#{creator}
+                    </if>
+                    <if test="createTime != null">
+                        and create_time=#{createTime}
+                    </if>
+                    <if test="updater != null">
+                        and updater=#{updater}
+                    </if>
+                    <if test="updateTime != null">
+                        and update_time=#{updateTime}
+                    </if>
+        </trim>
+    </delete>
+</mapper>

@@ -57,6 +57,7 @@ public class NewsNoticeController {
      */
     @GetMapping("list")
     public AjaxResult getnewsBylist(newsDto newsDto) {
+        System.err.println("新闻" + newsDto);
         Map<String, Object> map = new HashMap<>(4);
         if (newsDto.getNoticeTypeId() != null && newsDto.getNoticeTypeId() != 0) {
             map.put("noticeTypeId", newsDto.getNoticeTypeId());
@@ -71,16 +72,13 @@ public class NewsNoticeController {
         }
 
         map.put("noticeTitle", newsDto.getNoticeTitle());
-        Date beginTime = null;
-        Date endTime = null;
+
         if (newsDto.getBeginTime() != null && newsDto.getEndTime() != null &&
-                newsDto.getBeginTime() != "" && newsDto.getEndTime() != "") {
-
-            beginTime = DateUtils.parseDate(newsDto.getBeginTime());
-            endTime = DateUtils.parseDate(newsDto.getEndTime());
-
-            map.put("beginTime", beginTime);
-            map.put("endTime", endTime);
+                newsDto.getBeginTime().length() > 0 && newsDto.getEndTime().length() > 0) {
+//            map.put("beginTime", DateUtils.parseDate(newsDto.getBeginTime()));
+//            map.put("endTime", DateUtils.parseDate(newsDto.getEndTime()));
+            map.put("beginTime", newsDto.getBeginTime());
+            map.put("endTime", newsDto.getEndTime());
         }
         map.put("pageNum", newsDto.getPageNum());
         map.put("pageSize", newsDto.getPageSize());
@@ -117,7 +115,6 @@ public class NewsNoticeController {
      */
     @PostMapping
     public AjaxResult addNews(@RequestBody AddNewsDto AddNewsDto) {
-        System.err.println("添加：" + AddNewsDto);
         Integer integer = null;
         try {
             integer = NewsNoticeService.AddNewsNotice(AddNewsDto);
@@ -220,4 +217,22 @@ public class NewsNoticeController {
         }
         return AjaxResult.success("下架成功", integer);
     }
+
+    /**
+     * 是否取消置顶
+     * 修改新闻公告置顶的状态
+     */
+    @PutMapping("/{id}/{stick}")
+    public AjaxResult updataStick(@PathVariable Integer id, @PathVariable Integer stick) {
+        Integer integer = null;
+        try {
+            integer = NewsNoticeService.ModifyStick(id, stick);
+        } catch (Exception e) {
+            log.error("修改失败", e);
+            return AjaxResult.error("系统错误，请重试");
+        }
+        return AjaxResult.success("修改成功", integer);
+    }
+
+
 }
