@@ -17,5 +17,5 @@ public class DownloadCountDto {
     @NotBlank
     private String softwareType;
     @NotBlank
-    private String IP;
+    private String ip;
 }

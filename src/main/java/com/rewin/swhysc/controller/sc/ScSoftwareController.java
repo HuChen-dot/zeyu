@@ -42,9 +42,9 @@ public class ScSoftwareController {
      * @Date: 2020/8/24 15:24
      */
     @ApiOperation("软件下载信息查询")
-    @PostMapping("/infolist")
+    @GetMapping("/infolist")
     public AjaxResult getSoftwareInfoList(@RequestParam @NotBlank Integer type) {
-        List<SoftwareInfoForScVo> list = null;
+        List<SoftwareInfoForScVo> list;
         try {
             list =  softwareService.getSoftwareInfoForSc(type);
         }catch (Exception e){

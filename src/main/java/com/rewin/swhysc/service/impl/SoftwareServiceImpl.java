@@ -388,7 +388,7 @@ public class SoftwareServiceImpl implements SoftwareService {
     public Integer insertSoftwareDownloadCount(DownloadCountDto downloadCountDto) throws Exception{
         DownloadCount downloadCount = new DownloadCount();
         downloadCount.setSoftwareid(downloadCountDto.getSoftwareID());
-        downloadCount.setIp(downloadCountDto.getIP());
+        downloadCount.setIp(downloadCountDto.getIp());
         downloadCount.setSoftwaretype(downloadCountDto.getSoftwareType());
         return downloadCountMapper.insertSelective(downloadCount);
     }
