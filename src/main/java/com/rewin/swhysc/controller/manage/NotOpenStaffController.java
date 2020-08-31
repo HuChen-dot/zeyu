@@ -210,8 +210,6 @@ public class NotOpenStaffController {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         ExcelUtil<NotOpenStaff> util = new ExcelUtil<NotOpenStaff>(NotOpenStaff.class);
         List<NotOpenStaff> list = util.importExcel(file[0].getInputStream());
-
-
         //创建空集合转换填充基础信息
         List<NotOpenStaff> OpenStaffList = new ArrayList<>();
         for (NotOpenStaff notOpenStaff : list) {

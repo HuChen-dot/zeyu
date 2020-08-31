@@ -20,7 +20,8 @@
         update_time as updateTime,
         PERSONNEL_TYPE as personnelType,
         to_char(certificatetime,'yyyy-MM-dd HH24:mi:ss') as certificatetimes,
-        certificatetype as certificatetype
+        certificatetype as certificatetype,
+        sales as sales
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -46,7 +47,8 @@
         update_time as updateTime,
         PERSONNEL_TYPE as personnelType,
         to_char(certificatetime,'yyyy-MM-dd HH24:mi:ss') as certificatetimes,
-        certificatetype as certificatetype
+        certificatetype as certificatetype,
+        sales as sales
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -142,7 +144,8 @@
         status,
         personnel_type,
         certificatetime,
-        certificatetype)
+        certificatetype,
+        sales)
         values(
         #{id},
         #{deptName},
@@ -157,7 +160,8 @@
         #{status},
         #{personnelType,jdbcType=TINYINT},
         #{certificatetime,jdbcType=DATE},
-        #{certificatetype,jdbcType=TINYINT})
+        #{certificatetype,jdbcType=TINYINT},
+        #{sales})
     </insert>
 
 
@@ -200,6 +204,9 @@
             </if>
             <if test="certificatetype != null">
                 certificatetype=#{certificatetype}
+            </if>
+            <if test="sales != null">
+                sales=#{sales}
             </if>
         </trim>
         where id = #{id}

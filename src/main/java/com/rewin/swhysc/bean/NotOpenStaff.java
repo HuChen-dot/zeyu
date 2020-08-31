@@ -17,13 +17,13 @@ public class NotOpenStaff implements Serializable {
     @Excel(name = "部门名称", type = Excel.Type.ALL)
     private String deptName;
     //员工姓名
-    @Excel(name = "员工姓名(字符)", type = Excel.Type.ALL)
+    @Excel(name = "员工姓名", type = Excel.Type.ALL)
     private String staffName;
     //员工编号
-    @Excel(name = "员工编号(数字)", type = Excel.Type.ALL)
+    @Excel(name = "员工编号", type = Excel.Type.ALL)
     private Integer staffNo;
     //证书编号
-    @Excel(name = "证书编号(字符)", type = Excel.Type.ALL)
+    @Excel(name = "证书编号", type = Excel.Type.ALL)
     private String certificateNo;
     //信息类型
     private Integer staffType;
@@ -49,6 +49,8 @@ public class NotOpenStaff implements Serializable {
     //证书类型
     @Excel(name = "证书类型（非现场开户人员类别，请忽略此字段）", type = Excel.Type.ALL)
     private String certificatetype;
+    //营业部
+    private String sales;
 
 
 }

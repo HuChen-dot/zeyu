@@ -97,11 +97,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setOperationId(1);
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
-        if (notOpenStaff.getStaffType() == 113) {
-            AuditRecord.setTableNames("not_open_staff");
-        } else {
-            AuditRecord.setTableNames("bond_investment");
-        }
+
+        AuditRecord.setTableNames("not_open_staff");
+
 
         AuditRecord.setSubmitter(notOpenStaff.getCreator());
         AuditRecord.setSubmitTime(notOpenStaff.getCreateTime());
@@ -290,11 +288,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setStaffId(" ");
 //        if()
         AuditRecord.setInfoTypeid(type);
-        if (type == 113) {
-            AuditRecord.setTableNames("not_open_staff");
-        } else {
-            AuditRecord.setTableNames("bond_investment");
-        }
+
+        AuditRecord.setTableNames("not_open_staff");
+
         AuditRecord.setFormerId(id);
         //如果等于-1就是批量删除，否则就是全量删除
         if (i == -1) {
@@ -404,6 +400,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             } catch (InvalidExtensionException e) {
                 e.printStackTrace();
             }
+//        文件上传结束----------------------------------------------
             AuditRecord.setFileName(fileName.getFileName());
             AuditRecord.setFileUrl(fileName.getRandomName());
             AuditRecord.setStaffId(builder.toString());
