@@ -15,6 +15,7 @@ import com.rewin.swhysc.security.service.TokenService;
 import com.rewin.swhysc.service.NotOpenStaffService;
 import com.rewin.swhysc.service.SoftwareService;
 import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
@@ -49,7 +50,7 @@ public class NotOpenStaffController {
      * 根据姓名或者证书编号，分页获取人员信息
      */
     @GetMapping("list")
-    public AjaxResult getNotOpenStaff(String name, String certificateNo, Integer pageNum, Integer pageSize) {
+    public AjaxResult getNotOpenStaff(String name, String certificateNo, Integer infoType, Integer pageNum, Integer pageSize) {
         Map<String, Object> map = new ConcurrentHashMap<>(3);
         if (name != null && name.length() > 0) {
             map.put("staffName", name);
@@ -57,6 +58,7 @@ public class NotOpenStaffController {
         if (certificateNo != null && certificateNo.length() > 0) {
             map.put("certificateNo", certificateNo);
         }
+        map.put("staffType", infoType);
         map.put("status", 2);
         PageInfo<NotOpenStaffVo> notOpenStaffPageInfo = null;
         try {
@@ -112,13 +114,16 @@ public class NotOpenStaffController {
      */
     @PostMapping
     public AjaxResult addNotOpenStaff(@RequestBody AddOpenStaffDto AddOpenStaffDto) {
+        System.err.println("添加jia：" + AddOpenStaffDto);
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         NotOpenStaff notOpenStaff = new NotOpenStaff();
         BeanUtils.copyProperties(AddOpenStaffDto, notOpenStaff);
         notOpenStaff.setCreator(loginUser.getUsername());
         notOpenStaff.setCreateTime(new Date());
         notOpenStaff.setStatus(1);
-        notOpenStaff.setStaffType(113);
+        notOpenStaff.setStaffType(AddOpenStaffDto.getStaffType());
+        notOpenStaff.setCertificatetime(DateUtils.dateTime(AddOpenStaffDto.getCertificatetimes()));
+        notOpenStaff.setCertificatetype(AddOpenStaffDto.getCertificatetype());
         try {
             NotOpenStaffService.AddNotOpenStaff(notOpenStaff);
         } catch (Exception e) {
@@ -133,6 +138,7 @@ public class NotOpenStaffController {
      */
     @PutMapping
     public AjaxResult updataNotOpenStaff(@RequestBody AddOpenStaffDto AddOpenStaffDto) {
+        System.err.println("修改：" + AddOpenStaffDto);
         try {
             NotOpenStaffService.ModifyNotOpenStaff(AddOpenStaffDto);
         } catch (Exception e) {
@@ -146,8 +152,9 @@ public class NotOpenStaffController {
     /**
      * 删除操作
      */
-    @DeleteMapping("/{id}")
-    public AjaxResult deleteNotOpenStaff(@PathVariable String id) {
+    @DeleteMapping("/{id}/{type}")
+    public AjaxResult deleteNotOpenStaff(@PathVariable String id, @PathVariable Integer type) {
+        System.err.println("type:" + type);
         int i = id.indexOf("-2");
         Map<String, Object> map = new ConcurrentHashMap<>(6);
         String[] split = null;
@@ -160,7 +167,7 @@ public class NotOpenStaffController {
         map.put("array", split);
         map.put("status", 32);
         try {
-            NotOpenStaffService.deNotOpenStaff(map, id, i);
+            NotOpenStaffService.deNotOpenStaff(map, id, i, type);
         } catch (Exception e) {
             log.error("删除数据库出错", e);
             return AjaxResult.error("删除失败，请重试");

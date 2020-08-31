@@ -97,7 +97,12 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setOperationId(1);
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
-        AuditRecord.setTableNames("not_open_staff");
+        if (notOpenStaff.getStaffType() == 113) {
+            AuditRecord.setTableNames("not_open_staff");
+        } else {
+            AuditRecord.setTableNames("bond_investment");
+        }
+
         AuditRecord.setSubmitter(notOpenStaff.getCreator());
         AuditRecord.setSubmitTime(notOpenStaff.getCreateTime());
         Integer integer = AuditRecordService.AddAuditRecord(AuditRecord);
@@ -112,7 +117,6 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         //获取当前用户
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
 
-
         //先根据id查询原始人员数据信息
         NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
         //把原数据的状态修改成《已发布不可操作》
@@ -126,14 +130,17 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         //先把原始人员信息复制到空集合中
         BeanUtils.copyProperties(notOpenStaff, OpenStaff);
         // 在使用修改的值替换掉复制好的空集合中的值
+
         OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
         OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
         OpenStaff.setStatus(1);
-        OpenStaff.setDeptId(addOpenStaffDto.getDeptId());
+        OpenStaff.setDeptName(addOpenStaffDto.getDeptName());
         OpenStaff.setStaffNo(addOpenStaffDto.getStaffNo());
         OpenStaff.setPersonnelType(addOpenStaffDto.getPersonnelType());
         OpenStaff.setUpdater(loginUser.getUsername());
         OpenStaff.setUpdateTime(new Date());
+        OpenStaff.setCreateTime(DateUtils.parseDate(addOpenStaffDto.getCertificatetimes()));
+        OpenStaff.setCertificatetype(addOpenStaffDto.getCertificatetype());
         OpenStaff.setId(null);
         notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
 //        ----------------------------------
@@ -169,9 +176,9 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         BeanUtils.copyProperties(notOpenStaff, StaffAuditVo);
         StaffAuditVo.setId(auditRecord.getId());
         StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
-        StaffAuditVo.setDeptId(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+        StaffAuditVo.setDeptName(notOpenStaff.getDeptName());
         StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
-        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        StaffAuditVo.setPersonnelType(notOpenStaff.getPersonnelType());
         if (auditRecord.getOperationId() == 1) {
             StaffAuditVo.setOperationId("新增");
         } else if (auditRecord.getOperationId() == 16) {
@@ -200,7 +207,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             BatchesRemVo BatchesRemVo = new BatchesRemVo();
             NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(s));
             BatchesRemVo.setStaffName(notOpenStaff.getStaffName());
-            BatchesRemVo.setDeptName(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+            BatchesRemVo.setDeptName(notOpenStaff.getDeptName());
             list.add(BatchesRemVo);
         }
         //获取非现场人员信息
@@ -212,7 +219,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         StaffAuditVo.setId(auditRecord.getId());
         StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
         StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
-        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        StaffAuditVo.setPersonnelType(notOpenStaff.getPersonnelType());
         StaffAuditVo.setList(list);
         if (auditRecord.getOperationId() == 4) {
             StaffAuditVo.setOperationId("批量删除");
@@ -242,7 +249,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             BatchesRemVo BatchesRemVo = new BatchesRemVo();
             NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(s));
             BatchesRemVo.setStaffName(notOpenStaff.getStaffName());
-            BatchesRemVo.setDeptName(SysDictTypeMapper.getNameById(notOpenStaff.getDeptId()));
+            BatchesRemVo.setDeptName(notOpenStaff.getDeptName());
             list.add(BatchesRemVo);
         }
         //获取非现场人员信息
@@ -254,7 +261,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         StaffAuditVo.setId(auditRecord.getId());
         StaffAuditVo.setAuditOpinion(auditRecord.getAuditOpinion());
         StaffAuditVo.setStaffType(SysDictTypeMapper.getNameById(notOpenStaff.getStaffType()));
-        StaffAuditVo.setPersonnelType(SysDictTypeMapper.getNameById(notOpenStaff.getPersonnelType()));
+        StaffAuditVo.setPersonnelType(notOpenStaff.getPersonnelType());
         StaffAuditVo.setList(list);
         if (auditRecord.getOperationId() == 2) {
             StaffAuditVo.setOperationId("批量上传");
@@ -268,7 +275,6 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         StaffAuditVo.setFileName(auditRecord.getFileName());
         StaffAuditVo.setFlowType(auditRecord.getFlowType());
         StaffAuditVo.setSubmitter(auditRecord.getSubmitter());
-        System.err.println("时间：" + auditRecord.getSubmitTimes());
         StaffAuditVo.setSubmitTime(auditRecord.getSubmitTimes());
         return StaffAuditVo;
     }
@@ -277,12 +283,18 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
      * 逻辑删除：全量删除或批量删除
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public Integer deNotOpenStaff(Map<String, Object> param, String id, int i) throws Exception {
+    public Integer deNotOpenStaff(Map<String, Object> param, String id, int i, Integer type) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         //封装参数，向中间表插入数据
         AuditRecord AuditRecord = new AuditRecord();
         AuditRecord.setStaffId(" ");
-        AuditRecord.setInfoTypeid(113);
+//        if()
+        AuditRecord.setInfoTypeid(type);
+        if (type == 113) {
+            AuditRecord.setTableNames("not_open_staff");
+        } else {
+            AuditRecord.setTableNames("bond_investment");
+        }
         AuditRecord.setFormerId(id);
         //如果等于-1就是批量删除，否则就是全量删除
         if (i == -1) {
@@ -293,7 +305,6 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
         AuditRecord.setSubmitter(loginUser.getUsername());
-        AuditRecord.setTableNames("not_open_staff");
         AuditRecord.setSubmitTime(new Date());
         AuditRecordService.AddAuditRecord(AuditRecord);
         return notOpenStaffMapper.deNotOpenStaff(param);
@@ -311,12 +322,12 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         for (NotOpenStaff notOpenStaff : notOpenStaffList) {
             NotOpenStaffVo NotOpenStaffVo = new NotOpenStaffVo();
             BeanUtils.copyProperties(notOpenStaff, NotOpenStaffVo);
-            SysDept sysDept = ISysDeptService.selectDeptById(Long.parseLong(notOpenStaff.getDeptId().toString()));
-            NotOpenStaffVo.setDeptName(sysDept.getDeptName());
-            //判断是哪一个开户人员的类别
-            if (notOpenStaff.getPersonnelType() == 210) {
-                NotOpenStaffVo.setPersonnelType("非现场开户见证人员");
-            }
+            NotOpenStaffVo.setDeptName(notOpenStaff.getDeptName());
+            NotOpenStaffVo.setPersonnelType(notOpenStaff.getPersonnelType());
+
+            NotOpenStaffVo.setCertificatetype(notOpenStaff.getCertificatetype());
+
+
             list.add(NotOpenStaffVo);
         }
         //把查询出来分页好的数据放进插件的分页对象中

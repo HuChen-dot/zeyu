@@ -1,11 +1,12 @@
 package com.rewin.swhysc.bean.vo;
 
+import com.rewin.swhysc.framework.aspectj.lang.annotation.Excel;
 import lombok.Data;
 
 import java.util.Date;
 
 /**
- * 非现场开户人员列表
+ * 非现场开户人员和私募资产管理列表
  */
 @Data
 public class NotOpenStaffVo {
@@ -23,6 +24,10 @@ public class NotOpenStaffVo {
     private String staffType;
     //人员类型
     private String personnelType;
+    //证书取得日期(字符串）
+    private String certificatetimes;
+    //证书类型
+    private String certificatetype;
 
 
 }

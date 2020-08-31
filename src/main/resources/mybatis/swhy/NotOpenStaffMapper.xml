@@ -8,7 +8,7 @@
     <select id="getNotOpenStaffById" resultType="com.rewin.swhysc.bean.NotOpenStaff">
         select
         id as id,
-        dept_id as deptId,
+        dept_name as deptName,
         staff_name as staffName,
         staff_no as staffNo,
         STATUS as status,
@@ -18,7 +18,9 @@
         create_time as createTime,
         updater as updater,
         update_time as updateTime,
-        PERSONNEL_TYPE as personnelType
+        PERSONNEL_TYPE as personnelType,
+        to_char(certificatetime,'yyyy-MM-dd HH24:mi:ss') as certificatetimes,
+        certificatetype as certificatetype
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -32,7 +34,7 @@
             parameterType="java.util.Map">
         select
         id as id,
-        dept_id as deptId,
+        dept_name as deptName,
         staff_name as staffName,
         staff_no as staffNo,
         certificate_no as certificateNo,
@@ -42,7 +44,9 @@
         create_time as createTime,
         updater as updater,
         update_time as updateTime,
-        PERSONNEL_TYPE as personnelType
+        PERSONNEL_TYPE as personnelType,
+        to_char(certificatetime,'yyyy-MM-dd HH24:mi:ss') as certificatetimes,
+        certificatetype as certificatetype
         from not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
             <if test="id != null">
@@ -86,8 +90,8 @@
             <if test="id != null">
                 and id=#{id}
             </if>
-            <if test="deptId != null">
-                and dept_id=#{deptId}
+            <if test="deptName != null">
+                and dept_name=#{deptName}
             </if>
             <if test="staffName != null">
                 and staff_name=#{staffName}
@@ -126,7 +130,7 @@
 
         insert into not_open_staff(
         id,
-        dept_id,
+        dept_name,
         staff_name,
         staff_no,
         certificate_no,
@@ -136,10 +140,12 @@
         updater,
         update_time,
         status,
-        PERSONNEL_TYPE)
+        personnel_type,
+        certificatetime,
+        certificatetype)
         values(
         #{id},
-        #{deptId},
+        #{deptName},
         #{staffName},
         #{staffNo},
         #{certificateNo},
@@ -149,7 +155,9 @@
         #{updater,jdbcType=VARCHAR},
         #{updateTime,jdbcType=DATE},
         #{status},
-        #{personnelType,jdbcType=TINYINT})
+        #{personnelType,jdbcType=TINYINT},
+        #{certificatetime,jdbcType=DATE},
+        #{certificatetype,jdbcType=TINYINT})
     </insert>
 
 
@@ -157,8 +165,8 @@
     <update id="updateNotOpenStaff" parameterType="com.rewin.swhysc.bean.NotOpenStaff">
         update not_open_staff
         <trim prefix="set" suffixOverrides=",">
-            <if test="deptId != null">
-                dept_id=#{deptId},
+            <if test="deptName != null">
+                dept_name=#{deptName},
             </if>
             <if test="staffName != null">
                 staff_name=#{staffName},
@@ -187,6 +195,12 @@
             <if test="updateTime != null">
                 update_time=#{updateTime}
             </if>
+            <if test="certificatetime != null">
+                certificatetime=#{certificatetime},
+            </if>
+            <if test="certificatetype != null">
+                certificatetype=#{certificatetype}
+            </if>
         </trim>
         where id = #{id}
     </update>
@@ -210,8 +224,8 @@
             <if test="id != null">
                 and id=#{id}
             </if>
-            <if test="deptId != null">
-                and dept_id=#{deptId}
+            <if test="deptName != null">
+                and dept_name=#{deptName}
             </if>
             <if test="staffName != null">
                 and staff_name=#{staffName}
