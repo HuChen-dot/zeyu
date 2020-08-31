@@ -320,7 +320,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                     pcInfo.setSize(softwareInfoForSc.getSoftwareSize());//软件大小
                     pcInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());//软件更新时间
                     pcInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());//软件更新描述
-                    softwareInfoForScVo.setPcInfo(pcInfo);
+                    softwareInfoForScVo.setPC(pcInfo);
                 }
                 //手机端软件详细信息
                 if (softwareType == BusinessConstants.SOFTWARE_TYPE_MOBILE) {
@@ -341,7 +341,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                                     iosInfo.setSize(softwareInfoForSc.getSoftwareSize());
                                     iosInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                                     iosInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
-                                    oldInfo.setIosInfo(iosInfo);
+                                    oldInfo.setIOS(iosInfo);
                                 }
                                 //存入安卓端详细数据
                                 if (platformType == BusinessConstants.PLATFORM_ANDROID) {
@@ -350,7 +350,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                                     androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
                                     androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                                     androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
-                                    oldInfo.setAndroidInfo(androidInfo);
+                                    oldInfo.setAndroid(androidInfo);
                                 }
                             }
                         }
@@ -362,7 +362,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                             iosInfo.setSize(softwareInfoForSc.getSoftwareSize());
                             iosInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                             iosInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
-                            softwareInfoForScVo.setIosInfo(iosInfo);
+                            softwareInfoForScVo.setIOS(iosInfo);
                         }
                         //存入安卓端详细数据
                         if (platformType == BusinessConstants.PLATFORM_ANDROID) {
@@ -371,7 +371,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                             androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
                             androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                             androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
-                            softwareInfoForScVo.setAndroidInfo(androidInfo);
+                            softwareInfoForScVo.setAndroid(androidInfo);
                         }
                     } else {
                         continue;

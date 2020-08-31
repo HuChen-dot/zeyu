@@ -19,7 +19,7 @@ public class SoftwareInfoForScVo {
     private Integer platform;
     private String QRCode;
     private Integer sort;
-    private AndroidInfo androidInfo;
-    private IOSInfo iosInfo;
-    private PCInfo pcInfo;
+    private AndroidInfo Android;
+    private IOSInfo IOS;
+    private PCInfo PC;
 }
