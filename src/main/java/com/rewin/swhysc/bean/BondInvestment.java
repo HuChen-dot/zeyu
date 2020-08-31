@@ -9,8 +9,8 @@ import java.util.Date;
 public class BondInvestment implements Serializable {
     //主键id
     private Integer id;
-    //部门id
-    private Integer deptId;
+    //部门名称
+    private String deptName;
     //员工姓名
     private String staffName;
     //信息类型

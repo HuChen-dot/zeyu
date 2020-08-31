@@ -9,7 +9,6 @@ import lombok.Data;
  */
 @Data
 public class NOSTemplate {
-
     //部门名称
     @Excel(name = "部门名称", type = Excel.Type.ALL)
     private String deptName;
@@ -28,5 +27,8 @@ public class NOSTemplate {
     //创建者
     @Excel(name = "创建人", type = Excel.Type.ALL)
     private String creator;
+    //营业部
+    @Excel(name = "营业部", type = Excel.Type.ALL)
+    private String sales;
 
 }
