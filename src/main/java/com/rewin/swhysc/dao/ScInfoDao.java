@@ -4,6 +4,7 @@ import com.rewin.swhysc.bean.BondInvestment;
 import com.rewin.swhysc.bean.NotOpenStaff;
 import com.rewin.swhysc.bean.dto.BondinvestmentDto;
 import com.rewin.swhysc.bean.dto.OpenAccStaffDto;
+import com.rewin.swhysc.bean.dto.PrivateEquityStaffDto;
 import com.rewin.swhysc.bean.pojo.Marketer;
 import com.rewin.swhysc.bean.pojo.OpenDept;
 import com.rewin.swhysc.util.page.PageInfo;
@@ -26,4 +27,6 @@ public interface ScInfoDao {
     PageInfo<NotOpenStaff> getOpenAccStaffInfoList(OpenAccStaffDto openAccStaffDto) throws Exception;
 
     PageInfo<BondInvestment> getBondInvestmentInfoList(BondinvestmentDto bondinvestmentDto) throws Exception;
+
+    PageInfo<NotOpenStaff> getPrivateEquityStaffInfoList(PrivateEquityStaffDto privateEquityStaffDto) throws Exception;
 }

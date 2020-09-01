@@ -11,16 +11,6 @@ import java.util.Map;
 
 @Repository
 public interface BondInvestmentMapper extends BaseMapper<BondInvestment> {
-	/**
-	 * 根据id查询；返回单个对象
-	 */
-	 BondInvestment getBondInvestmentById(@Param(value = "id") Long id)throws Exception;
-		
-	/**
-	 * 根据条件查询；返回多个对象
-	 */
-	 List<BondInvestment>	getBondInvestmentListByMap(Map<String, Object> param)throws Exception;
-public interface BondInvestmentMapper {
     /**
      * 根据id查询；返回单个对象
      */

@@ -13,9 +13,11 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class DownloadCountDto {
     @NotBlank
-    private String softwareID;
+    private Integer softwareID;
     @NotBlank
-    private String softwareType;
+    private Integer softwareType;
+    @NotBlank
+    private String softName;
     @NotBlank
     private String ip;
 }

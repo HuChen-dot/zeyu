@@ -2,10 +2,7 @@ package com.rewin.swhysc.service.impl;
 
 import com.rewin.swhysc.bean.BondInvestment;
 import com.rewin.swhysc.bean.NotOpenStaff;
-import com.rewin.swhysc.bean.dto.BondinvestmentDto;
-import com.rewin.swhysc.bean.dto.MarketerDto;
-import com.rewin.swhysc.bean.dto.OpenAccStaffDto;
-import com.rewin.swhysc.bean.dto.UserMsgDto;
+import com.rewin.swhysc.bean.dto.*;
 import com.rewin.swhysc.bean.pojo.Marketer;
 import com.rewin.swhysc.bean.pojo.OpenDept;
 import com.rewin.swhysc.bean.pojo.UserMsg;
@@ -147,12 +144,47 @@ public class ScStaffInfoServiceImpl implements ScStaffInfoService {
         bondInvestmentInfoVo.setTotal(bondInvestmentInfoList.getPages());
         bondInvestmentInfoVo.setPageNum(bondInvestmentInfoList.getPageNum());
         bondInvestmentInfoVo.setPageSize(bondInvestmentInfoList.getPageSize());
+        //数据处理
         List<BondInvestment> data = bondInvestmentInfoList.getData();
         if (data.size() > 0) {
-            for (BondInvestment bondInvestment : data){
+            for (BondInvestment bondInvestment : data) {
                 BondInvestmentInfo bondInvestmentInfo = new BondInvestmentInfo();
+                bondInvestmentInfo.setPostType(bondInvestment.getPostType());
+                bondInvestmentInfo.setName(bondInvestment.getStaffName());
+                bondInvestmentInfo.setDeptName(bondInvestment.getDeptName());
+                bondInvestmentInfo.setDimissionTime(bondInvestment.getDimissionTime());
+                bondInvestmentInfo.setDuty(bondInvestment.getDuty());
+                bondInvestmentInfo.setWorkPhone(bondInvestment.getWorkPhone());
+                bondInvestmentInfos.add(bondInvestmentInfo);
             }
         }
-        return null;
+        bondInvestmentInfoVo.setBondInvestmentInfos(bondInvestmentInfos);
+        return bondInvestmentInfoVo;
+    }
+
+    @Override
+    public PrivateEquityStaffVo getPrivateEquityStaffInfoList(PrivateEquityStaffDto privateEquityStaffDto) throws Exception {
+        List<PrivateEquityStaff> privateEquityStaffs = new ArrayList<>();
+        PrivateEquityStaffVo privateEquityStaffVo = new PrivateEquityStaffVo();
+        //查询私募资产管理业务从业人员信息
+        PageInfo<NotOpenStaff> openAccStaffInfoList = scInfoDao.getPrivateEquityStaffInfoList(privateEquityStaffDto);
+        privateEquityStaffVo.setTotal(openAccStaffInfoList.getPages());
+        privateEquityStaffVo.setPageNum(openAccStaffInfoList.getPageNum());
+        privateEquityStaffVo.setPageSize(openAccStaffInfoList.getPageSize());
+        List<NotOpenStaff> notOpenStaffs = openAccStaffInfoList.getData();
+        //数据处理
+        if (notOpenStaffs.size() > 0) {
+            for (NotOpenStaff notOpenStaff : notOpenStaffs) {
+                PrivateEquityStaff privateEquityStaff = new PrivateEquityStaff();
+                privateEquityStaff.setCertificateNo(notOpenStaff.getCertificateNo());//证书编号
+                privateEquityStaff.setName(notOpenStaff.getStaffName());//员工姓名
+                privateEquityStaff.setDeptName(notOpenStaff.getDeptName());//部门
+                privateEquityStaff.setCertificateTime(notOpenStaff.getCreateTime());
+                privateEquityStaff.setCertificateType(notOpenStaff.getPersonnelType());
+                privateEquityStaffs.add(privateEquityStaff);
+            }
+        }
+        privateEquityStaffVo.setPrivateEquityStaffs(privateEquityStaffs);
+        return privateEquityStaffVo;
     }
 }

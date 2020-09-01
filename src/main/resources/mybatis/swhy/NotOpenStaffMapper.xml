@@ -287,11 +287,12 @@
         </trim>
     </delete>
 
-    <select id="getOpenAccStaffInfoList" resultMap="BaseResultMap">
+    <select id="getStaffInfoListByType" resultMap="BaseResultMap">
         SELECT
         <include refid="Base_Column_List"/>
         FROM not_open_staff
         <trim prefix="where" prefixOverrides="and | or">
+            STAFF_TYPE = #{staffType}
             <if test="searchKey != null and searchKey != ''">
                 AND (staff_name LIKE '%'|| #{searchKey} ||'%' OR staff_no LIKE '%'|| #{searchKey} ||'%')
             </if>

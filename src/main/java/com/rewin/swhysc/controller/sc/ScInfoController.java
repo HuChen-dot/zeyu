@@ -1,12 +1,10 @@
 package com.rewin.swhysc.controller.sc;
 
-import com.rewin.swhysc.bean.dto.BondinvestmentDto;
-import com.rewin.swhysc.bean.dto.MarketerDto;
-import com.rewin.swhysc.bean.dto.OpenAccStaffDto;
-import com.rewin.swhysc.bean.dto.UserMsgDto;
+import com.rewin.swhysc.bean.dto.*;
 import com.rewin.swhysc.bean.vo.BondInvestmentInfoVo;
 import com.rewin.swhysc.bean.vo.MarketerInfoVo;
 import com.rewin.swhysc.bean.vo.OpenAccStaffVo;
+import com.rewin.swhysc.bean.vo.PrivateEquityStaffVo;
 import com.rewin.swhysc.common.utils.ExceptionMsgUtils;
 import com.rewin.swhysc.service.ScStaffInfoService;
 import com.rewin.swhysc.util.AjaxResult;
@@ -115,5 +113,27 @@ public class ScInfoController {
         }
         return AjaxResult.success(bondInvestmentInfoVo);
     }
+
+    /**
+     * @Description:私募资产管理业务从业人员信息查询
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/9/1 17:31
+     */
+    @ApiOperation("私募资产管理业务从业人员信息查询")
+    @GetMapping("/privateequity")
+    public AjaxResult getPrivateEquityStaffInfoList(@ModelAttribute @Valid PrivateEquityStaffDto privateEquityStaffDto){
+        PrivateEquityStaffVo privateEquityStaffVo;
+        try{
+            privateEquityStaffVo = scStaffInfoService.getPrivateEquityStaffInfoList(privateEquityStaffDto);
+        }catch (Exception e){
+            log.error("查询私募资产管理业务从业人员信息失败", e);
+            return AjaxResult.error();
+        }
+        return AjaxResult.success(privateEquityStaffVo);
+    }
+
+
 
 }

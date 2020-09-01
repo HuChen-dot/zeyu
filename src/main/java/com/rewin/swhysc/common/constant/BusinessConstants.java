@@ -31,8 +31,13 @@ public class BusinessConstants {
     public static final String CHECK_STAFF_NUM = "2";
     public static final String CHECK_STAFF_CN = "中后台核对专岗人员";
 
-    //
+    //离职人员公示
     public static final String WITHDRAWN_NUM = "3";
     public static final String WITHDRAWN_CN = "离职人员公示";
+
+    //非现场开户人员
+    public static final String OPEN_ACC_STAFF = "113";
+    //私募资产管理业务从业人员
+    public static final String PRIVATE_EQUITY_STAFF = "115";
 
 }

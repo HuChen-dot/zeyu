@@ -47,6 +47,7 @@ public interface NotOpenStaffMapper {
     /**
      * 根据条件模糊查询；返回多个对象
      */
-    List<NotOpenStaff> getOpenAccStaffInfoList(@Param(value = "searchKey") String searchKey) throws Exception;
+    List<NotOpenStaff> getStaffInfoListByType(@Param(value = "searchKey") String searchKey,
+                                              @Param(value = "staffType") String staffType) throws Exception;
 
 }

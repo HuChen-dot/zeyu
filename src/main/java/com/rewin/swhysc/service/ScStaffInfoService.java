@@ -1,12 +1,10 @@
 package com.rewin.swhysc.service;
 
-import com.rewin.swhysc.bean.dto.BondinvestmentDto;
-import com.rewin.swhysc.bean.dto.MarketerDto;
-import com.rewin.swhysc.bean.dto.OpenAccStaffDto;
-import com.rewin.swhysc.bean.dto.UserMsgDto;
+import com.rewin.swhysc.bean.dto.*;
 import com.rewin.swhysc.bean.vo.BondInvestmentInfoVo;
 import com.rewin.swhysc.bean.vo.MarketerInfoVo;
 import com.rewin.swhysc.bean.vo.OpenAccStaffVo;
+import com.rewin.swhysc.bean.vo.PrivateEquityStaffVo;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.util.List;
@@ -53,4 +51,13 @@ public interface ScStaffInfoService {
      * @Date: 2020/9/1 10:31
      */
     BondInvestmentInfoVo getBondInvestmentInfoList(BondinvestmentDto bondinvestmentDto) throws Exception;
+
+    /**
+     * @Description:私募资产管理业务从业人员信息查询
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/9/1 17:31
+     */
+    PrivateEquityStaffVo getPrivateEquityStaffInfoList(PrivateEquityStaffDto privateEquityStaffDto)throws Exception;
 }
