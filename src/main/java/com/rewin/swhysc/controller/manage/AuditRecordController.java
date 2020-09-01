@@ -44,7 +44,6 @@ public class AuditRecordController {
      */
     @GetMapping("list")
     public AjaxResult getRecordBylist(RecordDto RecordDto) {
-        System.err.println("查询：" + RecordDto);
         Map<String, Object> map = new HashMap<>(10);
         //判断信息类型
         if (RecordDto.getInfoTypeid() != null && RecordDto.getInfoTypeid() != -1) {
@@ -64,7 +63,6 @@ public class AuditRecordController {
         }
         if (RecordDto.getBeginTime() != null && RecordDto.getEndTime() != null &&
                 RecordDto.getBeginTime().length() > 0 && RecordDto.getEndTime().length() > 0) {
-            System.err.println("进入公示信息审核时间");
             map.put("beginTime", DateUtils.parseDate(RecordDto.getBeginTime()));
             map.put("endTime", DateUtils.parseDate(RecordDto.getEndTime()));
         }
@@ -122,8 +120,8 @@ public class AuditRecordController {
                 }
                 //判断是否是《批量上传操作》
                 if (auditRecord.getOperationId() == 2) {
-//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
-//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.uploadingAudit(auditRecord);
+                    return AjaxResult.success("查询成功", deleStaffAuditVo);
                 }
             }
 //------------------------------------------------------------------
@@ -131,18 +129,18 @@ public class AuditRecordController {
             if (auditRecord.getInfoTypeid() == 115) {
                 //判断是否是《增加或修改操作》
                 if (auditRecord.getOperationId() == 1 || auditRecord.getOperationId() == 16) {
-//                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
-//                    return AjaxResult.success("查询成功", audit);
+                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
+                    return AjaxResult.success("查询成功", audit);
                 }
                 //判断是否是《批量删除或全量删除操作操作》
                 if (auditRecord.getOperationId() == 4 || auditRecord.getOperationId() == 8) {
-//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
-//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
+                    return AjaxResult.success("查询成功", deleStaffAuditVo);
                 }
                 //判断是否是《批量上传操作》
                 if (auditRecord.getOperationId() == 2) {
-//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
-//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.uploadingAudit(auditRecord);
+                    return AjaxResult.success("查询成功", deleStaffAuditVo);
                 }
             }
         } catch (Exception e) {
@@ -159,7 +157,6 @@ public class AuditRecordController {
      */
     @GetMapping("make/{id}/{falg}/{auditOpinion}")
     public AjaxResult verifierIofo(@PathVariable Integer id, @PathVariable Integer falg, @PathVariable String auditOpinion) {
-        System.err.println(id + "和" + falg + "和" + auditOpinion);
         try {
             //获取审核表信息
             AuditRecord auditRecord = auditRecordMapper.getAuditRecordById(id);

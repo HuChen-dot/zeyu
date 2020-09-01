@@ -103,7 +103,6 @@ public class AuditRecordServiceImpl implements AuditRecordService {
         AuditRecord audit = new AuditRecord();
         //表名
         String tableNames = auditRecord.getTableNames();
-        System.err.println(tableNames);
         Map<String, Object> table = new ConcurrentHashMap<>();
         //等于1，表示当前是通过操作
         if (falg == 1) {
@@ -195,7 +194,6 @@ public class AuditRecordServiceImpl implements AuditRecordService {
         audit.setFlowType(2);
         audit.setAuditor(loginUser.getUsername());
         audit.setAuditTime(new Date());
-        System.err.println("审核意见：=====》" + auditOpinion);
         audit.setAuditOpinion("null".equals(auditOpinion) ? " " : auditOpinion);
         auditRecordMapper.updateAuditRecord(audit);
         return null;

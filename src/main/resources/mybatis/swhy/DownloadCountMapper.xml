@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.rewin.swhysc.mapper.dao.DownloadCountMapper" >
+  <resultMap id="BaseResultMap" type="com.rewin.swhysc.bean.pojo.DownloadCount" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="SOFTWAREID" property="softwareid" jdbcType="VARCHAR" />
+    <result column="SOFTWARETYPE" property="softwaretype" jdbcType="VARCHAR" />
+    <result column="IP" property="ip" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+</mapper>

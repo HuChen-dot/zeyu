@@ -66,7 +66,7 @@ public interface NotOpenStaffService {
     /**
      * 逻辑删除：全量删除或批量删除
      */
-    Integer deNotOpenStaff(Map<String, Object> param, String id, int i) throws Exception;
+    Integer deNotOpenStaff(Map<String, Object> param, String id, int i, Integer type) throws Exception;
 
     /**
      * 根据条件分页查询；返回分页查询后的多个对象
@@ -80,7 +80,7 @@ public interface NotOpenStaffService {
      * @param operName 操作用户
      * @return 结果
      */
-    String importOpenStaff(List<NotOpenStaff> userList, String operName, MultipartFile[] file);
+    String importOpenStaff(List<NotOpenStaff> userList, String operName, MultipartFile[] file, Integer count);
 
     /**
      * 根据条件查询对象，返回布尔值，是否存在该对象

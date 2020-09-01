@@ -27,8 +27,8 @@ public class Software implements Serializable {
     private String skipUrl;
     //手机二维码地址
     private String qrCode;
-    //软件是否显示及所属显示分类(0 不显示，1显示，2其他)
-    private Integer isShow;
+    //软件是否显示及所属显示分类(0 不显示，1电脑端，2其他-电脑端 4其他-手机端）
+    private Integer channel;
     //创建者
     private String creator;
     //创建时间

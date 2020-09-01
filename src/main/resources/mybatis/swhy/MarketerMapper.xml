@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.rewin.swhysc.mapper.dao.MarketerMapper">
+    <resultMap id="BaseResultMap" type="com.rewin.swhysc.bean.pojo.Marketer">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result column="JJRBH" jdbcType="VARCHAR" property="jjrbh"/>
+        <result column="JJRXM" jdbcType="VARCHAR" property="jjrxm"/>
+        <result column="JJRLB" jdbcType="VARCHAR" property="jjrlb"/>
+        <result column="JJRZSBH" jdbcType="VARCHAR" property="jjrzsbh"/>
+        <result column="HTQJ" jdbcType="VARCHAR" property="htqj"/>
+        <result column="YYB_4" jdbcType="DECIMAL" property="yyb4"/>
+        <result column="HDFW" jdbcType="VARCHAR" property="hdfw"/>
+        <result column="RZRQ" jdbcType="DECIMAL" property="rzrq"/>
+        <result column="MOBILE" jdbcType="VARCHAR" property="mobile"/>
+        <result column="PHONE" jdbcType="VARCHAR" property="phone"/>
+        <result column="CERT_NO" jdbcType="VARCHAR" property="certNo"/>
+        <result column="PHOTO" jdbcType="VARCHAR" property="photo"/>
+        <result column="GENDER" jdbcType="CHAR" property="gender"/>
+        <result column="YYB_NAME" jdbcType="VARCHAR" property="yybName"/>
+        <result column="YYB_PHONE" jdbcType="VARCHAR" property="yybPhone"/>
+        <result column="YYB_ADDRESS" jdbcType="VARCHAR" property="yybAddress"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        JJRBH, JJRXM, JJRLB, JJRZSBH, HTQJ, YYB_4, HDFW, RZRQ, MOBILE, PHONE, CERT_NO, PHOTO,
+        GENDER, YYB_NAME, YYB_PHONE, YYB_ADDRESS
+    </sql>
+
+    <select id="queryMarketerInfoList" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM VJJR_SW v
+        <trim prefix="where" prefixOverrides="and | or">
+            <choose>
+                <when test="isWest eq '1'.toString">
+                    AND YYB_4 IN
+                    <foreach collection="list" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </when>
+                <otherwise>
+                    AND YYB_4 NOT IN
+                    <foreach collection="list" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </otherwise>
+            </choose>
+            <if test="searchKey != null and searchKey != ''">
+                AND (CERT_NO LIKE '%'|| #{searchKey} ||'%' OR JJRZSBH LIKE '%'|| #{searchKey} ||'%'
+                OR JJRXM LIKE '%'|| #{searchKey} ||'%' OR JJRBH LIKE '%'|| #{searchKey} ||'%'
+                OR YYB_NAME LIKE '%'|| #{searchKey} ||'%')
+            </if>
+            <choose>
+                <when test="staffType eq '0'.toString">
+                    AND JJRLB IN ('1','2','6','8')
+                </when>
+                <otherwise>
+                    AND JJRLB NOT IN ('1','2','5','6','8','11','12')
+                </otherwise>
+            </choose>
+        </trim>
+    </select>
+</mapper>

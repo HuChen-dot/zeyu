@@ -11,6 +11,7 @@ import com.rewin.swhysc.security.service.TokenService;
 import com.rewin.swhysc.service.ISysMenuService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.ServletUtils;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,7 @@ public class SysLoginController {
      *
      * @return 结果
      */
+    @ApiOperation("登录")
     @PostMapping("/login")
     public AjaxResult login(@RequestBody LoginBody loginBody) {
         AjaxResult ajax = AjaxResult.success();

@@ -11,7 +11,7 @@ public class StaffAuditVo {
     //审核表主键id
     private Integer id;
     //部门名称
-    private String deptId;
+    private String deptName;
     //员工编号
     private Integer staffNo;
     //员工姓名
@@ -36,5 +36,11 @@ public class StaffAuditVo {
     private String submitter;
     //提交时间
     private String submitTime;
+    //证书取得日期(字符串）
+    private String certificatetimes;
+    //证书类型
+    private String certificatetype;
+    //营业部
+    private String sales;
 
 }
