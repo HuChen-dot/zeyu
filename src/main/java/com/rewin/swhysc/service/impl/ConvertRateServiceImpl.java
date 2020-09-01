@@ -3,30 +3,42 @@ package com.rewin.swhysc.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.rewin.swhysc.bean.AuditRecord;
+import com.rewin.swhysc.bean.NotOpenStaff;
+import com.rewin.swhysc.bean.vo.FileName;
+import com.rewin.swhysc.common.exception.CustomException;
+import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
+import com.rewin.swhysc.service.AuditRecordService;
+import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
 import com.rewin.swhysc.service.ConvertRateService;
 import com.rewin.swhysc.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * 广告位表数据业务层
  */
 @Service
 public class ConvertRateServiceImpl implements ConvertRateService {
+    private static final Logger log = LoggerFactory.getLogger(NotOpenStaffServiceImpl.class);
 
     @Resource
     private ConvertRateMapper convertRateMapper;
+
+    @Resource
+    AuditRecordService auditRecordService;
 
     @Override
     public PageInfo<ConvertRateVo> getConverRateList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception {
@@ -109,9 +121,72 @@ public class ConvertRateServiceImpl implements ConvertRateService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public Integer insertConvertRateList(List<ConvertRate> convertRateList) throws Exception {
-
-        return convertRateMapper.insertConvertRateList(convertRateList);
+    public String insertConvertRateList(List<ConvertRate> convertRateList, String operName, MultipartFile[] file) throws Exception {
+        if (StringUtils.isNull(convertRateList) || convertRateList.size() == 0) {
+            throw new CustomException("导入数据不能为空！");
+        }
+        int successNum = 0;
+        int failureNum = 0;
+        StringBuilder successMsg = new StringBuilder();
+        StringBuilder failureMsg = new StringBuilder();
+        List<Integer> count = new ArrayList<>();
+        for (ConvertRate convertRate : convertRateList) {
+            try {
+                convertRateMapper.insertConverRate(convertRate);
+                successNum++;
+                successMsg.append("<br/>" + successNum + "、证券代码 " + convertRate.getStockCode() + " 导入成功");
+                count.add(convertRate.getId());
+            } catch (Exception e) {
+                failureNum++;
+                String msg = "<br/>" + failureNum + "、证券代码 " + convertRate.getStockCode() + " 导入失败：";
+                failureMsg.append(msg + e.getMessage());
+                log.error(msg, e);
+                throw new RuntimeException();
+            }
+        }
+        if (failureNum > 0) {
+            failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+            throw new CustomException(failureMsg.toString());
+        } else {
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            //封装参数，向中间表插入数据
+            AuditRecord AuditRecord = new AuditRecord();
+            StringBuilder builder = new StringBuilder();
+            for (int j = 0; j < count.size(); j++)
+                if (j < count.size() - 1) {
+                    builder.append(count.get(j) + ",");
+                } else {
+                    builder.append(count.get(j));
+                }
+            //此处文件上传开始
+            FileName fileName = null;
+            try {
+                fileName = FileUploadUtils.upload(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                failureMsg.insert(0, "很抱歉，文件上传失败！请重新上传");
+            } catch (InvalidExtensionException e) {
+                e.printStackTrace();
+            }
+//        文件上传结束----------------------------------------------
+            AuditRecord.setFileName(fileName.getFileName());
+            AuditRecord.setFileUrl(fileName.getRandomName());
+            AuditRecord.setStaffId(builder.toString());
+            AuditRecord.setInfoTypeid(0);
+            AuditRecord.setOperationId(2);
+            AuditRecord.setFlowType(1);
+            AuditRecord.setStatus(0);
+            AuditRecord.setSubmitter(operName);
+            AuditRecord.setSubmitTime(new Date());
+            try {
+                auditRecordService.AddAuditRecord(AuditRecord);
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error("插入中间表失败", e);
+                throw new RuntimeException();
+            }
+        }
+        return successMsg.toString();
     }
 
     @Override

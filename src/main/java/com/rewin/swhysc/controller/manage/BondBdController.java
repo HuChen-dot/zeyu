@@ -1,7 +1,9 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
+import com.rewin.swhysc.bean.pojo.BondbdExc;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
+import com.rewin.swhysc.common.utils.poi.ExcelUtil;
 import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.AuditRecord;
@@ -265,81 +267,42 @@ public class BondBdController extends BaseController {
      *
      */
     @PostMapping("fileImport")
-    public AjaxResult fileImport(MultipartFile[] file) {
-        AjaxResult result =  this.impExcel(file[0]);
-        return result;
-    }
-
-    public AjaxResult impExcel(MultipartFile file){
-        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
-        ExcelReader er = new ExcelReader();
-        int count =0;
-        int error =0;
-        int success = 0;
-
-        List<BondBd> list_BondBd = new ArrayList<BondBd>();
-        String returnMsg = "";
-        int index = 1;
+    public AjaxResult fileImport(MultipartFile[] file,Date trimDate) {
         try {
-            List<String[]> list = er.readExcel(file); //读取Excel数据内容
-            count = list.size();
-
-            for(int i=0;i<list.size();i++){
-                String[] map = list.get(i);
-                if(map[1]==null || "".equals(map[1])){
-                    returnMsg += "第"+index+"行：【证券代码(必填)】列不能为空;";
-                } else if(map[2]==null || "".equals(map[2])){
-                    returnMsg += "第"+index+"行：【证券名称(必填)】列不能为空;";
-                } else if(map[3]==null || "".equals(map[3])){
-                    returnMsg += "第"+index+"行：【融资比例(必填)】列不能为空;";
-                } else if(map[4]==null || "".equals(map[4])){
-                    returnMsg += "第"+index+"行：【融券比例(必填)】列不能为空;";
-                }else if(map[5]==null || "".equals(map[5])){
-                    returnMsg += "第"+index+"行：【是否融资(必填)】列不能为空;";
-                }else if(map[6]==null || "".equals(map[6])){
-                    returnMsg += "第"+index+"行：【是否融券(必填)】列不能为空;";
-                }else if(map[7]==null || "".equals(map[7])){
-                    returnMsg += "第"+index+"行：【交易所(必填)】列不能为空;";
-                }else if(map[8]==null || "".equals(map[8])){
-                    returnMsg += "第"+index+"行：【调整日期(必填)】列不能为空;";
-                }else {
-                    BondBd bondBd = new BondBd();
-                    bondBd.setStockCode(map[1]);
-                    bondBd.setStockName(map[2]);
-                    bondBd.setRzRatio(map[3]);
-                    bondBd.setRqRatio(map[4]);
-                    bondBd.setIsRz(map[5]);
-                    bondBd.setIsRq(map[6]);
-                    bondBd.setBourse(map[7]);
-                    String trimDate = map[8];
-                    DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
-                    Date date = null;
-                    date = format1.parse(trimDate);
-                    bondBd.setTrimDate(date);
-                    bondBd.setCreateUser(loginUser.getUsername());
-                    bondBd.setUpdateUser(loginUser.getUsername());
-                    bondBd.setCreateDate(new java.util.Date());
-                    bondBd.setUpdateDate(new java.util.Date());
-                    bondBd.setState("1");
-                    list_BondBd.add(bondBd);
-                    index++;
+            LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
+            ExcelUtil<BondbdExc> util = new ExcelUtil<BondbdExc>(BondbdExc.class);
+            List<BondbdExc> list = util.importExcel(file[0].getInputStream());
+            //创建空集合转换填充基础信息
+            List<BondBd> bondBdList = new ArrayList<>();
+            List<BondBdVo> bondBdVoList = bondBdService.getBondBdState(null,null,null);
+            Map<String,String> converMap = new HashMap<String,String>();
+            if(bondBdVoList.size()>0){
+                for(int j=0;j<bondBdVoList.size();j++){
+                    converMap.put(bondBdVoList.get(j).getStockCode(),bondBdVoList.get(j).getStockName());
                 }
             }
-            for (int j=0;j<list_BondBd.size();j++){
-                try {
-                    bondBdService.insertBondBd(list_BondBd.get(j));
-                } catch (Exception e) {
-                    log.error("查询数据库出错", e);
-                    return AjaxResult.error("sql错误");
+            for (BondbdExc bondbdExc : list) {
+                if(converMap.containsKey(bondbdExc.getStockCode())){
+                    log.info("已存在证券代码为"+bondbdExc.getStockCode()+"的数据，请确认后重新上传");
+                    return AjaxResult.error("已存在证券代码为"+bondbdExc.getStockCode()+"的数据，请确认后重新上传");
                 }
+                BondBd bondBd = new BondBd();
+                BeanUtils.copyProperties(bondbdExc, bondBd);
+                bondBd.setCreateUser(loginUser.getUsername());
+                bondBd.setUpdateUser(loginUser.getUsername());
+                bondBd.setCreateDate(new java.util.Date());
+                bondBd.setUpdateDate(new java.util.Date());
+                bondBd.setState("1");
+                bondBdList.add(bondBd);
             }
-
+            String message = bondBdService.insertBondList(bondBdList,loginUser.getUsername(), file);
+            return AjaxResult.success(message);
         } catch (Exception e) {
-            log.error("批量导入信息异常", e.getMessage());
-            return AjaxResult.error(returnMsg);
+            e.printStackTrace();
         }
-        return AjaxResult.success("批量导入信息成功");
+        return AjaxResult.success("导入成功");
     }
+
 
 
     @GetMapping("auditlist")

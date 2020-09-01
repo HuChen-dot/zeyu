@@ -4,6 +4,7 @@ package com.rewin.swhysc.service;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface ConvertRateService {
 
     Integer insertConvertRate(ConvertRate convertRate) throws Exception;
 
-    Integer insertConvertRateList(List<ConvertRate> convertRateList) throws Exception;
+    String insertConvertRateList(List<ConvertRate> convertRateList, String operName, MultipartFile[] file) throws Exception;
 
     Integer updateConvertRate(ConvertRate convertRate) throws Exception;
 

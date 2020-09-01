@@ -13,6 +13,8 @@ import java.util.Map;
 public interface BondBdMapper  {
     List<BondBdVo> getBondBdList(Map<String, Object> param) throws Exception;
 
+    List<BondBdVo> getAllBondBd(Map<String, Object> param) throws Exception;
+
     List<BondBdVo> getBondBdState(Map<String, Object> param) throws Exception;
 
     BondBd getBondBdInfo(Map<String, Object> param) throws Exception;

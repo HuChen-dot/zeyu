@@ -39,6 +39,40 @@
         </trim>
     </select>
 
+    <select id="getAllBondBd" resultType="com.rewin.swhysc.bean.vo.BondBdVo"
+            parameterType="java.util.Map">
+        select
+        ID as id,
+        STOCK_CODE as stockCode,
+        STOCK_NAME as stockName,
+        RZ_RATIO as rzRatio,
+        RQ_RATIO as rqRatio,
+        IS_RZ as isRz,
+        IS_RQ as isRq,
+        BOURSE as bourse,
+        to_char(CREATE_DATE,'yyyy-MM-dd') as createDate,
+        to_char(UPDATE_DATE,'yyyy-MM-dd') as updateDate,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state,
+        to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
+        from RZRQ_BOND_BD
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{id}
+            </if>
+            <if test="stockCode != null">
+                and STOCK_CODE=#{stockCode}
+            </if>
+            <if test="stockName != null">
+                and STOCK_NAME=#{stockName}
+            </if>
+            <if test="trimDate != null">
+                and to_char(TRIM_DATE,'yyyy-mm-dd 00:00:00') = #{trimDate}
+            </if>
+            and STATE != 7
+        </trim>
+    </select>
 
     <select id="getBondBdState" resultType="com.rewin.swhysc.bean.vo.BondBdVo"
             parameterType="java.util.Map">
