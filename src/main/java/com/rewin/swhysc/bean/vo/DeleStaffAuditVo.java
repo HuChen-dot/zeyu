@@ -1,6 +1,7 @@
 package com.rewin.swhysc.bean.vo;
 
 import com.rewin.swhysc.bean.NotOpenStaff;
+import com.rewin.swhysc.framework.aspectj.lang.annotation.Excel;
 import lombok.Data;
 
 import java.util.List;
@@ -34,6 +35,10 @@ public class DeleStaffAuditVo {
     private String fileUrl;
     //文件名称
     private String fileName;
+    //证书取得日期(字符串）
+    private String certificatetimes;
+    //证书类型
+    private String certificatetype;
 
     //    批量删除人员名单
     List<BatchesRemVo> list;

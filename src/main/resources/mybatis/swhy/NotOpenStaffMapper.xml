@@ -161,7 +161,7 @@
         #{personnelType,jdbcType=TINYINT},
         #{certificatetime,jdbcType=DATE},
         #{certificatetype,jdbcType=TINYINT},
-        #{sales})
+        #{sales,jdbcType=VARCHAR})
     </insert>
 
 

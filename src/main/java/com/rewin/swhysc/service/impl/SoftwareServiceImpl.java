@@ -99,7 +99,7 @@ public class SoftwareServiceImpl implements SoftwareService {
         TabSoftwareVo TabSoftwareVo = new TabSoftwareVo();
         TabSoftwareVo.setId(software.getId());
         TabSoftwareVo.setSoftwareName(software.getSoftwareName());
-        TabSoftwareVo.setIsShow(software.getIsShow());
+        TabSoftwareVo.setChannel(software.getChannel());
         return TabSoftwareVo;
     }
 
@@ -134,12 +134,12 @@ public class SoftwareServiceImpl implements SoftwareService {
             TabSoftwareVo TabSoftwareVo = new TabSoftwareVo();
             TabSoftwareVo.setId(software.getId());
             //封装转换TAB类型名称
-            log.info("空指针：", software.getIsShow());
-            if (software.getIsShow() == 1) {
+            log.info("空指针：", software.getChannel());
+            if (software.getChannel() == 1) {
                 TabSoftwareVo.setIsShowName("电脑版");
-            } else if (software.getIsShow() == 2) {
+            } else if (software.getChannel() == 2) {
                 TabSoftwareVo.setIsShowName("其他-电脑端");
-            } else if (software.getIsShow() == 4) {
+            } else if (software.getChannel() == 4) {
                 TabSoftwareVo.setIsShowName("其他-手机端");
             }
             //封装转换软件类型名称
@@ -180,7 +180,7 @@ public class SoftwareServiceImpl implements SoftwareService {
         software.setCreateTime(DateUtils.dateTimes(new Date()));
         software.setUpdateTime(DateUtils.dateTimes(new Date()));
         software.setSort(1);
-        software.setIsShow(0);
+        software.setChannel(0);
         softwareMapper.insertSoftware(software);
 
 

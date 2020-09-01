@@ -80,7 +80,7 @@ public interface NotOpenStaffService {
      * @param operName 操作用户
      * @return 结果
      */
-    String importOpenStaff(List<NotOpenStaff> userList, String operName, MultipartFile[] file);
+    String importOpenStaff(List<NotOpenStaff> userList, String operName, MultipartFile[] file, Integer count);
 
     /**
      * 根据条件查询对象，返回布尔值，是否存在该对象

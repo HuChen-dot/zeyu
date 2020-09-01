@@ -28,5 +28,7 @@ public class UpdaNotOpenStaffVo {
     private String certificatetimes;
     //证书类型
     private String certificatetype;
+    //营业部
+    private String sales;
 
 }

@@ -123,7 +123,7 @@ public class SoftwareController {
         if (tabId == null) {
             return AjaxResult.error("请选择TAB类型后，重试！！！");
         }
-        map.put("isShow", tabId);
+        map.put("channel", tabId);
         PageInfo<TabSoftwareVo> softwareVoPageInfo = null;
         try {
             softwareVoPageInfo = SoftwareService.getSoftwareListByTabId(map, pageNum, pageSize);
@@ -159,7 +159,7 @@ public class SoftwareController {
         try {
             Software software = new Software();
             software.setId(tabDto.getId());
-            software.setIsShow(tabDto.getIsShow());
+            software.setChannel(tabDto.getChannel());
             software.setSort(tabDto.getSort());
             SoftwareService.updateSoftwareById(software);
         } catch (Exception e) {
@@ -191,7 +191,7 @@ public class SoftwareController {
         try {
             Software software = new Software();
             software.setId(id);
-            software.setIsShow(0);
+            software.setChannel(0);
             SoftwareService.updateSoftwareById(software);
         } catch (Exception e) {
             log.error("查询数据库出错", e);

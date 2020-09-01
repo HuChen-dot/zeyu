@@ -14,12 +14,12 @@
         duty as duty,
         post_type as postType,
         work_phone as workPhone,
-        dimission_time as dimissionTime,
+        to_char(dimission_time,'yyyy-MM-dd HH24:mi:ss') as dimissionTimes,
         staff_sort as staffSort,
         creator as creator,
-        create_time as createTime,
+        to_char(create_time,'yyyy-MM-dd HH24:mi:ss') as createTimes,
         updater as updater,
-        update_time as updateTime,
+        to_char(update_time,'yyyy-MM-dd HH24:mi:ss') as updateTimes,
         status as status
         from bond_investment
         <trim prefix="where" prefixOverrides="and | or">
@@ -40,12 +40,12 @@
         duty as duty,
         post_type as postType,
         work_phone as workPhone,
-        dimission_time as dimissionTime,
+        to_char(dimission_time,'yyyy-MM-dd HH24:mi:ss') as dimissionTimes,
         staff_sort as staffSort,
         creator as creator,
-        create_time as createTime,
+        to_char(create_time,'yyyy-MM-dd HH24:mi:ss') as createTimes,
         updater as updater,
-        update_time as updateTime,
+        to_char(update_time,'yyyy-MM-dd HH24:mi:ss') as updateTimes,
         status as status
         from bond_investment
         <trim prefix="where" prefixOverrides="and | or">
@@ -87,6 +87,38 @@
             </if>
             <if test="updateTime != null">
                 and update_time=#{updateTime}
+            </if>
+        </trim>
+    </select>
+
+    <!-- 根据条件分页查询首页信息列表；返回多个对象-->
+    <select id="getBondInvestmentPageListByMap" resultType="com.rewin.swhysc.bean.BondInvestment"
+            parameterType="java.util.Map">
+        select
+        id as id,
+        dept_name as deptName,
+        staff_name as staffName,
+        staff_type as staffType,
+        duty as duty,
+        post_type as postType,
+        work_phone as workPhone,
+        to_char(dimission_time,'yyyy-MM-dd HH24:mi:ss') as dimissionTimes,
+        staff_sort as staffSort,
+        creator as creator,
+        to_char(create_time,'yyyy-MM-dd HH24:mi:ss') as createTimes,
+        updater as updater,
+        to_char(update_time,'yyyy-MM-dd HH24:mi:ss') as updateTimes,
+        status as status
+        from bond_investment
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="staffName != null">
+                and staff_name like concat(concat('%',#{staffName}),'%')
+            </if>
+            <if test="status != null">
+                and status=#{status}
+            </if>
+            <if test="staffSort != null">
+                and staff_sort=#{staffSort}
             </if>
         </trim>
     </select>
@@ -147,6 +179,7 @@
             select seq_bond_investment.nextval as sysId from DUAL
         </selectKey>
         insert into bond_investment(
+        id,
         dept_Name,
         staff_name,
         staff_type,
@@ -161,18 +194,19 @@
         update_time,
         status)
         values(
+        #{id},
         #{deptName},
         #{staffName},
         #{staffType},
         #{duty},
         #{postType},
-        #{workPhone},
-        #{dimissionTime},
+        #{workPhone,jdbcType=VARCHAR},
+        #{dimissionTime,jdbcType=DATE},
         #{staffSort},
         #{creator},
-        #{createTime},
-        #{updater},
-        #{updateTime},
+        #{createTime,jdbcType=DATE},
+        #{updater,jdbcType=VARCHAR},
+        #{updateTime,jdbcType=DATE},
         #{status})
     </insert>
 
@@ -224,6 +258,18 @@
         where id = #{id}
     </update>
 
+
+    <!--  根据id 逻辑删除-->
+    <update id="deBondInvestment" parameterType="java.util.Map">
+        update bond_investment
+        <trim prefix="set" suffixOverrides=",">
+            status=#{status},
+        </trim>
+        where id in
+        <foreach collection="array" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </update>
     <!--  删除： 根据map删除对象；返回影响的行数-->
     <delete id="deleteBondInvestmentByMap" parameterType="java.util.Map">
         delete from bond_investment

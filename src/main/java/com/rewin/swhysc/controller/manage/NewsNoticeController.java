@@ -57,7 +57,6 @@ public class NewsNoticeController {
      */
     @GetMapping("list")
     public AjaxResult getnewsBylist(newsDto newsDto) {
-        System.err.println("新闻" + newsDto);
         Map<String, Object> map = new HashMap<>(4);
         if (newsDto.getNoticeTypeId() != null && newsDto.getNoticeTypeId() != 0) {
             map.put("noticeTypeId", newsDto.getNoticeTypeId());

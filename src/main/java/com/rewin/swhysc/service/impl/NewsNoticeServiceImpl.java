@@ -68,7 +68,7 @@ public class NewsNoticeServiceImpl implements NewsNoticeService {
         //初始化传输对象
         ScNewsDetailsVo ScNewsDetailsVo = new ScNewsDetailsVo();
         ScNewsDetailsVo.setNewsId(id);
-        ScNewsDetailsVo.setUpdateTime(dateFormat.format(newsNoticeById.getUpdateTime()));
+        ScNewsDetailsVo.setUpdateTime(newsNoticeById.getUpdateTime());
         String[] AccessoryName = newsAccessory.getAccessoryName().split(",");
         ScNewsDetailsVo.setAccessoryName(AccessoryName);
         String accessoryPath = newsAccessory.getAccessoryPath();
