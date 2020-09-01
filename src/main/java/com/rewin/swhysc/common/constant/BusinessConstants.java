@@ -19,4 +19,20 @@ public class BusinessConstants {
     //手机平台-安卓
     public static final Integer PLATFORM_ANDROID = 2;
 
+    //自营业务债券投资交易相关人员
+    public static final String SELF_OPERATED_NUM = "0";
+    public static final String SELF_OPERATED_CN = "自营业务债券投资交易相关人员";
+
+    //资产管理业务债券投资交易相关人员
+    public static final String ASSET_MANAGEMENT_NUM = "1";
+    public static final String ASSET_MANAGEMENT_CN = "资产管理业务债券投资交易相关人员";
+
+    //中后台核对专岗人员
+    public static final String CHECK_STAFF_NUM = "2";
+    public static final String CHECK_STAFF_CN = "中后台核对专岗人员";
+
+    //
+    public static final String WITHDRAWN_NUM = "3";
+    public static final String WITHDRAWN_CN = "离职人员公示";
+
 }

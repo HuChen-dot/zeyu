@@ -2,10 +2,12 @@ package com.rewin.swhysc.mapper.dao;
 
 import com.rewin.swhysc.bean.NotOpenStaff;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public interface NotOpenStaffMapper {
     /**
      * 根据id查询；返回单个对象
@@ -41,5 +43,10 @@ public interface NotOpenStaffMapper {
      * 删除： 根据map删除对象；返回影响的行数
      */
     Integer deleteNotOpenStaffByMap(Map<String, Object> param) throws Exception;
+
+    /**
+     * 根据条件模糊查询；返回多个对象
+     */
+    List<NotOpenStaff> getOpenAccStaffInfoList(@Param(value = "searchKey") String searchKey) throws Exception;
 
 }
