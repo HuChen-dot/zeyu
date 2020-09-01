@@ -93,8 +93,8 @@
         TRIM_DATE as trimDate
         from RZRQ_BOND_BD
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
         </trim>
     </select>
@@ -178,10 +178,14 @@
     </update>
 
     <update id="subDelApproval" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='6'  where ID in (#{ids})
+        update RZRQ_BOND_BD SET STATE='6'  where ID in (#{ids})
     </update>
 
     <update id="delByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='7'  where ID in (#{ids})
+        update RZRQ_BOND_BD SET STATE='7'  where ID in (#{ids})
+    </update>
+
+    <update id="setstateByIds" parameterType="com.rewin.swhysc.bean.BondBd">
+        update RZRQ_BOND_BD SET STATE=#{state}  where ID in (#{ids})
     </update>
 </mapper>

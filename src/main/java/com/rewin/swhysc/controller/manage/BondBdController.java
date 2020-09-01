@@ -1,6 +1,8 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
+import com.rewin.swhysc.bean.vo.RzrqAuditVo;
+import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.page.PageInfo;
 import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.BondBd;
@@ -21,10 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/swhyscmanage/bondBd")
@@ -32,6 +33,9 @@ public class BondBdController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(BondBdController.class);
     @Resource
     BondBdService bondBdService;
+
+    @Resource
+    RzrqAuditService rzrqAuditService;
 
     @Resource
     AuditRecordService auditRecordService;
@@ -91,6 +95,10 @@ public class BondBdController extends BaseController {
         bondBd.setUpdateDate(new java.util.Date());
         bondBd.setState("1");
         try {
+            List<BondBdVo> bondBdVoList = bondBdService.getBondBdState(bondBd.getStockCode(),bondBd.getStockName(),null);
+            if(!bondBdVoList.isEmpty()){
+                return AjaxResult.error("该产品已存在标的记录，请确认");
+            }
             bondBdService.insertBondBd(bondBd);
             AuditRecord auditRecord = new AuditRecord();
             auditRecord.setInfoTypeid(1);//信息类型id
@@ -98,7 +106,7 @@ public class BondBdController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
             auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
@@ -129,7 +137,7 @@ public class BondBdController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
             }else if("2".equals(bond.getState())){
@@ -143,7 +151,7 @@ public class BondBdController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(String.valueOf(bondBd.getId()));//操作id
                 auditRecord.setFormerId(String.valueOf(bond.getId()));
                 auditRecordService.AddAuditRecord(auditRecord);
@@ -198,7 +206,7 @@ public class BondBdController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(deltoapprovalids);//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
             }else{
@@ -210,7 +218,7 @@ public class BondBdController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(deltoapprovalids);//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
             }
@@ -243,7 +251,7 @@ public class BondBdController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
             auditRecord.setStaffId(ids);//操作id
             auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
@@ -290,6 +298,10 @@ public class BondBdController extends BaseController {
                     returnMsg += "第"+index+"行：【是否融资(必填)】列不能为空;";
                 }else if(map[6]==null || "".equals(map[6])){
                     returnMsg += "第"+index+"行：【是否融券(必填)】列不能为空;";
+                }else if(map[7]==null || "".equals(map[7])){
+                    returnMsg += "第"+index+"行：【交易所(必填)】列不能为空;";
+                }else if(map[8]==null || "".equals(map[8])){
+                    returnMsg += "第"+index+"行：【调整日期(必填)】列不能为空;";
                 }else {
                     BondBd bondBd = new BondBd();
                     bondBd.setStockCode(map[1]);
@@ -299,6 +311,11 @@ public class BondBdController extends BaseController {
                     bondBd.setIsRz(map[5]);
                     bondBd.setIsRq(map[6]);
                     bondBd.setBourse(map[7]);
+                    String trimDate = map[8];
+                    DateFormat format1 = new SimpleDateFormat("yyyy-MM-dd 00:00:00");
+                    Date date = null;
+                    date = format1.parse(trimDate);
+                    bondBd.setTrimDate(date);
                     bondBd.setCreateUser(loginUser.getUsername());
                     bondBd.setUpdateUser(loginUser.getUsername());
                     bondBd.setCreateDate(new java.util.Date());
@@ -322,5 +339,19 @@ public class BondBdController extends BaseController {
             return AjaxResult.error(returnMsg);
         }
         return AjaxResult.success("批量导入信息成功");
+    }
+
+
+    @GetMapping("auditlist")
+    public AjaxResult getWarrantRatioList(Integer pageNum, Integer pageSize,String infoTypeid,String startDate,
+                                          String endDate,String operationId,String flowType,String status) {
+        PageInfo<RzrqAuditVo> auditRecordPageInfo = null;
+        try {
+            auditRecordPageInfo = rzrqAuditService.getRzrqAuditList(pageNum,pageSize,"1",startDate,endDate,operationId,flowType,status);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("sql错误");
+        }
+        return AjaxResult.success("查询成功", auditRecordPageInfo);
     }
 }

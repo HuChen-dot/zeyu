@@ -112,4 +112,16 @@ public class BondBdServiceImpl implements BondBdService {
             return null;
         }
     }
+
+    @Override
+    public Integer setstateByIds(String ids,String state) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            param.put("state", state);
+            return bondBdMapper.setstateByIds(param);
+        }else{
+            return null;
+        }
+    }
 }

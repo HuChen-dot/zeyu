@@ -67,7 +67,7 @@
         </trim>
     </select>
 
-    <select id="getInterestRateInfo" resultType="com.rewin.swhysc.bean.vo.InterestRateVo">
+    <select id="showInterestRateInfo" resultType="com.rewin.swhysc.bean.vo.InterestRateVo">
         select
         a.ID AS ID,
         a.RZ_RATE AS rzRate,
@@ -94,6 +94,30 @@
         </trim>
     </select>
 
+    <select id="getInterestRateInfo" resultType="com.rewin.swhysc.bean.InterestRate">
+        select
+        ID AS ID,
+        RZ_RATE AS rzRate,
+        RQ_RATE AS rqRate,
+        RZ_LATA_CHARGE AS rzLataCharge,
+        RQ_LATA_CHARGE AS rqLataCharge,
+        RZ_QUOTA_RATE AS rzQuotaRate,
+        RQ_QUOTA_RATE AS rqQuotaRate,
+        CREATE_DATE AS createDate,
+        UPDATE_DATE AS updateDate,
+        CREATE_USER AS createUser,
+        UPDATE_USER AS updateUser,
+        STATE AS state,
+        AUDIT_ID AS auditId,
+        TRIM_DATE as trimDate
+        FROM
+        RZRQ_INTEREST_RATE
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and ID=#{id}
+            </if>
+        </trim>
+    </select>
 
     <insert id="insertInterestRate" parameterType="com.rewin.swhysc.bean.InterestRate" keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
@@ -172,5 +196,8 @@
         where ID = #{id}
     </update>
 
+    <update id="setstateByIds" parameterType="com.rewin.swhysc.bean.InterestRate">
+        update RZRQ_INTEREST_RATE SET STATE=#{state}  where ID in (#{ids})
+    </update>
 
 </mapper>

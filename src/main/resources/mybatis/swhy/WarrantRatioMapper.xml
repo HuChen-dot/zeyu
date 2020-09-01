@@ -22,6 +22,7 @@
         from RZRQ_WARRANT_RATIO where STATE in ('2','5','6')
     </select>
 
+
     <select id="getWarrantRatioVoList" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo"
             parameterType="java.util.Map">
         select
@@ -62,6 +63,31 @@
         </trim>
     </select>
 
+    <select id="showWarrantRatioInfo" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo">
+        select
+        a.ID AS ID,
+        a.CLOSE_LINE as closeLine,
+        a.CORDON as cordon,
+        a.EXTRACT_LINE as extractLine,
+        a.MIN_LINE as minLine,
+        a.CREATE_DATE AS createDate,
+        a.UPDATE_DATE AS updateDate,
+        a.CREATE_USER AS createUser,
+        a.UPDATE_USER AS updateUser,
+        a.STATE AS state,
+        a.AUDIT_ID AS auditId,
+        a.TRIM_DATE as trimDate,
+        b.AUDITOR AS auditor,
+        b.AUDIT_OPINION AS auditOpinion
+        FROM
+        RZRQ_WARRANT_RATIO a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and a.ID=#{ID}
+            </if>
+        </trim>
+    </select>
+
     <select id="getWarrantRatioInfo" resultType="com.rewin.swhysc.bean.vo.WarrantRatioVo">
         select
         ID as id,
@@ -78,10 +104,9 @@
         TRIM_DATE as trimDate
         from RZRQ_WARRANT_RATIO
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
-            and STATE != '6'
         </trim>
     </select>
 
@@ -115,7 +140,7 @@
         #{createUser},
         #{updateUser},
         #{state},
-        #{auditId,jdbcType=VARCHAR}},
+        #{auditId,jdbcType=VARCHAR},
         #{trimDate})
     </insert>
 
@@ -153,6 +178,8 @@
         where ID = #{id}
     </update>
 
-
+    <update id="setstateByIds" parameterType="com.rewin.swhysc.bean.WarrantRatio">
+        update RZRQ_WARRANT_RATIO SET STATE=#{state}  where ID in (#{ids})
+    </update>
 
 </mapper>

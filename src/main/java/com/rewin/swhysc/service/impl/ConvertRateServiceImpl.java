@@ -10,6 +10,8 @@ import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
 import com.rewin.swhysc.service.ConvertRateService;
 import com.rewin.swhysc.util.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -54,6 +56,24 @@ public class ConvertRateServiceImpl implements ConvertRateService {
     }
 
     @Override
+    public List<ConvertRateVo> getConverRateList(String stockCode,String stockName,String trimDate) throws Exception {
+        Map<String, Object> map = new HashMap<>(1);
+        if(!StringUtils.isEmpty(stockCode)){
+            map.put("stockCode", stockCode);
+        }
+        if(!StringUtils.isEmpty(stockName)){
+            map.put("stockName", stockName);
+        }
+        if(!StringUtils.isEmpty(trimDate)){
+            map.put("trimDate", trimDate+" 00:00:00");
+        }
+
+        List<ConvertRateVo> converRateList = convertRateMapper.getAllConverRate(map);
+
+        return converRateList;
+    }
+
+    @Override
     public List<ConvertRateVo> getConverRateState(String stockCode,String stockName,String trimDate) throws Exception {
         Map<String, Object> map = new HashMap<>(1);
         if(!StringUtils.isEmpty(stockCode)){
@@ -88,6 +108,13 @@ public class ConvertRateServiceImpl implements ConvertRateService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public Integer insertConvertRateList(List<ConvertRate> convertRateList) throws Exception {
+
+        return convertRateMapper.insertConvertRateList(convertRateList);
+    }
+
+    @Override
     public Integer updateConvertRate(ConvertRate convertRate) throws Exception {
         return convertRateMapper.updateConvertRate(convertRate);
     }
@@ -112,6 +139,17 @@ public class ConvertRateServiceImpl implements ConvertRateService {
         }else{
             return null;
         }
+    }
 
+    @Override
+    public Integer setstateByIds(String ids,String state) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            param.put("state", state);
+            return convertRateMapper.setstateByIds(param);
+        }else{
+            return null;
+        }
     }
 }

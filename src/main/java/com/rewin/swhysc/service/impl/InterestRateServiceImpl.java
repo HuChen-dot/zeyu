@@ -78,4 +78,16 @@ public class InterestRateServiceImpl implements InterestRateService {
     public Integer updateInterestRate(InterestRate interestRate) throws Exception {
         return interestRateMapper.updateInterestRate(interestRate);
     }
+
+    @Override
+    public Integer setstateByIds(String ids,String state) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            param.put("state", state);
+            return interestRateMapper.setstateByIds(param);
+        }else{
+            return null;
+        }
+    }
 }

@@ -95,8 +95,8 @@ public class WarrantRatioController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(warrantRatio.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
             warrantRatioService.updateWarrantRatio(warrantRatio);
@@ -126,8 +126,8 @@ public class WarrantRatioController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(warrantRatio.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
             warrantRatioService.updateWarrantRatio(warrantRatio);
@@ -159,8 +159,8 @@ public class WarrantRatioController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-                auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(warrantRatio.getId()));//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
                 warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
                 warrantRatioService.updateWarrantRatio(warrantRatio);
@@ -199,8 +199,8 @@ public class WarrantRatioController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(warrantRatio.getAuditId());//操作id
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(warrantRatio.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             warrantRatio.setAuditId(String.valueOf(auditRecord.getId()));
             warrantRatioService.updateWarrantRatio(warrantRatio);

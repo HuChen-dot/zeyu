@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * 融资融卷专栏------利率费率
+ * 融资融卷专栏------维持担保比例
  */
 @Getter
 @Setter

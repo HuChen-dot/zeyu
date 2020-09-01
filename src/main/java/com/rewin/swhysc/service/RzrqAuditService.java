@@ -1,5 +1,6 @@
 package com.rewin.swhysc.service;
 
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
 import com.rewin.swhysc.util.page.PageInfo;
 
@@ -12,5 +13,13 @@ public interface RzrqAuditService {
      */
     PageInfo<RzrqAuditVo> getRzrqAuditList(Integer pageNum, Integer pageSize, String infoTypeid, String startDate, String endDate, String operationId, String flowType, String status) throws Exception;
 
+    /**
+     * 根据id查询；返回单个对象
+     */
+    RzrqAuditVo getRzrqAuditById(Integer id) throws Exception;
 
+    /**
+     *
+     */
+    Integer examineRzrqAudit(AuditRecord auditRecord) throws Exception;
 }

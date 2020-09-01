@@ -344,4 +344,30 @@
             </choose>
         </trim>
     </select>
+
+    <!-- 根据id查询；返回单个对象 -->
+    <select id="getRzrqAuditById" resultType="com.rewin.swhysc.bean.vo.RzrqAuditVo">
+        select
+        id as id,
+        info_typeid as infoTypeid,
+        operation_id as operationId,
+        flow_type as flowType,
+        status as status,
+        submitter as submitter,
+        audit_opinion as auditOpinion,
+        auditor as auditor,
+        to_char(submit_time,'yyyy-MM-dd HH24:mi:ss') as submitTimes,
+        to_char(audit_time,'yyyy-MM-dd HH24:mi:ss') as auditTimes,
+        FORMER_ID as formerId,
+        staff_id as staffId,
+        TABLE_NAMES as tableNames,
+        FILE_URL as fileUrl,
+        FILE_NAME as fileName
+        from audit_record
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="id != null">
+                and id=#{id}
+            </if>
+        </trim>
+    </select>
 </mapper>

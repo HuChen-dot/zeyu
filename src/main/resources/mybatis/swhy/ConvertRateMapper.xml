@@ -36,6 +36,38 @@
         </trim>
     </select>
 
+    <select id="getAllConverRate" resultType="com.rewin.swhysc.bean.vo.ConvertRateVo"
+            parameterType="java.util.Map">
+        select
+        ID as id,
+        STOCK_CODE as stockCode,
+        STOCK_NAME as stockName,
+        RATE as rate,
+        BOURSE as bourse,
+        to_char(CREATE_DATE,'yyyy-MM-dd') as createDate,
+        to_char(UPDATE_DATE,'yyyy-MM-dd') as updateDate,
+        CREATE_USER as createUser,
+        UPDATE_USER as updateUser,
+        STATE as state，
+        to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
+        from RZRQ_CONVERT_RATE
+        <trim prefix="where" prefixOverrides="and | or">
+            <if test="ID != null">
+                and ID=#{ID}
+            </if>
+            <if test="stockCode != null">
+                and STOCK_CODE=#{stockCode}
+            </if>
+            <if test="stockName != null">
+                and STOCK_NAME=#{stockName}
+            </if>
+            <if test="trimDate != null">
+                and to_char(TRIM_DATE,'yyyy-mm-dd 00:00:00') = #{trimDate}
+            </if>
+            and STATE != '7'
+        </trim>
+    </select>
+
     <select id="getConverRateState" resultType="com.rewin.swhysc.bean.vo.ConvertRateVo"
             parameterType="java.util.Map">
         select
@@ -89,7 +121,6 @@
             </if>
         </trim>
     </select>
-
 
     <insert id="insertConverRate" parameterType="com.rewin.swhysc.bean.ConvertRate"  keyProperty="id">
         <selectKey keyProperty="id" order="BEFORE" resultType="Integer">
@@ -160,6 +191,10 @@
 
     <update id="delByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
         update RZRQ_CONVERT_RATE SET STATE='7'  where ID in (#{ids})
+    </update>
+
+    <update id="setstateByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
+        update RZRQ_CONVERT_RATE SET STATE=#{state}  where ID in (#{ids})
     </update>
 
 </mapper>

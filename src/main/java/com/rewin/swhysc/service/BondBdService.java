@@ -25,4 +25,6 @@ public interface BondBdService  {
     Integer subDelApproval(String ids) throws Exception;
 
     Integer delByIds(String ids) throws Exception;
+
+    Integer setstateByIds(String ids,String state) throws Exception;
 }

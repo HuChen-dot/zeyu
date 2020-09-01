@@ -23,4 +23,5 @@ public interface WarrantRatioService  {
 
     Integer updateWarrantRatio(WarrantRatio warrantRatio) throws Exception;
 
+    Integer setstateByIds(String ids,String state) throws Exception;
 }

@@ -17,8 +17,11 @@ public interface WarrantRatioMapper  {
 
     WarrantRatio getWarrantRatioInfo(Map<String, Object> param) throws Exception;
 
+    WarrantRatioVo showWarrantRatioInfo(Map<String, Object> param) throws Exception;
+
     Integer insertWarrantRatio(WarrantRatio warrantRatio) throws Exception;
 
     Integer updateWarrantRatio(WarrantRatio warrantRatio) throws Exception;
 
+    Integer setstateByIds(Map<String, Object> param) throws Exception;
 }

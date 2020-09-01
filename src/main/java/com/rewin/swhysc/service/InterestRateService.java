@@ -22,4 +22,5 @@ public interface InterestRateService{
 
     Integer updateInterestRate(InterestRate interestRate) throws Exception;
 
+    Integer setstateByIds(String ids,String state) throws Exception;
 }

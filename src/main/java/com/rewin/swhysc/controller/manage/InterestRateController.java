@@ -93,8 +93,8 @@ public class InterestRateController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(interestRate.getAuditId());//操作id
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(interestRate.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             interestRate.setAuditId(String.valueOf(auditRecord.getId()));
             interestRateService.updateInterestRate(interestRate);
@@ -124,8 +124,8 @@ public class InterestRateController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(interestRate.getAuditId());//操作id
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setStaffId(String.valueOf(interestRate.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             interestRate.setAuditId(String.valueOf(auditRecord.getId()));
             interestRateService.updateInterestRate(interestRate);
@@ -157,8 +157,8 @@ public class InterestRateController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-                auditRecord.setStaffId(interestRate.getAuditId());//操作id
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(interestRate.getId()));//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
                 interestRate.setAuditId(String.valueOf(auditRecord.getId()));
                 interestRateService.updateInterestRate(interestRate);
@@ -167,6 +167,18 @@ public class InterestRateController extends BaseController {
                 interestRate.setState("4");
                 interestRateService.updateInterestRate(interest);
                 interestRateService.insertInterestRate(interestRate);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(3);//信息类型id
+                auditRecord.setOperationId(1);//操作类型id(1:新增，2批量上传，4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setFormerId(String.valueOf(interest.getId()));//操作id
+                auditRecord.setStaffId(String.valueOf(interestRate.getId()));//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
+                interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+                interestRateService.updateInterestRate(interestRate);
             }else{
                 return AjaxResult.error("该条数据有待审核流程未结");
             }
@@ -184,24 +196,31 @@ public class InterestRateController extends BaseController {
     public AjaxResult deleteInterestRateByID(String id) {
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         InterestRate interestRate = new InterestRate();
-
         interestRate.setUpdateUser(loginUser.getUsername());
         interestRate.setUpdateDate(new java.util.Date());
         interestRate.setId(Integer.parseInt(id));
-        interestRate.setState("6");
         try {
-            interestRateService.updateInterestRate(interestRate);
-            AuditRecord auditRecord = new AuditRecord();
-            auditRecord.setInfoTypeid(3);//信息类型id
-            auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，3,删除；4批量删除，8全部删除，16修改）
-            auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
-            auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
-            auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
-            auditRecord.setStaffId(interestRate.getAuditId());//操作id
-            auditRecordService.AddAuditRecord(auditRecord);
-            interestRate.setAuditId(String.valueOf(auditRecord.getId()));
-            interestRateService.updateInterestRate(interestRate);
+            InterestRate interest = interestRateService.getInterestRateInfo(String.valueOf(interestRate.getId()));
+            if("3".equals(interest.getState())){
+                interestRate.setState("7");
+                interestRateService.updateInterestRate(interestRate);
+            }else if("2".equals(interest.getState())){
+                interestRate.setState("6");
+                interestRateService.updateInterestRate(interestRate);
+                AuditRecord auditRecord = new AuditRecord();
+                auditRecord.setInfoTypeid(3);//信息类型id
+                auditRecord.setOperationId(3);//操作类型id(1:新增，2批量上传，3,删除；4批量删除，8全部删除，16修改）
+                auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
+                auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
+                auditRecord.setSubmitter(loginUser.getUsername());//提交人
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setStaffId(String.valueOf(interestRate.getId()));//操作id
+                auditRecordService.AddAuditRecord(auditRecord);
+                interestRate.setAuditId(String.valueOf(auditRecord.getId()));
+                interestRateService.updateInterestRate(interestRate);
+            }else{
+                return AjaxResult.error("该条数据有待审核流程未结");
+            }
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");

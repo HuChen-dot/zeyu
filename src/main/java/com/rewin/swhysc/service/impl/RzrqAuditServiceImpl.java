@@ -3,9 +3,13 @@ package com.rewin.swhysc.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.rewin.swhysc.bean.AuditRecord;
+import com.rewin.swhysc.bean.ConvertRate;
+import com.rewin.swhysc.bean.InterestRate;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
 import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
-import com.rewin.swhysc.service.RzrqAuditService;
+import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
+import com.rewin.swhysc.service.*;
 import com.rewin.swhysc.util.StringUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,14 @@ import java.util.Map;
 public class RzrqAuditServiceImpl implements RzrqAuditService {
     @Resource
     private AuditRecordMapper auditRecordMapper;
+    @Resource
+    private ConvertRateService convertRateService;
+    @Resource
+    private BondBdService bondBdService;
+    @Resource
+    private InterestRateService interestRateService;
+    @Resource
+    private WarrantRatioService warrantRatioService;
 
     public PageInfo<RzrqAuditVo> getRzrqAuditList(Integer pageNum, Integer pageSize, String infoTypeid, String startDate,
                                                   String endDate, String operationId, String flowType, String status) throws Exception {
@@ -62,5 +74,91 @@ public class RzrqAuditServiceImpl implements RzrqAuditService {
         info.setTotal(objects.getTotal());
         info.setData(rzrqAuditList);
         return info;
+    }
+
+    /**
+     * 根据id查询；返回单个对象
+     */
+    public RzrqAuditVo getRzrqAuditById(Integer id) throws Exception {
+        return auditRecordMapper.getRzrqAuditById(id);
+    }
+
+
+    public Integer examineRzrqAudit(AuditRecord auditRecord) throws Exception {
+        RzrqAuditVo rzrqAuditVo = getRzrqAuditById(auditRecord.getId());
+        if(rzrqAuditVo.getInfoTypeid()==0){
+            if(rzrqAuditVo.getOperationId() == 1 || rzrqAuditVo.getOperationId() == 2){
+                if(auditRecord.getStatus() == 1){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }else if (auditRecord.getStatus() == 2){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 5){
+                if(auditRecord.getStatus() == 1){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 16){
+                if(auditRecord.getStatus() == 1){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                    convertRateService.setstateByIds(rzrqAuditVo.getFormerId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                    convertRateService.setstateByIds(rzrqAuditVo.getFormerId(),"2");
+                }
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==1){
+            if(rzrqAuditVo.getOperationId() == 1 || rzrqAuditVo.getOperationId() == 2){
+                if(auditRecord.getStatus() == 1){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }else if (auditRecord.getStatus() == 2){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 5){
+                if(auditRecord.getStatus() == 1){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 16){
+                if(auditRecord.getStatus() == 1){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                    bondBdService.setstateByIds(rzrqAuditVo.getFormerId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                    bondBdService.setstateByIds(rzrqAuditVo.getFormerId(),"2");
+                }
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==2){
+            if(rzrqAuditVo.getOperationId() == 1){
+                if(auditRecord.getStatus() == 1){
+                    interestRateService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }else if (auditRecord.getStatus() == 2){
+                    interestRateService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 3){
+                if(auditRecord.getStatus() == 1){
+                    interestRateService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    interestRateService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==3){
+            if(rzrqAuditVo.getOperationId() == 1){
+                if(auditRecord.getStatus() == 1){
+                    warrantRatioService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }else if (auditRecord.getStatus() == 2){
+                    warrantRatioService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
+                }
+            }else if(rzrqAuditVo.getOperationId() == 3){
+                if(auditRecord.getStatus() == 1){
+                    warrantRatioService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
+                }else if (auditRecord.getStatus() == 2){
+                    warrantRatioService.setstateByIds(rzrqAuditVo.getStaffId(),"2");
+                }
+            }
+        }
+        return auditRecordMapper.updateAuditRecord(auditRecord);
     }
 }

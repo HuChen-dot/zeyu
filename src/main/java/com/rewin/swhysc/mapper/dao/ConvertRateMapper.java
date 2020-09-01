@@ -10,6 +10,8 @@ public interface ConvertRateMapper {
 
     List<ConvertRateVo> getConverRateList(Map<String, Object> param) throws Exception;
 
+    List<ConvertRateVo> getAllConverRate(Map<String, Object> param) throws Exception;
+
     List<ConvertRateVo> getConverRateState(Map<String, Object> param) throws Exception;
 
     ConvertRate getConverRateInfo(Map<String, Object> param) throws Exception;
@@ -21,4 +23,6 @@ public interface ConvertRateMapper {
     Integer subDelApproval(Map<String, Object> param) throws Exception;
 
     Integer delByIds(Map<String, Object> param) throws Exception;
+
+    Integer setstateByIds(Map<String, Object> param) throws Exception;
 }

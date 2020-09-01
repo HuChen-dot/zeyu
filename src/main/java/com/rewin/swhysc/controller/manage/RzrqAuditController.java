@@ -1,12 +1,13 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.rewin.swhysc.bean.AuditRecord;
-import com.rewin.swhysc.bean.WarrantRatio;
-import com.rewin.swhysc.bean.vo.AuditRecordVo;
+import com.rewin.swhysc.bean.dto.RzrqAuditDto;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
-import com.rewin.swhysc.service.AuditRecordService;
+import com.rewin.swhysc.common.utils.bean.BeanUtils;
+import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.AjaxResult;
+import com.rewin.swhysc.util.ServletUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,13 +47,53 @@ public class RzrqAuditController extends BaseController {
      */
     @GetMapping("info/{id}")
     public AjaxResult getWarrantRatio(@PathVariable Integer id) {
-        WarrantRatio warrantRatio = null;
+        RzrqAuditVo rzrqAuditVo = null;
         try {
-
+            rzrqAuditVo = rzrqAuditService.getRzrqAuditById(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("查询成功", warrantRatio);
+        return AjaxResult.success("查询成功", rzrqAuditVo);
+    }
+
+    /**
+     *
+     */
+    @PutMapping("adopt")
+    public AjaxResult adoptAudit(RzrqAuditDto rzrqAuditDto) {
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
+        AuditRecord auditRecord = new AuditRecord();
+        BeanUtils.copyProperties(rzrqAuditDto, auditRecord);
+        auditRecord.setAuditor(loginUser.getUsername());
+        auditRecord.setAuditTime(new java.util.Date());
+        auditRecord.setStatus(1);
+        auditRecord.setFlowType(2);
+        try {
+            rzrqAuditService.examineRzrqAudit(auditRecord);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("sql错误");
+        }
+        return AjaxResult.success("下架成功");
+    }
+
+    @PutMapping("object")
+    public AjaxResult objectAudit(RzrqAuditDto rzrqAuditDto) {
+        LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
+        AuditRecord auditRecord = new AuditRecord();
+        BeanUtils.copyProperties(rzrqAuditDto, auditRecord);
+        auditRecord.setAuditor(loginUser.getUsername());
+        auditRecord.setAuditTime(new java.util.Date());
+        auditRecord.setStatus(2);
+        auditRecord.setFlowType(2);
+        try {
+
+            rzrqAuditService.examineRzrqAudit(auditRecord);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("sql错误");
+        }
+        return AjaxResult.success("下架成功");
     }
 }

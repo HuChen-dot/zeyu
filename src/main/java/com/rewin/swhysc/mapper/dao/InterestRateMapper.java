@@ -17,8 +17,11 @@ public interface InterestRateMapper{
 
     InterestRate getInterestRateInfo(Map<String, Object> param) throws Exception;
 
+    InterestRateVo showInterestRateInfo(Map<String, Object> param) throws Exception;
+
     Integer insertInterestRate(InterestRate interestRate) throws Exception;
 
     Integer updateInterestRate(InterestRate interestRate) throws Exception;
 
+    Integer setstateByIds(Map<String, Object> param) throws Exception;
 }

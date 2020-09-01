@@ -57,4 +57,8 @@ public interface AuditRecordMapper {
      */
     List<RzrqAuditVo> getRzrqAuditList(Map<String, Object> param) throws Exception;
 
+    /**
+     * 根据id查询；返回单个对象
+     */
+    RzrqAuditVo getRzrqAuditById(@Param(value = "id") Integer id) throws Exception;
 }

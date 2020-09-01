@@ -1,6 +1,8 @@
 package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
+import com.rewin.swhysc.bean.vo.RzrqAuditVo;
+import com.rewin.swhysc.service.RzrqAuditService;
 import com.rewin.swhysc.util.page.PageInfo;
 
 import com.rewin.swhysc.bean.AuditRecord;
@@ -21,10 +23,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/swhyscmanage/convertRate")
@@ -32,6 +33,9 @@ public class ConvertRateController extends BaseController {
     private static final Logger log = LoggerFactory.getLogger(ConvertRateController.class);
     @Resource
     ConvertRateService convertRateService;
+
+    @Resource
+    RzrqAuditService rzrqAuditService;
 
     @Resource
     AuditRecordService auditRecordService;
@@ -80,8 +84,8 @@ public class ConvertRateController extends BaseController {
      *
      */
     @PostMapping("fileImport")
-    public AjaxResult fileImport(MultipartFile[] file) {
-        AjaxResult result =  this.impExcel(file[0]);
+    public AjaxResult fileImport(MultipartFile[] file,Date trimDate) {
+        AjaxResult result =  this.impExcel(file[0],trimDate);
         return result;
     }
 
@@ -100,6 +104,10 @@ public class ConvertRateController extends BaseController {
         convertRate.setUpdateDate(new java.util.Date());
         convertRate.setState("1");
         try {
+            List<ConvertRateVo> converRateList = convertRateService.getConverRateList(convertRate.getStockCode(),convertRate.getStockName(),null);
+            if(!converRateList.isEmpty()){
+                return AjaxResult.error("该产品已存在折算率记录，请确认");
+            }
             convertRateService.insertConvertRate(convertRate);
             AuditRecord auditRecord = new AuditRecord();
             auditRecord.setInfoTypeid(0);//信息类型id
@@ -107,7 +115,7 @@ public class ConvertRateController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
             auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
             auditRecordService.AddAuditRecord(auditRecord);
         } catch (Exception e) {
@@ -138,7 +146,7 @@ public class ConvertRateController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
             }else if("2".equals(convert.getState())){
@@ -152,7 +160,7 @@ public class ConvertRateController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(String.valueOf(convertRate.getId()));//操作id
                 auditRecord.setFormerId(String.valueOf(convert.getId()));
                 auditRecordService.AddAuditRecord(auditRecord);
@@ -206,7 +214,7 @@ public class ConvertRateController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(deltoapprovalids);//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
                 //id(,分隔)
@@ -218,7 +226,7 @@ public class ConvertRateController extends BaseController {
                 auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
                 auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
                 auditRecord.setSubmitter(loginUser.getUsername());//提交人
-                //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+                auditRecord.setSubmitTime(new java.util.Date());//提交时间
                 auditRecord.setStaffId(deltoapprovalids);//操作id
                 auditRecordService.AddAuditRecord(auditRecord);
                 //id(,分隔)
@@ -251,7 +259,7 @@ public class ConvertRateController extends BaseController {
             auditRecord.setFlowType(1);//流程类型（1：代办流程， 2已办流程）
             auditRecord.setStatus(0);//审核状态（0待审核；1：通过，2：驳回，）
             auditRecord.setSubmitter(loginUser.getUsername());//提交人
-            //auditRecord.setSubmitTime(new java.util.Date());//提交时间
+            auditRecord.setSubmitTime(new java.util.Date());//提交时间
             auditRecord.setStaffId(ids);//操作id
             auditRecordService.AddAuditRecord(auditRecord);
             //id(,分隔)
@@ -263,36 +271,49 @@ public class ConvertRateController extends BaseController {
     }
 
 
-    public AjaxResult impExcel(MultipartFile file){
+    public AjaxResult impExcel(MultipartFile file,Date trimDate){
         LoginUser loginUser = TokenService.getLoginUser(ServletUtils.getRequest());
         ExcelReader er = new ExcelReader();
         int count =0;
         int error =0;
         int success = 0;
-
         List<ConvertRate> list_ConverRate = new ArrayList<ConvertRate>();
         String returnMsg = "";
         int index = 1;
         try {
             List<String[]> list = er.readExcel(file); //读取Excel数据内容
-            count = list.size();
-
+            List<ConvertRateVo> convertRateVoList = convertRateService.getConverRateList(null,null,null);
+            Map<String,String> converMap = new HashMap<String,String>();
+            if(convertRateVoList.size()>0){
+                for(int j=0;j<convertRateVoList.size();j++){
+                    converMap.put(convertRateVoList.get(j).getStockCode(),convertRateVoList.get(j).getStockName());
+                }
+            }
             for(int i=0;i<list.size();i++){
                 String[] map = list.get(i);
                 if(map[1]==null || "".equals(map[1])){
-                    returnMsg += "第"+index+"行：【证券代码(必填)】列不能为空;";
+                    log.info("第"+index+"行：【证券代码(必填)】列不能为空;");
+                    return AjaxResult.error("第"+index+"行：【证券代码(必填)】列不能为空;");
                 } else if(map[2]==null || "".equals(map[2])){
-                    returnMsg += "第"+index+"行：【证券名称(必填)】列不能为空;";
+                    log.info("第"+index+"行：【证券名称(必填)】列不能为空;");
+                    return AjaxResult.error("第"+index+"行：【证券名称(必填)】列不能为空;");
                 } else if(map[3]==null || "".equals(map[3])){
-                    returnMsg += "第"+index+"行：【折算率(必填)】列不能为空;";
+                    log.info("第"+index+"行：【折算率(必填)】列不能为空;");
+                    return AjaxResult.error("第"+index+"行：【折算率(必填)】列不能为空;");
                 } else if(map[4]==null || "".equals(map[4])){
-                    returnMsg += "第"+index+"行：【交易所编号(必填)】列不能为空;";
+                    log.info("第"+index+"行：【交易所(必填)】列不能为空;");
+                    return AjaxResult.error("第"+index+"行：【交易所(必填)】列不能为空;");
                 }else {
+                    if(converMap.containsKey(map[1])){
+                        log.info("已存在证券代码为"+map[1]+"的数据，请确认后重新上传");
+                        return AjaxResult.error("已存在证券代码为"+map[1]+"的数据，请确认后重新上传");
+                    }
                     ConvertRate convertRate = new ConvertRate();
                     convertRate.setStockCode(map[1]);
                     convertRate.setStockName(map[2]);
                     convertRate.setRate(map[3]);
                     convertRate.setBourse(map[4]);
+                    convertRate.setTrimDate(trimDate);
                     convertRate.setCreateUser(loginUser.getUsername());
                     convertRate.setUpdateUser(loginUser.getUsername());
                     convertRate.setCreateDate(new java.util.Date());
@@ -302,20 +323,29 @@ public class ConvertRateController extends BaseController {
                     index++;
                 }
             }
-            for (int j=0;j<list_ConverRate.size();j++){
-                try {
-                    convertRateService.insertConvertRate(list_ConverRate.get(j));
-                    log.info("插入第"+j+"条数据成功："+list_ConverRate.get(j).toString());
-                } catch (Exception e) {
-                    log.error("查询数据库出错", e);
-                    return AjaxResult.error("插入第"+j+"条数据失败："+list_ConverRate.get(j).toString());
-                }
+            try {
+                convertRateService.insertConvertRateList(list_ConverRate);
+            } catch (Exception e) {
+                log.error("查询数据库出错", e);
+                return AjaxResult.error("插入数据失败");
             }
-
         } catch (Exception e) {
             log.error("批量导入信息异常", e.getMessage());
             return AjaxResult.error(returnMsg);
         }
         return AjaxResult.success("批量导入信息成功");
+    }
+
+    @GetMapping("auditlist")
+    public AjaxResult getWarrantRatioList(Integer pageNum, Integer pageSize,String infoTypeid,String startDate,
+                                          String endDate,String operationId,String flowType,String status) {
+        PageInfo<RzrqAuditVo> auditRecordPageInfo = null;
+        try {
+            auditRecordPageInfo = rzrqAuditService.getRzrqAuditList(pageNum,pageSize,"0",startDate,endDate,operationId,flowType,status);
+        } catch (Exception e) {
+            log.error("查询数据库出错", e);
+            return AjaxResult.error("sql错误");
+        }
+        return AjaxResult.success("查询成功", auditRecordPageInfo);
     }
 }

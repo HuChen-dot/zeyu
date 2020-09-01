@@ -77,4 +77,16 @@ public class WarrantRatioServiceImpl implements WarrantRatioService {
     public Integer updateWarrantRatio(WarrantRatio interestRate) throws Exception {
         return warrantRatioMapper.updateWarrantRatio(interestRate);
     }
+
+    @Override
+    public Integer setstateByIds(String ids,String state) throws Exception {
+        if(!StringUtils.isEmpty(ids)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("ids", ids);
+            param.put("state", state);
+            return warrantRatioMapper.setstateByIds(param);
+        }else{
+            return null;
+        }
+    }
 }

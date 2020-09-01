@@ -24,4 +24,6 @@ public interface BondBdMapper  {
     Integer subDelApproval(Map<String, Object> param) throws Exception;
 
     Integer delByIds(Map<String, Object> param) throws Exception;
+
+    Integer setstateByIds(Map<String, Object> param) throws Exception;
 }
