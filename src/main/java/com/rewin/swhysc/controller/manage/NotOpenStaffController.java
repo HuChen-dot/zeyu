@@ -2,22 +2,17 @@ package com.rewin.swhysc.controller.manage;
 
 
 import com.rewin.swhysc.bean.NotOpenStaff;
-import com.rewin.swhysc.bean.SysUser;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
-import com.rewin.swhysc.bean.vo.FileName;
-import com.rewin.swhysc.bean.vo.NotOpenStaffVo;
-import com.rewin.swhysc.bean.vo.SoftwareVo;
-import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
-import com.rewin.swhysc.common.exception.file.InvalidExtensionException;
+import com.rewin.swhysc.bean.pojo.NOSTemplate;
+import com.rewin.swhysc.bean.pojo.NOSZTemplate;
+import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.common.utils.poi.ExcelUtil;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.security.service.TokenService;
 import com.rewin.swhysc.service.NotOpenStaffService;
-import com.rewin.swhysc.service.SoftwareService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
-import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +109,6 @@ public class NotOpenStaffController {
      */
     @PostMapping
     public AjaxResult addNotOpenStaff(@RequestBody AddOpenStaffDto AddOpenStaffDto) {
-        System.err.println("添加jia：" + AddOpenStaffDto);
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         NotOpenStaff notOpenStaff = new NotOpenStaff();
         BeanUtils.copyProperties(AddOpenStaffDto, notOpenStaff);
@@ -138,7 +132,6 @@ public class NotOpenStaffController {
      */
     @PutMapping
     public AjaxResult updataNotOpenStaff(@RequestBody AddOpenStaffDto AddOpenStaffDto) {
-        System.err.println("修改：" + AddOpenStaffDto);
         try {
             NotOpenStaffService.ModifyNotOpenStaff(AddOpenStaffDto);
         } catch (Exception e) {
@@ -150,11 +143,10 @@ public class NotOpenStaffController {
 
 
     /**
-     * 删除操作
+     * 删除操作(批量删除和全量删除
      */
     @DeleteMapping("/{id}/{type}")
     public AjaxResult deleteNotOpenStaff(@PathVariable String id, @PathVariable Integer type) {
-        System.err.println("type:" + type);
         int i = id.indexOf("-2");
         Map<String, Object> map = new ConcurrentHashMap<>(6);
         String[] split = null;
@@ -181,10 +173,15 @@ public class NotOpenStaffController {
      *
      * @return
      */
-    @GetMapping("/importTemplate")
-    public AjaxResult importTemplate() {
-        ExcelUtil<NotOpenStaff> util = new ExcelUtil<NotOpenStaff>(NotOpenStaff.class);
-        return util.importTemplateExcel("员工数据模板");
+    @GetMapping("/importTemplate/{count}")
+    public AjaxResult importTemplate(@PathVariable Integer count) {
+        if (count == 113) {
+            ExcelUtil<NOSTemplate> util = new ExcelUtil<NOSTemplate>(NOSTemplate.class);
+            return util.importTemplateExcel("非现场开户人员数据模板");
+        } else {
+            ExcelUtil<NOSZTemplate> util = new ExcelUtil<NOSZTemplate>(NOSZTemplate.class);
+            return util.importTemplateExcel("债券投资相关人员数据模板");
+        }
     }
 
     /**
@@ -203,16 +200,17 @@ public class NotOpenStaffController {
 
 
     /**
+     * 非现场开户人员
      * 获取批量上传的文件并转换成list集合
      */
     @PostMapping("/importData")
-    public AjaxResult importData(MultipartFile[] file) throws Exception {
+    public AjaxResult importData(MultipartFile[] file, Integer count) throws Exception {
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-        ExcelUtil<NotOpenStaff> util = new ExcelUtil<NotOpenStaff>(NotOpenStaff.class);
-        List<NotOpenStaff> list = util.importExcel(file[0].getInputStream());
+        ExcelUtil<NOSTemplate> util = new ExcelUtil<NOSTemplate>(NOSTemplate.class);
+        List<NOSTemplate> list = util.importExcel(file[0].getInputStream());
         //创建空集合转换填充基础信息
         List<NotOpenStaff> OpenStaffList = new ArrayList<>();
-        for (NotOpenStaff notOpenStaff : list) {
+        for (NOSTemplate notOpenStaff : list) {
             NotOpenStaff OpenStaff = new NotOpenStaff();
             BeanUtils.copyProperties(notOpenStaff, OpenStaff);
             OpenStaff.setStatus(1);
@@ -221,8 +219,31 @@ public class NotOpenStaffController {
             OpenStaff.setCreateTime(new Date());
             OpenStaffList.add(OpenStaff);
         }
-        String message = NotOpenStaffService.importOpenStaff(OpenStaffList, loginUser.getUsername(), file);
+        String message = NotOpenStaffService.importOpenStaff(OpenStaffList, loginUser.getUsername(), file, 113);
         return AjaxResult.success(message);
     }
 
+    /**
+     * 债券投资相关人员信息管理
+     * 获取批量上传的文件并转换成list集合
+     */
+    @PostMapping("/importDatas")
+    public AjaxResult importDatas(MultipartFile[] file) throws Exception {
+        LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+        ExcelUtil<NOSZTemplate> util = new ExcelUtil<NOSZTemplate>(NOSZTemplate.class);
+        List<NOSZTemplate> list = util.importExcel(file[0].getInputStream());
+        //创建空集合转换填充基础信息
+        List<NotOpenStaff> OpenStaffList = new ArrayList<>();
+        for (NOSZTemplate notOpenStaff : list) {
+            NotOpenStaff OpenStaff = new NotOpenStaff();
+            BeanUtils.copyProperties(notOpenStaff, OpenStaff);
+            OpenStaff.setStatus(1);
+            OpenStaff.setStaffType(115);
+            OpenStaff.setCreator(loginUser.getUsername());
+            OpenStaff.setCreateTime(new Date());
+            OpenStaffList.add(OpenStaff);
+        }
+        String message = NotOpenStaffService.importOpenStaff(OpenStaffList, loginUser.getUsername(), file, 115);
+        return AjaxResult.success(message);
+    }
 }

@@ -12,7 +12,7 @@ public class TabSoftwareVo {
     //主键
     private Integer id;
     //软件是否显示及所属显示分类(0 不显示，1电脑版，2其他-电脑端，3其他-手机端)
-    private Integer isShow;
+    private Integer channel;
     //软件类型名称
     private String softwareTypeName;
     //软件名称

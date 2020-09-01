@@ -1,9 +1,7 @@
 package com.rewin.swhysc.bean.vo;
 
-import com.rewin.swhysc.framework.aspectj.lang.annotation.Excel;
 import lombok.Data;
 
-import java.util.Date;
 
 /**
  * 非现场开户人员和私募资产管理列表

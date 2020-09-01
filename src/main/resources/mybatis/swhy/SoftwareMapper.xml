@@ -11,7 +11,7 @@
         software_type as softwareType,
         software_name as softwareName,
         software_img as softwareImg,
-        is_show as isShow,
+        channel as channel,
         sort as sort,
         skip_url as skipUrl,
         status as status,
@@ -38,7 +38,7 @@
         software_type as softwareType,
         software_name as softwareName,
         software_img as softwareImg,
-        is_show as isShow,
+        channel as channel,
         describe as describe,
         sort as sort,
         skip_url as skipUrl,
@@ -60,8 +60,8 @@
             <if test="softwareName != null">
                 and software_name like concat(concat('%', #{softwareName}),'%')
             </if>
-            <if test="isShow != null">
-                and is_show=#{isShow}
+            <if test="channel != null">
+                and channel=#{channel}
             </if>
             <if test="softwareImg != null">
                 and software_img=#{softwareImg}
@@ -135,7 +135,7 @@
         software_type,
         software_name,
         software_img,
-        is_show,
+        channel,
         describe,
         sort,
         skip_url,
@@ -151,7 +151,7 @@
         #{softwareType},
         #{softwareName},
         #{softwareImg},
-        #{isShow},
+        #{channel},
         #{describe},
         #{sort},
         #{skipUrl},
@@ -178,8 +178,8 @@
             <if test="softwareImg != null">
                 software_img=#{softwareImg},
             </if>
-            <if test="isShow != null">
-                is_show=#{isShow},
+            <if test="channel != null">
+                channel=#{channel},
             </if>
 
             <if test="describe != null">
@@ -232,8 +232,8 @@
             <if test="softwareImg != null">
                 and software_img=#{softwareImg}
             </if>
-            <if test="isShow != null">
-                and is_show=#{isShow}
+            <if test="channel != null">
+                and channel=#{channel}
             </if>
             <if test="status != null">
                 and status=#{status}
@@ -267,11 +267,11 @@
         from software s ,IOSAONROID i
         <where>
             s. ID = i.SOFTWARE_ID
-            AND s.status =  '2'
+            AND s.status = '2'
             <if test="type != null and type != ''">
                 and s.SOFTWARE_TYPE=#{type}
             </if>
         </where>
-        order  by s.sort
+        order by s.sort
     </select>
 </mapper>

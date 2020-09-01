@@ -1,4 +1,4 @@
-package com.rewin.swhysc.bean.vo;
+package com.rewin.swhysc.bean.pojo;
 
 import com.rewin.swhysc.framework.aspectj.lang.annotation.Excel;
 import lombok.Data;
@@ -9,6 +9,9 @@ import lombok.Data;
  */
 @Data
 public class NOSTemplate {
+    //营业部
+    @Excel(name = "营业部", type = Excel.Type.ALL)
+    private String sales;
     //部门名称
     @Excel(name = "部门名称", type = Excel.Type.ALL)
     private String deptName;
@@ -24,11 +27,6 @@ public class NOSTemplate {
     //人员类型
     @Excel(name = "非现场开户人员类别", type = Excel.Type.ALL)
     private String personnelType;
-    //创建者
-    @Excel(name = "创建人", type = Excel.Type.ALL)
-    private String creator;
-    //营业部
-    @Excel(name = "营业部", type = Excel.Type.ALL)
-    private String sales;
+
 
 }

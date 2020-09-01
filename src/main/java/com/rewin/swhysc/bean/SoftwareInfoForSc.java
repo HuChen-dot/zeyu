@@ -39,7 +39,7 @@ public class SoftwareInfoForSc implements Serializable {
 
     private String qrCode;
 
-    private Integer isShow;
+    private Integer channel;
 
     private Integer platformType;
 

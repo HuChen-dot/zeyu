@@ -114,21 +114,22 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
     public Integer ModifyNotOpenStaff(AddOpenStaffDto addOpenStaffDto) throws Exception {
         //获取当前用户
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
-
-        //先根据id查询原始人员数据信息
-        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
         //把原数据的状态修改成《已发布不可操作》
         NotOpenStaff penStaff = new NotOpenStaff();
         penStaff.setStatus(32);
         penStaff.setId(addOpenStaffDto.getId());
         notOpenStaffMapper.updateNotOpenStaff(penStaff);
-        //向主表插入新的数据
+        //先根据id查询原始人员数据信息
+        NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(addOpenStaffDto.getId());
+
         //初始化空集合
         NotOpenStaff OpenStaff = new NotOpenStaff();
         //先把原始人员信息复制到空集合中
         BeanUtils.copyProperties(notOpenStaff, OpenStaff);
         // 在使用修改的值替换掉复制好的空集合中的值
-
+        if (notOpenStaff.getCertificatetimes() != null) {
+            OpenStaff.setCertificatetime(DateUtils.dateTime(notOpenStaff.getCertificatetimes()));
+        }
         OpenStaff.setStaffName(addOpenStaffDto.getStaffName());
         OpenStaff.setCertificateNo(addOpenStaffDto.getCertificateNo());
         OpenStaff.setStatus(1);
@@ -137,7 +138,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         OpenStaff.setPersonnelType(addOpenStaffDto.getPersonnelType());
         OpenStaff.setUpdater(loginUser.getUsername());
         OpenStaff.setUpdateTime(new Date());
-        OpenStaff.setCreateTime(DateUtils.parseDate(addOpenStaffDto.getCertificatetimes()));
+//        OpenStaff.setCreateTime(DateUtils.parseDate(addOpenStaffDto.getCertificatetimes()));
         OpenStaff.setCertificatetype(addOpenStaffDto.getCertificatetype());
         OpenStaff.setId(null);
         notOpenStaffMapper.insertNotOpenStaff(OpenStaff);
@@ -149,7 +150,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         AuditRecord.setFormerId(addOpenStaffDto.getId().toString());
         //封装新添加数据的id
         AuditRecord.setStaffId(OpenStaff.getId().toString());
-        AuditRecord.setInfoTypeid(113);
+        AuditRecord.setInfoTypeid(OpenStaff.getStaffType());
         AuditRecord.setOperationId(16);
         AuditRecord.setFlowType(1);
         AuditRecord.setStatus(0);
@@ -243,13 +244,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
     public DeleStaffAuditVo uploadingAudit(AuditRecord auditRecord) throws Exception {
         List<BatchesRemVo> list = new ArrayList<>();
         String[] split = auditRecord.getStaffId().split(",");
-        for (String s : split) {
-            BatchesRemVo BatchesRemVo = new BatchesRemVo();
-            NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(s));
-            BatchesRemVo.setStaffName(notOpenStaff.getStaffName());
-            BatchesRemVo.setDeptName(notOpenStaff.getDeptName());
-            list.add(BatchesRemVo);
-        }
+
         //获取非现场人员信息
         NotOpenStaff notOpenStaff = notOpenStaffMapper.getNotOpenStaffById(Integer.parseInt(split[0]));
         //初始化空集合
@@ -279,6 +274,11 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
 
     /**
      * 逻辑删除：全量删除或批量删除
+     *
+     * @param param 要删除的人员id集合
+     * @param i     表示当前批量删除还是全量删除，-1就是批量删除，否则就是全量删除
+     * @param type  信息类型的id
+     * @param id    要删除的人员的id字符串
      */
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     public Integer deNotOpenStaff(Map<String, Object> param, String id, int i, Integer type) throws Exception {
@@ -286,7 +286,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
         //封装参数，向中间表插入数据
         AuditRecord AuditRecord = new AuditRecord();
         AuditRecord.setStaffId(" ");
-//        if()
+
         AuditRecord.setInfoTypeid(type);
 
         AuditRecord.setTableNames("not_open_staff");
@@ -346,7 +346,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public String importOpenStaff(List<NotOpenStaff> list, String operName, MultipartFile[] file) {
+    public String importOpenStaff(List<NotOpenStaff> list, String operName, MultipartFile[] file, Integer coun) {
         if (StringUtils.isNull(list) || list.size() == 0) {
             throw new CustomException("导入员工数据不能为空！");
         }
@@ -404,7 +404,7 @@ public class NotOpenStaffServiceImpl implements NotOpenStaffService {
             AuditRecord.setFileName(fileName.getFileName());
             AuditRecord.setFileUrl(fileName.getRandomName());
             AuditRecord.setStaffId(builder.toString());
-            AuditRecord.setInfoTypeid(113);
+            AuditRecord.setInfoTypeid(coun);
             AuditRecord.setOperationId(2);
             AuditRecord.setFlowType(1);
             AuditRecord.setStatus(0);
