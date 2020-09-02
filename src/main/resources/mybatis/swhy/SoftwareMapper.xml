@@ -268,8 +268,14 @@
         <where>
             s. ID = i.SOFTWARE_ID
             AND s.status = '2'
-            <if test="type != null and type != ''">
+            <if test="type != null">
                 and s.SOFTWARE_TYPE=#{type}
+            </if>
+            <if test="type == 111">
+                and s.CHANNEL= 1
+            </if>
+            <if test="type == null">
+                and s.CHANNEL in (2,4)
             </if>
         </where>
         order by s.sort

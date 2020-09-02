@@ -109,7 +109,10 @@
                 and notice_title like concat(concat('%',#{noticeTitle}),'%')
             </if>
             <if test="noticeTypeId != null">
-                and notice_type_id=#{noticeTypeId}
+                and notice_type_id=11 or notice_type_id=12 or notice_type_id=13
+            </if>
+            <if test="noticeTypeId == null">
+                and notice_type_id=214 or notice_type_id=215
             </if>
             <if test="status != null and status=='0'">
                 and status!=16

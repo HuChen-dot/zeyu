@@ -34,7 +34,6 @@ public class CaptchaController {
     public AjaxResult getCode(HttpServletResponse response) throws IOException {
         // 生成随机字串
         String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
-        System.out.println(verifyCode);
         // 唯一标识
         String uuid = IdUtils.simpleUUID();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;

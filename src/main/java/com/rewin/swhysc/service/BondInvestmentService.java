@@ -1,10 +1,12 @@
 package com.rewin.swhysc.service;
 
+import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.BondInvestment;
+import com.rewin.swhysc.bean.NotOpenStaff;
 import com.rewin.swhysc.bean.dto.UpdataBondInvestmentDto;
-import com.rewin.swhysc.bean.vo.BondInvestmentVo;
-import com.rewin.swhysc.bean.vo.UpdataBondInvestmentVo;
+import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.util.page.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -52,7 +54,32 @@ public interface BondInvestmentService {
     Integer DeleteBondInvestment(Map<String, Object> param, String id, int i, Integer type) throws Exception;
 
     /**
+     * 导入员工数据
+     *
+     * @param userList 用户数据列表
+     * @param operName 操作用户
+     * @return 结果
+     */
+    String importOpenStaff(List<BondInvestment> userList, String operName, MultipartFile[] file);
+
+    /**
      * 根据条件分页查询；返回分页查询后的多个对象
      */
     PageInfo<BondInvestmentVo> queryBondInvestmentPageByMap(Map<String, Object> param, Integer pageNo, Integer pageSize) throws Exception;
+
+
+    /**
+     * 根据审核表id查询，《批量上传》审核信息的详细信息
+     */
+    BInvestMentVo uploadingAudit(AuditRecord auditRecord) throws Exception;
+
+    /**
+     * 根据审核表id查询，《增加或修改》审核信息的详细信息
+     */
+    BInvestMentVo audit(AuditRecord auditRecord) throws Exception;
+
+    /**
+     * 根据审核表id查询，《批量删除或全量删除》审核信息的详细信息
+     */
+    BInvestMentVo deteAudit(AuditRecord auditRecord) throws Exception;
 }

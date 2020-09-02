@@ -58,7 +58,10 @@ public class NewsNoticeController {
     @GetMapping("list")
     public AjaxResult getnewsBylist(newsDto newsDto) {
         Map<String, Object> map = new HashMap<>(4);
-        if (newsDto.getNoticeTypeId() != null && newsDto.getNoticeTypeId() != 0) {
+        if (newsDto.getNoticeTypeId() == null) {
+            return AjaxResult.error("请选择信息类型");
+        }
+        if (newsDto.getNoticeTypeId() == 0) {
             map.put("noticeTypeId", newsDto.getNoticeTypeId());
         }
         if (newsDto.getStatus() != null) {

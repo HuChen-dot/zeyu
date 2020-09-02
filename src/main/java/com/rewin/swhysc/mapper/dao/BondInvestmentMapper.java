@@ -1,12 +1,16 @@
 package com.rewin.swhysc.mapper.dao;
 
 import com.rewin.swhysc.bean.BondInvestment;
+import com.rewin.swhysc.util.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 
 import java.util.List;
 import java.util.Map;
 
-public interface BondInvestmentMapper {
+@Repository
+public interface BondInvestmentMapper extends BaseMapper<BondInvestment> {
     /**
      * 根据id查询；返回单个对象
      */

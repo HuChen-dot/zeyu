@@ -87,7 +87,7 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
      */
     public static final String dateTime() {
         Date now = new Date();
-        return DateFormatUtils.format(now, "yyyyMMdd");
+        return DateFormatUtils.format(now, "YYYY_MM_DD_HH_MM_SS");
     }
 
     /**

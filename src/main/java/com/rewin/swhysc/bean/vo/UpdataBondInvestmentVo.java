@@ -25,4 +25,6 @@ public class UpdataBondInvestmentVo {
     private String staffSort;
     //信息类型
     private Integer staffType;
+    //离职日期(字符型）
+    private String dimissionTimes;
 }
