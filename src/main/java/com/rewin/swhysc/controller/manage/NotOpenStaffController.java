@@ -224,7 +224,7 @@ public class NotOpenStaffController {
     }
 
     /**
-     * 债券投资相关人员信息管理
+     * 私募资产管理信息管理
      * 获取批量上传的文件并转换成list集合
      */
     @PostMapping("/importDatas")

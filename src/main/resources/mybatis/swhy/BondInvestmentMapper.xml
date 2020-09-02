@@ -14,7 +14,7 @@
         duty as duty,
         post_type as postType,
         work_phone as workPhone,
-        to_char(dimission_time,'yyyy-MM-dd HH24:mi:ss') as dimissionTimes,
+        to_char(dimission_time,'yyyy-MM-dd') as dimissionTimes,
         staff_sort as staffSort,
         creator as creator,
         to_char(create_time,'yyyy-MM-dd HH24:mi:ss') as createTimes,
@@ -27,6 +27,7 @@
                 and id=#{id}
             </if>
         </trim>
+        order by id desc
     </select>
 
     <!-- 根据条件查询；返回多个对象-->
@@ -40,7 +41,7 @@
         duty as duty,
         post_type as postType,
         work_phone as workPhone,
-        to_char(dimission_time,'yyyy-MM-dd HH24:mi:ss') as dimissionTimes,
+        to_char(dimission_time,'yyyy-MM-dd') as dimissionTimes,
         staff_sort as staffSort,
         creator as creator,
         to_char(create_time,'yyyy-MM-dd HH24:mi:ss') as createTimes,
@@ -89,6 +90,7 @@
                 and update_time=#{updateTime}
             </if>
         </trim>
+        order by id desc
     </select>
 
     <!-- 根据条件分页查询首页信息列表；返回多个对象-->
@@ -121,6 +123,7 @@
                 and staff_sort=#{staffSort}
             </if>
         </trim>
+        order by id desc
     </select>
 
 
@@ -198,15 +201,15 @@
         #{deptName},
         #{staffName},
         #{staffType},
-        #{duty},
-        #{postType},
+        #{duty,jdbcType=VARCHAR},
+        #{postType,jdbcType=VARCHAR},
         #{workPhone,jdbcType=VARCHAR},
-        #{dimissionTime,jdbcType=DATE},
+        #{dimissionTime,jdbcType=TIMESTAMP},
         #{staffSort},
         #{creator},
-        #{createTime,jdbcType=DATE},
+        #{createTime,jdbcType=TIMESTAMP},
         #{updater,jdbcType=VARCHAR},
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
         #{status})
     </insert>
 

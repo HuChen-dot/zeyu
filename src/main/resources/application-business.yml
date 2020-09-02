@@ -2,11 +2,11 @@
 # 文件上传下载地址
 file:
   # 服务器默认上传路径
-  #uploadPath: /opt/mager/upload/
-  uploadPath: d:/
+  uploadPath: /opt/mager/upload/Y
+  #uploadPath: d:/
   # 图片目录
   profile:  images
-  # 附件地址+
+  # 附件地址
   accessory:  accessory
   #安装文件上传地址
   software: software

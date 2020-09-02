@@ -28,6 +28,7 @@
                 and id=#{id}
             </if>
         </trim>
+        order by submit_time desc
     </select>
 
     <!-- 根据条件查询；返回多个对象-->
@@ -85,6 +86,7 @@
                 and staff_id=#{staffId}
             </if>
         </trim>
+        order by submit_time desc
     </select>
 
     <!--首页查询， 根据条件查询信息列表-->
@@ -125,6 +127,7 @@
                 and submit_time &lt;= #{endTime}
             </if>
         </trim>
+        order by submit_time desc
     </select>
 
 
@@ -200,7 +203,7 @@
         #{auditOpinion,jdbcType=VARCHAR},
         #{auditor,jdbcType=VARCHAR},
         #{submitTime},
-        #{auditTime,jdbcType=DATE},
+        #{auditTime,jdbcType=TIMESTAMP},
         #{formerId,jdbcType=VARCHAR},
         #{staffId},
         #{tableNames,jdbcType=VARCHAR},

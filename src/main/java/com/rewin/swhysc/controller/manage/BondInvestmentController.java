@@ -7,9 +7,13 @@ import com.rewin.swhysc.bean.dto.AddAdvertiseDto;
 import com.rewin.swhysc.bean.dto.AddOpenStaffDto;
 import com.rewin.swhysc.bean.dto.BondInvestmentListDto;
 import com.rewin.swhysc.bean.dto.UpdataBondInvestmentDto;
+import com.rewin.swhysc.bean.pojo.BondTemplate;
+import com.rewin.swhysc.bean.pojo.NOSTemplate;
+import com.rewin.swhysc.bean.pojo.NOSZTemplate;
 import com.rewin.swhysc.bean.vo.BondInvestmentVo;
 import com.rewin.swhysc.bean.vo.UpdaNotOpenStaffVo;
 import com.rewin.swhysc.bean.vo.UpdataBondInvestmentVo;
+import com.rewin.swhysc.common.utils.poi.ExcelUtil;
 import com.rewin.swhysc.mapper.dao.AdvertiseMapper;
 import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.security.service.TokenService;
@@ -23,9 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,7 +59,6 @@ public class BondInvestmentController {
      */
     @GetMapping("/list")
     public AjaxResult getList(BondInvestmentListDto BondInvestmentListDto) {
-        System.err.println("分页查询：" + BondInvestmentListDto);
         Map<String, Object> map = new ConcurrentHashMap<>(2);
         if (null != BondInvestmentListDto.getStaffSort() && !"-1".equals(BondInvestmentListDto.getStaffSort()) && BondInvestmentListDto.getStaffSort().length() > 0) {
             map.put("staffSort", BondInvestmentListDto.getStaffSort());
@@ -95,14 +101,13 @@ public class BondInvestmentController {
      */
     @PostMapping
     public AjaxResult addBondInvestment(@RequestBody UpdataBondInvestmentDto UpdataBondInvestmentDto) {
-        System.err.println("添加：" + UpdataBondInvestmentDto);
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         BondInvestment BondInvestment = new BondInvestment();
         BeanUtils.copyProperties(UpdataBondInvestmentDto, BondInvestment);
         BondInvestment.setCreator(loginUser.getUsername());
         BondInvestment.setCreateTime(new Date());
         if ("离职人员公示".equals(UpdataBondInvestmentDto.getStaffSort())) {
-            BondInvestment.setDimissionTime(new Date());
+            BondInvestment.setDimissionTime(DateUtils.dateTime(UpdataBondInvestmentDto.getDimissionTimes()));
         }
         BondInvestment.setStatus(1);
         BondInvestment.setStaffType(UpdataBondInvestmentDto.getStaffType());
@@ -121,7 +126,6 @@ public class BondInvestmentController {
      */
     @PutMapping
     public AjaxResult updBondInvestment(@RequestBody UpdataBondInvestmentDto UpdataBondInvestmentDto) {
-        System.err.println("修改：" + UpdataBondInvestmentDto);
         try {
             BondInvestmentService.ModifyBondInvestment(UpdataBondInvestmentDto);
         } catch (Exception e) {
@@ -156,5 +160,41 @@ public class BondInvestmentController {
         return AjaxResult.success("提交删除请求成功，请等待审核");
     }
 
+    /**
+     * 下载数据导入的模板
+     *
+     * @return
+     */
+    @GetMapping("/importTemplate")
+    public AjaxResult importTemplate() {
+        ExcelUtil<BondTemplate> util = new ExcelUtil<BondTemplate>(BondTemplate.class);
+        return util.importTemplateExcel("债券投资相关人数据模板");
+    }
 
+    /**
+     * 批量上传
+     * 获取批量上传的文件并转换成list集合
+     */
+    @PostMapping("/importData")
+    public AjaxResult importData(MultipartFile[] file) throws Exception {
+        LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
+        ExcelUtil<BondTemplate> util = new ExcelUtil<BondTemplate>(BondTemplate.class);
+        List<BondTemplate> list = util.importExcel(file[0].getInputStream());
+        //创建空集合转换填充基础信息
+        List<BondInvestment> OpenStaffList = new ArrayList<>();
+        for (BondTemplate notOpenStaff : list) {
+            BondInvestment OpenStaff = new BondInvestment();
+            BeanUtils.copyProperties(notOpenStaff, OpenStaff);
+            OpenStaff.setCreator(loginUser.getUsername());
+            OpenStaff.setCreateTime(new Date());
+            OpenStaff.setStatus(1);
+            OpenStaff.setStaffType(114);
+            if ("离职人员公示".equals(notOpenStaff.getStaffSort())) {
+                OpenStaff.setDimissionTime(new Date());
+            }
+            OpenStaffList.add(OpenStaff);
+        }
+        String message = BondInvestmentService.importOpenStaff(OpenStaffList, loginUser.getUsername(), file);
+        return AjaxResult.success(message);
+    }
 }

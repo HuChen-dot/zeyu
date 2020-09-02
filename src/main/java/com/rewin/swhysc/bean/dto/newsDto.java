@@ -17,16 +17,13 @@ public class newsDto {
     //新闻标题
     private String noticeTitle;
     //信息类型id
-    @NotEmpty(message = "信息类型id,不能为空")
     private Integer noticeTypeId;
     //公告状态（1未提交，2已发布，4审核中，8已下架，16已删除，32驳回）
     private String status;
 
     //开始时间
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String beginTime;
     //结束时间
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String endTime;
     //是否处理（1已处理，2未处理）
     private Integer flow;

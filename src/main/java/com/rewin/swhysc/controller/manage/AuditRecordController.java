@@ -3,10 +3,12 @@ package com.rewin.swhysc.controller.manage;
 import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.dto.RecordDto;
 import com.rewin.swhysc.bean.vo.AuditRecordVo;
+import com.rewin.swhysc.bean.vo.BInvestMentVo;
 import com.rewin.swhysc.bean.vo.DeleStaffAuditVo;
 import com.rewin.swhysc.bean.vo.StaffAuditVo;
 import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
 import com.rewin.swhysc.service.AuditRecordService;
+import com.rewin.swhysc.service.BondInvestmentService;
 import com.rewin.swhysc.service.NotOpenStaffService;
 import com.rewin.swhysc.util.AjaxResult;
 import com.rewin.swhysc.util.DateUtils;
@@ -38,6 +40,8 @@ public class AuditRecordController {
 
     @Resource
     private AuditRecordMapper auditRecordMapper;
+    @Resource
+    com.rewin.swhysc.service.BondInvestmentService BondInvestmentService;
 
     /**
      * 查询：根据传入的条件，分页查询公示信息审核列表
@@ -83,8 +87,9 @@ public class AuditRecordController {
      */
     @GetMapping("info/{id}")
     public AjaxResult getRecordByid(@PathVariable Integer id) {
-        //获取审核表信息
+
         try {
+            //获取审核表信息
             AuditRecord auditRecord = auditRecordMapper.getAuditRecordById(id);
 //   -------------------------------------------------------------
             //判断是否是《非现场开户人员》
@@ -110,18 +115,18 @@ public class AuditRecordController {
             if (auditRecord.getInfoTypeid() == 114) {
                 //判断是否是《增加或修改操作》
                 if (auditRecord.getOperationId() == 1 || auditRecord.getOperationId() == 16) {
-//                    StaffAuditVo audit = NotOpenStaffService.audit(auditRecord);
-//                    return AjaxResult.success("查询成功", audit);
+                    BInvestMentVo bInvestMentVo = BondInvestmentService.audit(auditRecord);
+                    return AjaxResult.success("查询成功", bInvestMentVo);
                 }
                 //判断是否是《批量删除或全量删除操作操作》
                 if (auditRecord.getOperationId() == 4 || auditRecord.getOperationId() == 8) {
-//                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.deteAudit(auditRecord);
-//                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                    BInvestMentVo bInvestMentVo = BondInvestmentService.deteAudit(auditRecord);
+                    return AjaxResult.success("查询成功", bInvestMentVo);
                 }
                 //判断是否是《批量上传操作》
                 if (auditRecord.getOperationId() == 2) {
-                    DeleStaffAuditVo deleStaffAuditVo = NotOpenStaffService.uploadingAudit(auditRecord);
-                    return AjaxResult.success("查询成功", deleStaffAuditVo);
+                    BInvestMentVo bInvestMentVo = BondInvestmentService.uploadingAudit(auditRecord);
+                    return AjaxResult.success("查询成功", bInvestMentVo);
                 }
             }
 //------------------------------------------------------------------

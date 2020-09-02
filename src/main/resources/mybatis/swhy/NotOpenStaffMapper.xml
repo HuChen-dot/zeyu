@@ -82,6 +82,7 @@
                 and updater=#{updater}
             </if>
         </trim>
+        order by id desc
     </select>
 
 
@@ -148,18 +149,18 @@
         sales)
         values(
         #{id},
-        #{deptName},
-        #{staffName},
-        #{staffNo},
-        #{certificateNo},
+        #{deptName,jdbcType=VARCHAR},
+        #{staffName,jdbcType=VARCHAR},
+        #{staffNo,jdbcType=TINYINT},
+        #{certificateNo,jdbcType=VARCHAR},
         #{staffType},
         #{creator},
         #{createTime},
         #{updater,jdbcType=VARCHAR},
-        #{updateTime,jdbcType=DATE},
+        #{updateTime,jdbcType=TIMESTAMP},
         #{status},
         #{personnelType,jdbcType=TINYINT},
-        #{certificatetime,jdbcType=DATE},
+        #{certificatetime,jdbcType=TIMESTAMP},
         #{certificatetype,jdbcType=TINYINT},
         #{sales,jdbcType=VARCHAR})
     </insert>
