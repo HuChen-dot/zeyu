@@ -2,20 +2,12 @@ package com.rewin.swhysc.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.rewin.swhysc.bean.Iosaonroid;
-import com.rewin.swhysc.bean.Software;
-import com.rewin.swhysc.bean.SoftwareInfoForSc;
-import com.rewin.swhysc.bean.SysDictType;
+import com.rewin.swhysc.bean.*;
 import com.rewin.swhysc.bean.dto.DownloadCountDto;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
-import com.rewin.swhysc.bean.pojo.DownloadCount;
 import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.common.constant.BusinessConstants;
-import com.rewin.swhysc.mapper.dao.DownloadCountMapper;
-import com.rewin.swhysc.bean.vo.SoftwareByidVo;
-import com.rewin.swhysc.bean.vo.SoftwareVo;
-import com.rewin.swhysc.bean.vo.TabSoftwareVo;
-import com.rewin.swhysc.controller.manage.SoftwareController;
+import com.rewin.swhysc.mapper.dao.DownloadSwMapper;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
 import com.rewin.swhysc.security.LoginUser;
@@ -55,7 +47,7 @@ public class SoftwareServiceImpl implements SoftwareService {
     com.rewin.swhysc.security.service.TokenService TokenService;
 
     @Autowired
-    private DownloadCountMapper downloadCountMapper;
+    private DownloadSwMapper downloadSwMapper;
 
     /**
      * 根据软件id查询软件详细信息
@@ -288,7 +280,7 @@ public class SoftwareServiceImpl implements SoftwareService {
     }
 
     @Override
-    public List<SoftwareInfoForScVo> getSoftwareInfoForSc(Integer type) throws Exception{
+    public List<SoftwareInfoForScVo> getSoftwareInfoForSc(Integer type) throws Exception {
         List<SoftwareInfoForScVo> list = new ArrayList<>();
         //参数转化
         if (type == 0) {
@@ -386,12 +378,13 @@ public class SoftwareServiceImpl implements SoftwareService {
     }
 
     @Override
-    public Integer insertSoftwareDownloadCount(DownloadCountDto downloadCountDto) throws Exception{
-        DownloadCount downloadCount = new DownloadCount();
-        downloadCount.setSoftwareid(downloadCountDto.getSoftwareID());
-        downloadCount.setIp(downloadCountDto.getIp());
-        downloadCount.setSoftwaretype(downloadCountDto.getSoftwareType());
-        return downloadCountMapper.insertSelective(downloadCount);
+    public Integer insertSoftwareDownloadCount(DownloadCountDto downloadCountDto) throws Exception {
+        DownloadSw downloadSw = new DownloadSw();
+        downloadSw.setSoftwareId(downloadCountDto.getSoftwareID());
+        downloadSw.setIp(downloadCountDto.getIp());
+        downloadSw.setSoftwareType(downloadCountDto.getSoftwareType());
+        downloadSw.setSoftwareName(downloadCountDto.getSoftName());
+        return downloadSwMapper.insertSelective(downloadSw);
     }
 
 }

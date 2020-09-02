@@ -4,6 +4,35 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.rewin.swhysc.mapper.dao.NotOpenStaffMapper">
 
+    <resultMap id="BaseResultMap" type="com.rewin.swhysc.bean.NotOpenStaff" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="ID" property="id" jdbcType="DECIMAL" />
+        <result column="DEPT_NAME" property="deptName" jdbcType="VARCHAR" />
+        <result column="STAFF_NAME" property="staffName" jdbcType="VARCHAR" />
+        <result column="STAFF_NO" property="staffNo" jdbcType="DECIMAL" />
+        <result column="CERTIFICATE_NO" property="certificateNo" jdbcType="VARCHAR" />
+        <result column="STAFF_TYPE" property="staffType" jdbcType="DECIMAL" />
+        <result column="CREATOR" property="creator" jdbcType="VARCHAR" />
+        <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="UPDATER" property="updater" jdbcType="VARCHAR" />
+        <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="STATUS" property="status" jdbcType="DECIMAL" />
+        <result column="PERSONNEL_TYPE" property="personnelType" jdbcType="VARCHAR" />
+        <result column="CERTIFICATETIME" property="certificatetime" jdbcType="TIMESTAMP" />
+        <result column="CERTIFICATETYPE" property="certificatetype" jdbcType="VARCHAR" />
+        <result column="SALES" property="sales" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        ID, DEPT_NAME, STAFF_NAME, STAFF_NO, CERTIFICATE_NO, STAFF_TYPE, CREATOR, CREATE_TIME,
+        UPDATER, UPDATE_TIME, STATUS, PERSONNEL_TYPE, CERTIFICATETIME, CERTIFICATETYPE, SALES
+    </sql>
+
     <!-- 根据id查询；返回单个对象 -->
     <select id="getNotOpenStaffById" resultType="com.rewin.swhysc.bean.NotOpenStaff">
         select
@@ -258,4 +287,16 @@
             </if>
         </trim>
     </delete>
+
+    <select id="getStaffInfoListByType" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM not_open_staff
+        <trim prefix="where" prefixOverrides="and | or">
+            STAFF_TYPE = #{staffType}
+            <if test="searchKey != null and searchKey != ''">
+                AND (staff_name LIKE '%'|| #{searchKey} ||'%' OR staff_no LIKE '%'|| #{searchKey} ||'%')
+            </if>
+        </trim>
+    </select>
 </mapper>

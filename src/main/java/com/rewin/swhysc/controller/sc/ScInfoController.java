@@ -1,8 +1,10 @@
 package com.rewin.swhysc.controller.sc;
 
-import com.rewin.swhysc.bean.dto.MarketerDto;
-import com.rewin.swhysc.bean.dto.UserMsgDto;
+import com.rewin.swhysc.bean.dto.*;
+import com.rewin.swhysc.bean.vo.BondInvestmentInfoVo;
 import com.rewin.swhysc.bean.vo.MarketerInfoVo;
+import com.rewin.swhysc.bean.vo.OpenAccStaffVo;
+import com.rewin.swhysc.bean.vo.PrivateEquityStaffVo;
 import com.rewin.swhysc.common.utils.ExceptionMsgUtils;
 import com.rewin.swhysc.service.ScStaffInfoService;
 import com.rewin.swhysc.util.AjaxResult;
@@ -10,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,11 +44,11 @@ public class ScInfoController {
      * @Author: sinan@rewin.com.cn
      * @Date: 2020/8/26 16:42
      */
-    public AjaxResult insertUserOnlineMsg(@RequestBody @Valid UserMsgDto userMsgDto){
-        try{
+    public AjaxResult insertUserOnlineMsg(@RequestBody @Valid UserMsgDto userMsgDto) {
+        try {
             scStaffInfoService.insertUserOnlineMsg(userMsgDto);
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("保存留言信息失败", e);
             return AjaxResult.error();
         }
         return AjaxResult.success();
@@ -64,15 +63,77 @@ public class ScInfoController {
      */
     @ApiOperation("营销人员信息查询")
     @PostMapping("/marketer")
-    public AjaxResult getMarketerInfo(@RequestBody @Valid MarketerDto marketerDto){
+    public AjaxResult getMarketerInfo(@RequestBody @Valid MarketerDto marketerDto) {
         MarketerInfoVo marketerInfoVo;
-        try{
+        try {
             marketerInfoVo = scStaffInfoService.getMarketerInfo(marketerDto);
-        }catch (Exception e){
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("查询营销人员信息失败", e);
             return AjaxResult.error();
         }
         return AjaxResult.success(marketerInfoVo);
     }
+
+    /**
+     * @Description:非现场开户人员信息查询
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/8/31 16:09
+     */
+    @ApiOperation("非现场开户人员查询")
+    @GetMapping("/openacc")
+    public AjaxResult getOpenAccStaffInfoList(@ModelAttribute @Valid OpenAccStaffDto openAccStaffDto) {
+        OpenAccStaffVo openAccStaffVo;
+        try {
+            openAccStaffVo = scStaffInfoService.getOpenAccStaffInfoList(openAccStaffDto);
+        } catch (Exception e) {
+            log.error("查询非现场开户人员信息失败", e);
+            return AjaxResult.error();
+        }
+        return AjaxResult.success(openAccStaffVo);
+    }
+
+    /**
+     * @Description:债券投资相关人员信息查询
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/9/1 10:31
+     */
+    @ApiOperation("债券投资相关人员信息查询")
+    @GetMapping("/bondinvestment")
+    public AjaxResult getBondInvestmentInfoList(@ModelAttribute @Valid BondinvestmentDto bondinvestmentDto) {
+        BondInvestmentInfoVo bondInvestmentInfoVo;
+        try {
+            bondInvestmentInfoVo = scStaffInfoService.getBondInvestmentInfoList(bondinvestmentDto);
+        } catch (Exception e) {
+            log.error("查询债券投资相关人员信息失败", e);
+            return AjaxResult.error();
+        }
+        return AjaxResult.success(bondInvestmentInfoVo);
+    }
+
+    /**
+     * @Description:私募资产管理业务从业人员信息查询
+     * @Param:
+     * @return:
+     * @Author: sinan@rewin.com.cn
+     * @Date: 2020/9/1 17:31
+     */
+    @ApiOperation("私募资产管理业务从业人员信息查询")
+    @GetMapping("/privateequity")
+    public AjaxResult getPrivateEquityStaffInfoList(@ModelAttribute @Valid PrivateEquityStaffDto privateEquityStaffDto){
+        PrivateEquityStaffVo privateEquityStaffVo;
+        try{
+            privateEquityStaffVo = scStaffInfoService.getPrivateEquityStaffInfoList(privateEquityStaffDto);
+        }catch (Exception e){
+            log.error("查询私募资产管理业务从业人员信息失败", e);
+            return AjaxResult.error();
+        }
+        return AjaxResult.success(privateEquityStaffVo);
+    }
+
+
 
 }
