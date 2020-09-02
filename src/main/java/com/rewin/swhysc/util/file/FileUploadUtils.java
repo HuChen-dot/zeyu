@@ -63,7 +63,7 @@ public class FileUploadUtils {
     }
 
     @Value("${file.software:software}")
-    public static void setSoftware(String software) {
+    public void setSoftware(String software) {
         FileUploadUtils.software = software;
     }
 
@@ -164,7 +164,7 @@ public class FileUploadUtils {
         if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
-        assertAllowed(file, allowedExtension);
+//        assertAllowed(file, allowedExtension);
         String fileName = extractFilename(file);
         File desc = getAbsoluteFile(baseDir, fileName);
         file.transferTo(desc);
@@ -217,7 +217,7 @@ public class FileUploadUtils {
                 //生成随机文件名并附件加上时间目录(随机文件名生成规则：时间戳+32位随机数+MD5混淆后取6位）
                 randomName = extractFilename(file);
             }
-            assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+//            assertAllowed(file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
             File desc = getAbsoluteFile(address.toString(), randomName);
 
             file.transferTo(desc);
@@ -288,31 +288,31 @@ public class FileUploadUtils {
      * @throws FileSizeLimitExceededException 如果超出最大大小
      * @throws InvalidExtensionException
      */
-    public static final void assertAllowed(MultipartFile file, String[] allowedExtension)
-            throws FileSizeLimitExceededException, InvalidExtensionException {
-        long size = file.getSize();
-        if (DEFAULT_MAX_SIZE != -1 && size > DEFAULT_MAX_SIZE) {
-            throw new FileSizeLimitExceededException(DEFAULT_MAX_SIZE / 1024 / 1024);
-        }
-
-        String fileName = file.getOriginalFilename();
-        String extension = getExtension(file);
-        if (allowedExtension != null && !isAllowedExtension(extension, allowedExtension)) {
-            if (allowedExtension == MimeTypeUtils.IMAGE_EXTENSION) {
-                throw new InvalidExtensionException.InvalidImageExtensionException(allowedExtension, extension,
-                        fileName);
-            } else if (allowedExtension == MimeTypeUtils.FLASH_EXTENSION) {
-                throw new InvalidExtensionException.InvalidFlashExtensionException(allowedExtension, extension,
-                        fileName);
-            } else if (allowedExtension == MimeTypeUtils.MEDIA_EXTENSION) {
-                throw new InvalidExtensionException.InvalidMediaExtensionException(allowedExtension, extension,
-                        fileName);
-            } else {
-                throw new InvalidExtensionException(allowedExtension, extension, fileName);
-            }
-        }
-
-    }
+//    public static final void assertAllowed(MultipartFile file, String[] allowedExtension)
+//            throws FileSizeLimitExceededException, InvalidExtensionException {
+//        long size = file.getSize();
+//        if (DEFAULT_MAX_SIZE != -1 && size > DEFAULT_MAX_SIZE) {
+//            throw new FileSizeLimitExceededException(DEFAULT_MAX_SIZE / 1024 / 1024);
+//        }
+//
+//        String fileName = file.getOriginalFilename();
+//        String extension = getExtension(file);
+//        if (allowedExtension != null && !isAllowedExtension(extension, allowedExtension)) {
+//            if (allowedExtension == MimeTypeUtils.IMAGE_EXTENSION) {
+//                throw new InvalidExtensionException.InvalidImageExtensionException(allowedExtension, extension,
+//                        fileName);
+//            } else if (allowedExtension == MimeTypeUtils.FLASH_EXTENSION) {
+//                throw new InvalidExtensionException.InvalidFlashExtensionException(allowedExtension, extension,
+//                        fileName);
+//            } else if (allowedExtension == MimeTypeUtils.MEDIA_EXTENSION) {
+//                throw new InvalidExtensionException.InvalidMediaExtensionException(allowedExtension, extension,
+//                        fileName);
+//            } else {
+//                throw new InvalidExtensionException(allowedExtension, extension, fileName);
+//            }
+//        }
+//
+//    }
 
     /**
      * 判断MIME类型是否是允许的MIME类型
