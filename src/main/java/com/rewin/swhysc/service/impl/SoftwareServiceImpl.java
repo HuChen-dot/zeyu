@@ -7,6 +7,7 @@ import com.rewin.swhysc.bean.dto.DownloadCountDto;
 import com.rewin.swhysc.bean.dto.SoftwareDto;
 import com.rewin.swhysc.bean.vo.*;
 import com.rewin.swhysc.common.constant.BusinessConstants;
+import com.rewin.swhysc.config.RuoYiConfig;
 import com.rewin.swhysc.mapper.dao.DownloadSwMapper;
 import com.rewin.swhysc.mapper.dao.IosaonroidMapper;
 import com.rewin.swhysc.mapper.dao.SoftwareMapper;
@@ -14,6 +15,7 @@ import com.rewin.swhysc.security.LoginUser;
 import com.rewin.swhysc.service.SoftwareService;
 import com.rewin.swhysc.util.DateUtils;
 import com.rewin.swhysc.util.ServletUtils;
+import com.rewin.swhysc.util.file.FileUploadUtils;
 import com.rewin.swhysc.util.page.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -300,7 +302,7 @@ public class SoftwareServiceImpl implements SoftwareService {
             for (SoftwareInfoForSc softwareInfoForSc : softInfoList) {
                 SoftwareInfoForScVo softwareInfoForScVo = new SoftwareInfoForScVo();
                 softwareInfoForScVo.setName(softwareInfoForSc.getSoftwareName());//软件名称
-                softwareInfoForScVo.setLogo(softwareInfoForSc.getSoftwareImg());//软件图标
+                softwareInfoForScVo.setLogo(FileUploadUtils.getProfile() + "/" + softwareInfoForSc.getSoftwareImg());//软件图标
                 softwareInfoForScVo.setIntroduce(softwareInfoForSc.getDescribe());//软件简介
                 Integer softwareType = softwareInfoForSc.getSoftwareType();//软件平台(PC/手机)
                 softwareInfoForScVo.setPlatform(softwareType);
@@ -309,7 +311,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                 //PC端软件详细信息
                 if (softwareType == BusinessConstants.SOFTWARE_TYPE_PC) {
                     PCInfo pcInfo = new PCInfo();
-                    pcInfo.setFileUrl(softwareInfoForSc.getFileUrl());//软件下载地址
+                    pcInfo.setFileUrl(FileUploadUtils.getsoftware() + "/" + softwareInfoForSc.getFileUrl());//软件下载地址
                     pcInfo.setSize(softwareInfoForSc.getSoftwareSize());//软件大小
                     pcInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());//软件更新时间
                     pcInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());//软件更新描述
@@ -339,7 +341,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                                 //存入安卓端详细数据
                                 if (platformType == BusinessConstants.PLATFORM_ANDROID) {
                                     AndroidInfo androidInfo = new AndroidInfo();
-                                    androidInfo.setFileUrl(softwareInfoForSc.getFileUrl());
+                                    androidInfo.setFileUrl(FileUploadUtils.getsoftware() + "/" + softwareInfoForSc.getFileUrl());
                                     androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
                                     androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                                     androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
@@ -360,7 +362,7 @@ public class SoftwareServiceImpl implements SoftwareService {
                         //存入安卓端详细数据
                         if (platformType == BusinessConstants.PLATFORM_ANDROID) {
                             AndroidInfo androidInfo = new AndroidInfo();
-                            androidInfo.setFileUrl(softwareInfoForSc.getFileUrl());
+                            androidInfo.setFileUrl(FileUploadUtils.getsoftware() + "/" + softwareInfoForSc.getFileUrl());
                             androidInfo.setSize(softwareInfoForSc.getSoftwareSize());
                             androidInfo.setUpdateInfo(softwareInfoForSc.getUpdateExplain());
                             androidInfo.setUpdateTime(softwareInfoForSc.getSoftwareUpdateTime());
