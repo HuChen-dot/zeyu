@@ -12,6 +12,7 @@ import com.rewin.swhysc.util.page.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +67,17 @@ public class WarrantRatioServiceImpl implements WarrantRatioService {
         }else{
             return null;
         }
+    }
+
+    @Override
+    public List<WarrantRatio> getWarrantRatioList(String id) throws Exception {
+        List<WarrantRatio> warrantRatioList = new ArrayList<>();
+        if(!StringUtils.isEmpty(id)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("id", id);
+            warrantRatioList.add(warrantRatioMapper.getWarrantRatioInfo(param));
+        }
+        return warrantRatioList;
     }
 
     @Override

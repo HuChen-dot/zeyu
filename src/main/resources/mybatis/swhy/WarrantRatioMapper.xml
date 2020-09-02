@@ -43,7 +43,7 @@
         FROM
         RZRQ_WARRANT_RATIO a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
+            <if test="id != null">
                 and a.ID=#{id}
             </if>
             <if test="startDate != null">
@@ -82,8 +82,8 @@
         FROM
         RZRQ_WARRANT_RATIO a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and a.ID=#{ID}
+            <if test="id != null">
+                and a.ID=#{id}
             </if>
         </trim>
     </select>

@@ -16,6 +16,11 @@ public interface RzrqAuditService {
     /**
      * 根据id查询；返回单个对象
      */
+    RzrqAuditVo getRzrqAuditInfo(Integer id) throws Exception;
+
+    /**
+     * 根据id查询；返回单个对象
+     */
     RzrqAuditVo getRzrqAuditById(Integer id) throws Exception;
 
     /**

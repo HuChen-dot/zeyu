@@ -66,8 +66,18 @@ public class BondBdServiceImpl implements BondBdService {
     }
 
     @Override
-    public List<BondBdVo> getBondBdList(String stockCode, String stockName, String trimDate) throws Exception {
+    public List<BondBdVo> getBondBdList(String ids,String stockCode, String stockName, String trimDate,String states) throws Exception {
         Map<String, Object> map = new HashMap<>(1);
+        if(!StringUtils.isEmpty(ids)){
+            String id[] = ids.split(",");
+            int ret[] = new int[id.length];
+            StringTokenizer toKenizer = new StringTokenizer(ids, ",");
+            int i = 0;
+            while (toKenizer.hasMoreElements()) {
+                ret[i++] = Integer.valueOf(toKenizer.nextToken());
+            }
+            map.put("ids", ret);
+        }
         if(!StringUtils.isEmpty(stockCode)){
             map.put("stockCode", stockCode);
         }
@@ -76,6 +86,9 @@ public class BondBdServiceImpl implements BondBdService {
         }
         if(!StringUtils.isEmpty(trimDate)){
             map.put("trimDate", trimDate+" 00:00:00");
+        }
+        if(!StringUtils.isEmpty(states)){
+            map.put("states", states);
         }
         List<BondBdVo> bondBdList = bondBdMapper.getAllBondBd(map);
 
@@ -131,7 +144,6 @@ public class BondBdServiceImpl implements BondBdService {
             try {
                 bondBdMapper.insertBondBd(bondBd);
                 successNum++;
-                successMsg.append("<br/>" + successNum + "、证券代码 " + bondBd.getStockCode() + " 导入成功");
                 count.add(bondBd.getId());
             } catch (Exception e) {
                 failureNum++;
@@ -145,7 +157,7 @@ public class BondBdServiceImpl implements BondBdService {
             failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
             throw new CustomException(failureMsg.toString());
         } else {
-            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+            successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条");
             //封装参数，向中间表插入数据
             AuditRecord AuditRecord = new AuditRecord();
             StringBuilder builder = new StringBuilder();
@@ -195,7 +207,14 @@ public class BondBdServiceImpl implements BondBdService {
     public Integer subDelApproval(String ids) throws Exception {
         if(!StringUtils.isEmpty(ids)){
             Map<String, Object> param = new HashMap<>(1);
-            param.put("ids", ids);
+            String id[] = ids.split(",");
+            int ret[] = new int[id.length];
+            StringTokenizer toKenizer = new StringTokenizer(ids, ",");
+            int i = 0;
+            while (toKenizer.hasMoreElements()) {
+                ret[i++] = Integer.valueOf(toKenizer.nextToken());
+            }
+            param.put("ids", ret);
             return bondBdMapper.subDelApproval(param);
         }else{
             return null;
@@ -206,7 +225,14 @@ public class BondBdServiceImpl implements BondBdService {
     public Integer delByIds(String ids) throws Exception {
         if(!StringUtils.isEmpty(ids)){
             Map<String, Object> param = new HashMap<>(1);
-            param.put("ids", ids);
+            String id[] = ids.split(",");
+            int ret[] = new int[id.length];
+            StringTokenizer toKenizer = new StringTokenizer(ids, ",");
+            int i = 0;
+            while (toKenizer.hasMoreElements()) {
+                ret[i++] = Integer.valueOf(toKenizer.nextToken());
+            }
+            param.put("ids", ret);
             return bondBdMapper.delByIds(param);
         }else{
             return null;
@@ -217,7 +243,14 @@ public class BondBdServiceImpl implements BondBdService {
     public Integer setstateByIds(String ids,String state) throws Exception {
         if(!StringUtils.isEmpty(ids)){
             Map<String, Object> param = new HashMap<>(1);
-            param.put("ids", ids);
+            String id[] = ids.split(",");
+            int ret[] = new int[id.length];
+            StringTokenizer toKenizer = new StringTokenizer(ids, ",");
+            int i = 0;
+            while (toKenizer.hasMoreElements()) {
+                ret[i++] = Integer.valueOf(toKenizer.nextToken());
+            }
+            param.put("ids", ret);
             param.put("state", state);
             return bondBdMapper.setstateByIds(param);
         }else{

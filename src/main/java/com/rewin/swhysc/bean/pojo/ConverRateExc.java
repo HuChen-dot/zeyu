@@ -17,7 +17,7 @@ public class ConverRateExc {
     @Excel(name = "证券名称", type = Excel.Type.ALL)
     private String stockName;
     @Excel(name = "折算率", type = Excel.Type.ALL)
-    private Integer rate;
+    private String rate;
     @Excel(name = "交易所", type = Excel.Type.ALL)
     private String bourse;
     @Excel(name = "调整日期", type = Excel.Type.ALL)

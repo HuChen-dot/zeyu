@@ -70,6 +70,17 @@ public class InterestRateServiceImpl implements InterestRateService {
     }
 
     @Override
+    public List<InterestRate> getInterestRateList(String id) throws Exception {
+        List<InterestRate> interestRateList = new ArrayList<>();
+        if(!StringUtils.isEmpty(id)){
+            Map<String, Object> param = new HashMap<>(1);
+            param.put("id", id);
+            interestRateList.add(interestRateMapper.getInterestRateInfo(param));
+        }
+        return interestRateList;
+    }
+
+    @Override
     public Integer insertInterestRate(InterestRate interestRate) throws Exception {
         return interestRateMapper.insertInterestRate(interestRate);
     }

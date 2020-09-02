@@ -97,7 +97,7 @@ public class BondBdController extends BaseController {
         bondBd.setUpdateDate(new java.util.Date());
         bondBd.setState("1");
         try {
-            List<BondBdVo> bondBdVoList = bondBdService.getBondBdState(bondBd.getStockCode(),bondBd.getStockName(),null);
+            List<BondBdVo> bondBdVoList = bondBdService.getBondBdList(null,bondBd.getStockCode(),bondBd.getStockName(),null,"1,2,4,5,6");
             if(!bondBdVoList.isEmpty()){
                 return AjaxResult.error("该产品已存在标的记录，请确认");
             }
@@ -115,7 +115,7 @@ public class BondBdController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("添加成功");
+        return AjaxResult.success("新增记录审核提交成功");
     }
 
     /**
@@ -164,7 +164,7 @@ public class BondBdController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("修改成功");
+        return AjaxResult.success("修改审核提交成功");
     }
 
     /**
@@ -228,7 +228,7 @@ public class BondBdController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success(success+"条删除成功，"+retMsg);
+        return AjaxResult.success(success+"条删除审核提交成功，"+retMsg);
     }
 
     /**
@@ -260,7 +260,7 @@ public class BondBdController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("删除成功");
+        return AjaxResult.success("删除审核提交成功");
     }
 
     /**
@@ -274,7 +274,8 @@ public class BondBdController extends BaseController {
             List<BondbdExc> list = util.importExcel(file[0].getInputStream());
             //创建空集合转换填充基础信息
             List<BondBd> bondBdList = new ArrayList<>();
-            List<BondBdVo> bondBdVoList = bondBdService.getBondBdState(null,null,null);
+            String ids=null;String stockCode=null;String stockName =null;
+            List<BondBdVo> bondBdVoList = bondBdService.getBondBdList(ids,stockCode,stockName,null,"1,2,4,5,6");
             Map<String,String> converMap = new HashMap<String,String>();
             if(bondBdVoList.size()>0){
                 for(int j=0;j<bondBdVoList.size();j++){
@@ -285,6 +286,12 @@ public class BondBdController extends BaseController {
                 if(converMap.containsKey(bondbdExc.getStockCode())){
                     log.info("已存在证券代码为"+bondbdExc.getStockCode()+"的数据，请确认后重新上传");
                     return AjaxResult.error("已存在证券代码为"+bondbdExc.getStockCode()+"的数据，请确认后重新上传");
+                }
+                if(bondbdExc.getStockCode().isEmpty() || bondbdExc.getStockName().isEmpty() || bondbdExc.getBourse().isEmpty()
+                        || bondbdExc.getIsRq().isEmpty() || bondbdExc.getIsRz().isEmpty() || bondbdExc.getRqRatio().isEmpty()
+                        || bondbdExc.getRzRatio().isEmpty()){
+                    log.info("存在未填字段，请确认后重新上传");
+                    return AjaxResult.error("存在未填字段，请确认后重新上传");
                 }
                 BondBd bondBd = new BondBd();
                 BeanUtils.copyProperties(bondbdExc, bondBd);

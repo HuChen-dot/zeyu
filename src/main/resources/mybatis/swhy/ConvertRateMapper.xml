@@ -20,8 +20,8 @@
         to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
         from RZRQ_CONVERT_RATE
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
             <if test="stockCode != null">
                 and STOCK_CODE=#{stockCode}
@@ -52,8 +52,11 @@
         to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
         from RZRQ_CONVERT_RATE
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="ids != null">
+                and ID in
+                <foreach collection="ids" open="(" close=")" separator="," item="item">
+                    #{item,jdbcType=INTEGER}
+                </foreach>
             </if>
             <if test="stockCode != null">
                 and STOCK_CODE=#{stockCode}
@@ -64,7 +67,9 @@
             <if test="trimDate != null">
                 and to_char(TRIM_DATE,'yyyy-mm-dd 00:00:00') = #{trimDate}
             </if>
-            and STATE != '7'
+            <if test="state != null">
+                and STATE in (#{states})
+            </if>
         </trim>
     </select>
 
@@ -84,8 +89,8 @@
         to_char(TRIM_DATE,'yyyy-MM-dd') as trimDate
         from RZRQ_CONVERT_RATE
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
             <if test="stockCode != null">
                 and STOCK_CODE=#{stockCode}
@@ -116,8 +121,8 @@
         TRIM_DATE as trimDate
         from RZRQ_CONVERT_RATE
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
         </trim>
     </select>
@@ -185,16 +190,25 @@
     </update>
 
     <update id="subDelApproval" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='6'  where ID in (#{ids})
+        update RZRQ_CONVERT_RATE SET STATE='6'  where ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="item">
+            #{item,jdbcType=INTEGER}
+        </foreach>
     </update>
 
 
     <update id="delByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE='7'  where ID in (#{ids})
+        update RZRQ_CONVERT_RATE SET STATE='7'  where ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="item">
+            #{item,jdbcType=INTEGER}
+        </foreach>
     </update>
 
     <update id="setstateByIds" parameterType="com.rewin.swhysc.bean.ConvertRate">
-        update RZRQ_CONVERT_RATE SET STATE=#{state}  where ID in (#{ids})
+        update RZRQ_CONVERT_RATE SET STATE=#{state}  where ID in
+        <foreach collection="ids" open="(" close=")" separator="," item="item">
+            #{item,jdbcType=INTEGER}
+        </foreach>
     </update>
 
 </mapper>

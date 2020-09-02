@@ -20,16 +20,16 @@ public class BondbdExc {
     private String stockName;
 
     @Excel(name = "融资比例", type = Excel.Type.ALL)
-    private Integer rzRatio;
+    private String rzRatio;
 
     @Excel(name = "融券比例", type = Excel.Type.ALL)
-    private Integer rqRatio;
+    private String rqRatio;
 
     @Excel(name = "是否融资(0:是;1:否)", type = Excel.Type.ALL)
-    private Integer isRz;
+    private String isRz;
 
     @Excel(name = "是否融券(0:是;1:否)", type = Excel.Type.ALL)
-    private Integer isRq;
+    private String isRq;
 
     @Excel(name = "交易所", type = Excel.Type.ALL)
     private String bourse;

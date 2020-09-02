@@ -47,7 +47,7 @@
         FROM
         RZRQ_INTEREST_RATE a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
+            <if test="id != null">
                 and a.ID=#{id}
             </if>
             <if test="startDate != null">
@@ -88,8 +88,8 @@
         FROM
         RZRQ_INTEREST_RATE a LEFT JOIN AUDIT_RECORD b ON  a.AUDIT_ID=b.ID
         <trim prefix="where" prefixOverrides="and | or">
-            <if test="ID != null">
-                and ID=#{ID}
+            <if test="id != null">
+                and ID=#{id}
             </if>
         </trim>
     </select>

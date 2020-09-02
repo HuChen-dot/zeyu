@@ -2,7 +2,6 @@ package com.rewin.swhysc.controller.manage;
 
 import com.github.pagehelper.PageHelper;
 import com.rewin.swhysc.bean.pojo.ConverRateExc;
-import com.rewin.swhysc.bean.pojo.NOSTemplate;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
 import com.rewin.swhysc.common.utils.poi.ExcelUtil;
 import com.rewin.swhysc.service.RzrqAuditService;
@@ -94,7 +93,8 @@ public class ConvertRateController extends BaseController {
             List<ConverRateExc> list = util.importExcel(file[0].getInputStream());
             //创建空集合转换填充基础信息
             List<ConvertRate> convertRateList = new ArrayList<>();
-            List<ConvertRateVo> convertRateVoList = convertRateService.getConverRateList(null,null,null);
+            String ids =null;
+            List<ConvertRateVo> convertRateVoList = convertRateService.getConverRateList(ids,null,null,null,"1,2,4,5,6");
             Map<String,String> converMap = new HashMap<String,String>();
             if(convertRateVoList.size()>0){
                 for(int j=0;j<convertRateVoList.size();j++){
@@ -105,6 +105,11 @@ public class ConvertRateController extends BaseController {
                 if(converMap.containsKey(convertRate.getStockCode())){
                     log.info("已存在证券代码为"+convertRate.getStockCode()+"的数据，请确认后重新上传");
                     return AjaxResult.error("已存在证券代码为"+convertRate.getStockCode()+"的数据，请确认后重新上传");
+                }
+                if(convertRate.getStockCode().isEmpty() || convertRate.getStockName().isEmpty() || convertRate.getBourse().isEmpty()
+                        || convertRate.getRate().isEmpty()){
+                    log.info("存在未填字段，请确认后重新上传");
+                    return AjaxResult.error("存在未填字段，请确认后重新上传");
                 }
                 ConvertRate conver = new ConvertRate();
                 BeanUtils.copyProperties(convertRate, conver);
@@ -138,7 +143,8 @@ public class ConvertRateController extends BaseController {
         convertRate.setUpdateDate(new java.util.Date());
         convertRate.setState("1");
         try {
-            List<ConvertRateVo> converRateList = convertRateService.getConverRateList(convertRate.getStockCode(),convertRate.getStockName(),null);
+            String ids = null;
+            List<ConvertRateVo> converRateList = convertRateService.getConverRateList(null,convertRate.getStockCode(),convertRate.getStockName(),null,"1,2,4,5,6");
             if(!converRateList.isEmpty()){
                 return AjaxResult.error("该产品已存在折算率记录，请确认");
             }
@@ -156,7 +162,7 @@ public class ConvertRateController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("添加成功");
+        return AjaxResult.success("新增记录审核提交成功");
     }
 
     /**
@@ -205,7 +211,7 @@ public class ConvertRateController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("修改成功");
+        return AjaxResult.success("修改审核提交成功");
     }
 
     /**
@@ -269,7 +275,7 @@ public class ConvertRateController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success(success+"条删除成功，"+retMsg);
+        return AjaxResult.success(success+"条删除审核提交成功，"+retMsg);
     }
 
     /**
@@ -301,7 +307,7 @@ public class ConvertRateController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("删除成功");
+        return AjaxResult.success("删除审核提交成功");
     }
 
     @GetMapping("auditlist")

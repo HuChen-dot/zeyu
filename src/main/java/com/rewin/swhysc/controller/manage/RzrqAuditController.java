@@ -49,7 +49,7 @@ public class RzrqAuditController extends BaseController {
     public AjaxResult getWarrantRatio(@PathVariable Integer id) {
         RzrqAuditVo rzrqAuditVo = null;
         try {
-            rzrqAuditVo = rzrqAuditService.getRzrqAuditById(id);
+            rzrqAuditVo = rzrqAuditService.getRzrqAuditInfo(id);
         } catch (Exception e) {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
@@ -75,7 +75,7 @@ public class RzrqAuditController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("下架成功");
+        return AjaxResult.success("审核通过");
     }
 
     @PutMapping("object")
@@ -94,6 +94,6 @@ public class RzrqAuditController extends BaseController {
             log.error("查询数据库出错", e);
             return AjaxResult.error("sql错误");
         }
-        return AjaxResult.success("下架成功");
+        return AjaxResult.success("审核驳回");
     }
 }

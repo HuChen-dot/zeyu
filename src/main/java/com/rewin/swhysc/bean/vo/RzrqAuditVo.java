@@ -6,11 +6,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.List;
 
 
 @Getter
 @Setter
-public class RzrqAuditVo implements Serializable {
+public class RzrqAuditVo<T> implements Serializable {
     //主键id
     private Integer id;
     //信息类型id(0 折算率；1标的；2维持担保比例；3利率费率；113非现场人员）
@@ -27,11 +28,6 @@ public class RzrqAuditVo implements Serializable {
     private String auditOpinion;
     //审核人
     private String auditor;
-    //提交时间
-    private String submitTime;
-    //审核时间
-    private String auditTime;
-
     //提交时间(字符类型）
     private String submitTimes;
     //审核时间（字符类型）
@@ -40,11 +36,12 @@ public class RzrqAuditVo implements Serializable {
     private String formerId;
     //信息主键id
     private String staffId;
-    //表名（表示当前数据在那一张表中）
-    private String tableNames;
     //文件地址
     private String fileUrl;
     //文件名称
     private String fileName;
 
+    private List<T> infolist;
+
+    private List<T> formList;
 }

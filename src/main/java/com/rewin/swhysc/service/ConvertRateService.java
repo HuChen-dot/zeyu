@@ -15,7 +15,7 @@ public interface ConvertRateService {
 
     PageInfo<ConvertRateVo> getConverRateList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception;
 
-    List<ConvertRateVo> getConverRateList(String stockCode, String stockName, String trimDate) throws Exception;
+    List<ConvertRateVo> getConverRateList(String ids,String stockCode, String stockName, String trimDate,String states) throws Exception;
 
     List<ConvertRateVo> getConverRateState(String stockCode, String stockName, String trimDate) throws Exception;
 

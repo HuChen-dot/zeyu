@@ -15,7 +15,7 @@ import java.util.Map;
 public interface BondBdService  {
     PageInfo<BondBdVo> getBondBdList(Integer pageNo, Integer pageSize, String stockCode, String stockName, String trimDate) throws Exception;
 
-    List<BondBdVo> getBondBdList(String stockCode, String stockName, String trimDate) throws Exception;
+    List<BondBdVo> getBondBdList(String ids,String stockCode, String stockName, String trimDate,String states) throws Exception;
 
     List<BondBdVo> getBondBdState(String stockCode, String stockName, String trimDate) throws Exception;
 

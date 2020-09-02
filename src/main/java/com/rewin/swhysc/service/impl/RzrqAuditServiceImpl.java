@@ -6,6 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.rewin.swhysc.bean.AuditRecord;
 import com.rewin.swhysc.bean.ConvertRate;
 import com.rewin.swhysc.bean.InterestRate;
+import com.rewin.swhysc.bean.WarrantRatio;
+import com.rewin.swhysc.bean.vo.BondBdVo;
+import com.rewin.swhysc.bean.vo.ConvertRateVo;
 import com.rewin.swhysc.bean.vo.RzrqAuditVo;
 import com.rewin.swhysc.mapper.dao.AuditRecordMapper;
 import com.rewin.swhysc.mapper.dao.ConvertRateMapper;
@@ -79,10 +82,46 @@ public class RzrqAuditServiceImpl implements RzrqAuditService {
     /**
      * 根据id查询；返回单个对象
      */
+    public RzrqAuditVo getRzrqAuditInfo(Integer id) throws Exception {
+        RzrqAuditVo rzrqAuditVo =  auditRecordMapper.getRzrqAuditById(id);
+        if(rzrqAuditVo.getInfoTypeid()==0){
+            List<ConvertRateVo> infoList = convertRateService.getConverRateList(rzrqAuditVo.getStaffId(),null,null,null,null);
+            rzrqAuditVo.setInfolist(infoList);
+            if(!StringUtils.isEmpty(rzrqAuditVo.getFormerId())){
+                List<ConvertRateVo> formList = convertRateService.getConverRateList(rzrqAuditVo.getFormerId(),null,null,null,null);
+                rzrqAuditVo.setInfolist(formList);
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==1){
+            List<BondBdVo> infoList = bondBdService.getBondBdList(rzrqAuditVo.getStaffId(),null,null,null,null);
+            rzrqAuditVo.setInfolist(infoList);
+            if(!StringUtils.isEmpty(rzrqAuditVo.getFormerId())){
+                List<BondBdVo> formList = bondBdService.getBondBdList(rzrqAuditVo.getFormerId(),null,null,null,null);
+                rzrqAuditVo.setInfolist(formList);
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==2){
+            List<InterestRate> infoList = interestRateService.getInterestRateList(rzrqAuditVo.getStaffId());
+            rzrqAuditVo.setInfolist(infoList);
+            if(!StringUtils.isEmpty(rzrqAuditVo.getFormerId())){
+                List<InterestRate> formList = interestRateService.getInterestRateList(rzrqAuditVo.getFormerId());
+                rzrqAuditVo.setInfolist(formList);
+            }
+        }else if(rzrqAuditVo.getInfoTypeid()==3){
+            List<WarrantRatio> infoList = warrantRatioService.getWarrantRatioList(rzrqAuditVo.getStaffId());
+            rzrqAuditVo.setInfolist(infoList);
+            if(!StringUtils.isEmpty(rzrqAuditVo.getFormerId())){
+                List<WarrantRatio> formList = warrantRatioService.getWarrantRatioList(rzrqAuditVo.getFormerId());
+                rzrqAuditVo.setInfolist(formList);
+            }
+        }
+        return rzrqAuditVo;
+    }
+
+    /**
+     * 根据id查询；返回单个对象
+     */
     public RzrqAuditVo getRzrqAuditById(Integer id) throws Exception {
         return auditRecordMapper.getRzrqAuditById(id);
     }
-
 
     public Integer examineRzrqAudit(AuditRecord auditRecord) throws Exception {
         RzrqAuditVo rzrqAuditVo = getRzrqAuditById(auditRecord.getId());
@@ -93,7 +132,7 @@ public class RzrqAuditServiceImpl implements RzrqAuditService {
                 }else if (auditRecord.getStatus() == 2){
                     convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
                 }
-            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 5){
+            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 8){
                 if(auditRecord.getStatus() == 1){
                     convertRateService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
                 }else if (auditRecord.getStatus() == 2){
@@ -115,7 +154,7 @@ public class RzrqAuditServiceImpl implements RzrqAuditService {
                 }else if (auditRecord.getStatus() == 2){
                     bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"3");
                 }
-            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 5){
+            }else if(rzrqAuditVo.getOperationId() == 3 || rzrqAuditVo.getOperationId() == 4 || rzrqAuditVo.getOperationId() == 8){
                 if(auditRecord.getStatus() == 1){
                     bondBdService.setstateByIds(rzrqAuditVo.getStaffId(),"7");
                 }else if (auditRecord.getStatus() == 2){

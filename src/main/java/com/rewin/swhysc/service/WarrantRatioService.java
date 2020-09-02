@@ -19,6 +19,8 @@ public interface WarrantRatioService  {
 
     WarrantRatio getWarrantRatioInfo(String id) throws Exception;
 
+    List<WarrantRatio> getWarrantRatioList(String id) throws Exception;
+
     Integer insertWarrantRatio(WarrantRatio warrantRatio) throws Exception;
 
     Integer updateWarrantRatio(WarrantRatio warrantRatio) throws Exception;

@@ -18,6 +18,8 @@ public interface InterestRateService{
 
     InterestRate getInterestRateInfo(String id) throws Exception;
 
+    List<InterestRate> getInterestRateList(String id) throws Exception;
+
     Integer insertInterestRate(InterestRate interestRate) throws Exception;
 
     Integer updateInterestRate(InterestRate interestRate) throws Exception;
